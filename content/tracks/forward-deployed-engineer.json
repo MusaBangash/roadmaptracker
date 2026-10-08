@@ -1,0 +1,1184 @@
+{
+ "slug": "forward-deployed-engineer",
+ "title": "Forward-Deployed Engineer",
+ "kind": "ROLE",
+ "edition": "Edition 2  -  University-grade",
+ "subtitle": "Make technology work for real customers - in their environment, under their constraints",
+ "summary": "Embed with customers, find the real problem, integrate with their systems, and ship to production.",
+ "expert": "Walks into an unfamiliar organisation, finds the problem worth solving, integrates with whatever systems exist, ships an AI or software deployment that reaches production and is measured in business outcomes - and turns that field work into reusable product.",
+ "benchmarks": [
+  {
+   "title": "Discovery",
+   "detail": "20 documented discovery interviews and a problem brief the customer signs off without changing the problem statement."
+  },
+  {
+   "title": "Timed integration",
+   "detail": "Given an unfamiliar API, a messy CSV and a legacy database, you ship a working, tested integration in four hours."
+  },
+  {
+   "title": "Unfamiliar codebase",
+   "detail": "A meaningful change merged into an unfamiliar open-source project within one week of first opening it."
+  },
+  {
+   "title": "Real deployments",
+   "detail": "Three deployments for real organisations reach production, each with outcome metrics and a written handover; two written references."
+  },
+  {
+   "title": "Defended out loud",
+   "detail": "Defend a deployment for 30 minutes to a mixed panel: one engineer, one non-technical stakeholder."
+  }
+ ],
+ "stages": [
+  {
+   "key": "the-fde-role-and-the-deployment-lifecycle",
+   "title": "The FDE role and the deployment lifecycle",
+   "level": "Foundation",
+   "weeks": 2,
+   "benchmark": "Industry standard",
+   "goal": "Understand what FDEs actually do, and why most deployments fail.",
+   "doneWhen": "You map the full deployment lifecycle for one real organisation and name the three places it is most likely to fail.",
+   "resources": "Bloomberry analysis of 1,000 FDE jobs  |  public FDE job descriptions from AI companies  |  S&P Global and Gartner reports on AI project failure",
+   "items": [
+    {
+     "key": "what-fdes-do",
+     "title": "What FDEs do",
+     "detail": "builder FDEs vs sales-engineer FDEs vs internal-tools roles",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "origins-and-today",
+     "title": "Origins and today",
+     "detail": "how the role grew from field engineering to AI deployment",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "the-deployment-lifecycle",
+     "title": "The deployment lifecycle",
+     "detail": "discovery, pilot, production, expansion",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "why-deployments-fail",
+     "title": "Why deployments fail",
+     "detail": "no clear owner, no success metric, bad data, no path to production",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "the-fde-mindset",
+     "title": "The FDE mindset",
+     "detail": "outcomes over code, ownership, comfort with ambiguity",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "lifecycle-map",
+     "title": "Lifecycle map",
+     "detail": "for one real organisation you can access, with failure risks",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "customer-discovery-and-problem-framing",
+   "title": "Customer discovery and problem framing",
+   "level": "Foundation",
+   "weeks": 4,
+   "benchmark": "Stanford ENGR 245 (Lean LaunchPad)  |  Stanford d.school",
+   "goal": "Find the problem worth solving - before writing any code.",
+   "doneWhen": "You complete 20 discovery interviews and a problem brief the customer signs off without changing the problem statement.",
+   "resources": "The Mom Test (Fitzpatrick)  |  Steve Blank: How to Build a Startup (free course)  |  Bulletproof Problem Solving (Conn & McLean)",
+   "items": [
+    {
+     "key": "discovery-interviews",
+     "title": "Discovery interviews",
+     "detail": "ask about past behaviour, not opinions or hypotheticals",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "observing-work",
+     "title": "Observing work",
+     "detail": "shadowing, workflow mapping, finding the workaround",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "jobs-to-be-done",
+     "title": "Jobs to be done",
+     "detail": "what the user is really trying to achieve",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "stakeholder-mapping",
+     "title": "Stakeholder mapping",
+     "detail": "user, buyer, champion, blocker, approver",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "problem-framing",
+     "title": "Problem framing",
+     "detail": "issue trees and hypothesis-driven problem solving",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "success-metrics",
+     "title": "Success metrics",
+     "detail": "baselines, targets, how impact will be measured",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "prioritisation",
+     "title": "Prioritisation",
+     "detail": "value vs effort vs risk",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "20-discovery-interviews",
+     "title": "20 discovery interviews",
+     "detail": "notes, patterns, surprises",
+     "kind": "PROJECT",
+     "optional": false
+    },
+    {
+     "key": "problem-brief",
+     "title": "Problem brief",
+     "detail": "signed off by the customer",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "requirements-scoping-and-estimation",
+   "title": "Requirements, scoping and estimation",
+   "level": "Foundation",
+   "weeks": 3,
+   "benchmark": "CMU 17-313 (requirements)",
+   "goal": "Turn a fuzzy request into a plan people can agree to.",
+   "doneWhen": "Your scope document and statement of work for a real problem are accepted with only minor changes.",
+   "resources": "Software Requirements (Wiegers & Beatty)  |  CMU 17-313 materials",
+   "items": [
+    {
+     "key": "requirements-elicitation",
+     "title": "Requirements elicitation",
+     "detail": "interviews, workshops, examples",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "user-stories-and-acceptance-criteria",
+     "title": "User stories and acceptance criteria",
+     "detail": "",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "non-functional-requirements",
+     "title": "Non-functional requirements",
+     "detail": "security, latency, availability, data residency",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "scoping-under-ambiguity",
+     "title": "Scoping under ambiguity",
+     "detail": "assumptions, open questions, MVP",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "phased-plans",
+     "title": "Phased plans",
+     "detail": "pilot, production, expansion milestones",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "estimation-and-risk",
+     "title": "Estimation and risk",
+     "detail": "ranges not points, risk registers",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "statements-of-work",
+     "title": "Statements of work",
+     "detail": "deliverables, responsibilities, acceptance",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "change-control",
+     "title": "Change control",
+     "detail": "handling new requests without losing the plan",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "scope-document-and-sow",
+     "title": "Scope document and SOW",
+     "detail": "for a real problem",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "technical-communication",
+   "title": "Technical communication",
+   "level": "Foundation",
+   "weeks": 4,
+   "benchmark": "Google Technical Writing courses  |  MIT Communication Lab resources",
+   "goal": "Make technical work clear to every audience - engineers, users and executives.",
+   "doneWhen": "A non-technical stakeholder can repeat back what you built and why after reading your one-page brief and watching your demo.",
+   "resources": "Google Technical Writing One and Two (free)  |  The Pyramid Principle (Minto)  |  MIT Communication Lab (free online)",
+   "items": [
+    {
+     "key": "writing-for-busy-readers",
+     "title": "Writing for busy readers",
+     "detail": "answer first, short sentences, plain words",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "the-pyramid-principle",
+     "title": "The pyramid principle",
+     "detail": "conclusion first, then support",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "design-docs-for-customers",
+     "title": "Design docs for customers",
+     "detail": "context, options, recommendation, risks",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "status-updates",
+     "title": "Status updates",
+     "detail": "progress, risks, decisions needed",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "executive-summaries",
+     "title": "Executive summaries",
+     "detail": "one page, decision-focused",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "diagrams",
+     "title": "Diagrams",
+     "detail": "architecture and data-flow diagrams non-engineers understand",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "demos",
+     "title": "Demos",
+     "detail": "storytelling, preparing for live-demo failure",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "presenting-to-leadership",
+     "title": "Presenting to leadership",
+     "detail": "short, decision-first, handling questions",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "translating-technical-to-business",
+     "title": "Translating technical to business",
+     "detail": "cost, risk, time, revenue",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "one-page-executive-brief",
+     "title": "One-page executive brief",
+     "detail": "",
+     "kind": "PROJECT",
+     "optional": false
+    },
+    {
+     "key": "recorded-10-minute-demo",
+     "title": "Recorded 10-minute demo",
+     "detail": "reviewed by a non-technical person",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "rapid-onboarding-to-unfamiliar-systems",
+   "title": "Rapid onboarding to unfamiliar systems",
+   "level": "Intermediate",
+   "weeks": 3,
+   "benchmark": "Industry standard",
+   "goal": "Understand someone else's system fast enough to change it safely.",
+   "doneWhen": "You merge a meaningful change into an unfamiliar open-source project within one week of first opening it.",
+   "resources": "Working Effectively with Legacy Code (Feathers)  |  ripgrep and code-search tool docs",
+   "items": [
+    {
+     "key": "reading-large-codebases",
+     "title": "Reading large codebases",
+     "detail": "entry points, call graphs, following a request through",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "tools",
+     "title": "Tools",
+     "detail": "ripgrep, code search, debuggers, tracing",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "ai-coding-assistants",
+     "title": "AI coding assistants",
+     "detail": "using them to explore - and checking what they claim",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "undocumented-apis",
+     "title": "Undocumented APIs",
+     "detail": "reading traffic, logs and schemas to work out behaviour",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "legacy-code-techniques",
+     "title": "Legacy code techniques",
+     "detail": "characterisation tests, seams, safe first changes",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "writing-it-down",
+     "title": "Writing it down",
+     "detail": "a one-page architecture map for the next person",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "open-source-change",
+     "title": "Open-source change",
+     "detail": "merged within one week",
+     "kind": "PROJECT",
+     "optional": false
+    },
+    {
+     "key": "architecture-map",
+     "title": "Architecture map",
+     "detail": "of an unfamiliar system",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "integration-engineering",
+   "title": "Integration engineering",
+   "level": "Intermediate",
+   "weeks": 5,
+   "benchmark": "Enterprise Integration Patterns (Hohpe & Woolf)",
+   "goal": "Connect to whatever systems the customer actually has - reliably.",
+   "doneWhen": "Given an unfamiliar API, a messy CSV and a legacy database, you ship a working, tested integration in four hours.",
+   "resources": "Enterprise Integration Patterns (Hohpe & Woolf)  |  OAuth 2.0 Simplified (Parecki)  |  Debezium and dbt docs",
+   "items": [
+    {
+     "key": "integration-patterns",
+     "title": "Integration patterns",
+     "detail": "messaging, polling, webhooks, batch files",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "api-styles",
+     "title": "API styles",
+     "detail": "REST, GraphQL, gRPC - and SOAP, which you will meet",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "legacy-channels",
+     "title": "Legacy channels",
+     "detail": "SFTP drops, CSV/Excel exports, email-based workflows",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "identity",
+     "title": "Identity",
+     "detail": "OAuth2, OIDC, SAML single sign-on, SCIM provisioning, service accounts",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "reliability",
+     "title": "Reliability",
+     "detail": "rate limits, retries, idempotency, reconciliation jobs",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "data-mapping",
+     "title": "Data mapping",
+     "detail": "schemas, data contracts, field-level mapping",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "pipelines",
+     "title": "Pipelines",
+     "detail": "ETL/ELT, dbt, change data capture with Debezium",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "low-code-tools",
+     "title": "Low-code tools",
+     "detail": "n8n, Zapier, Make - when they are the right answer",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "typescript-for-fdes",
+     "title": "TypeScript for FDEs",
+     "detail": "enough to work in customer frontends and Node services",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "testing-integrations",
+     "title": "Testing integrations",
+     "detail": "sandboxes, contract tests, mocks",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "sso-integrated-service",
+     "title": "SSO-integrated service",
+     "detail": "webhooks plus a nightly reconciliation job",
+     "kind": "PROJECT",
+     "optional": false
+    },
+    {
+     "key": "four-hour-integration-challenge",
+     "title": "Four-hour integration challenge",
+     "detail": "timed, tested, written up",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "messy-data-in-the-real-world",
+   "title": "Messy data in the real world",
+   "level": "Intermediate",
+   "weeks": 3,
+   "benchmark": "UC Berkeley Data 100 (applied)",
+   "goal": "Make real customer data usable - and prove it is correct.",
+   "doneWhen": "You migrate a real messy dataset with a data-quality report that shows what was fixed, what was dropped and why.",
+   "resources": "Berkeley Data 100 materials  |  Great Expectations or Pandera docs",
+   "items": [
+    {
+     "key": "data-profiling",
+     "title": "Data profiling",
+     "detail": "understanding a dataset before touching it",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "cleaning-at-scale",
+     "title": "Cleaning at scale",
+     "detail": "types, formats, units, dates",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "entity-resolution",
+     "title": "Entity resolution",
+     "detail": "de-duplication, fuzzy matching",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "urdu-and-english-text",
+     "title": "Urdu and English text",
+     "detail": "normalisation, transliteration, mixed scripts",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "spreadsheets-as-databases",
+     "title": "Spreadsheets as databases",
+     "detail": "the reality in most organisations",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "data-quality-checks",
+     "title": "Data quality checks",
+     "detail": "validation rules, data contracts",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "legacy-migrations",
+     "title": "Legacy migrations",
+     "detail": "mapping, backfills, cut-over plans",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "pii-handling",
+     "title": "PII handling",
+     "detail": "finding, masking and minimising personal data",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "real-data-migration",
+     "title": "Real data migration",
+     "detail": "with a data-quality report",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "deploying-in-customer-environments",
+   "title": "Deploying in customer environments",
+   "level": "Intermediate",
+   "weeks": 4,
+   "benchmark": "Industry standard (SRE practice applied)",
+   "goal": "Ship inside someone else's network, rules and constraints.",
+   "doneWhen": "Your application installs in an air-gapped lab environment from a single package, and a handover runbook lets someone else operate it.",
+   "resources": "Helm docs  |  Kubernetes air-gapped installation guides  |  your SRE track",
+   "items": [
+    {
+     "key": "deployment-models",
+     "title": "Deployment models",
+     "detail": "SaaS, single-tenant, customer VPC, on-prem, air-gapped",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "packaging",
+     "title": "Packaging",
+     "detail": "Docker images, Helm charts, installers",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "per-customer-configuration",
+     "title": "Per-customer configuration",
+     "detail": "secrets, feature flags, licences",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "network-constraints",
+     "title": "Network constraints",
+     "detail": "proxies, firewalls, VPNs, private links",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "air-gapped-installs",
+     "title": "Air-gapped installs",
+     "detail": "offline registries, mirrored packages",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "upgrades-across-customers",
+     "title": "Upgrades across customers",
+     "detail": "versioning, migrations, rollback",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "remote-support",
+     "title": "Remote support",
+     "detail": "telemetry with consent, diagnostics bundles",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "low-bandwidth-settings",
+     "title": "Low-bandwidth settings",
+     "detail": "offline-first design, sync",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "handover",
+     "title": "Handover",
+     "detail": "runbooks, training, on-call agreements",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "air-gapped-install",
+     "title": "Air-gapped install",
+     "detail": "lab environment, single package",
+     "kind": "PROJECT",
+     "optional": false
+    },
+    {
+     "key": "handover-runbook",
+     "title": "Handover runbook",
+     "detail": "tested by someone else",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "enterprise-ai-deployment",
+   "title": "Enterprise AI deployment",
+   "level": "Intermediate",
+   "weeks": 5,
+   "benchmark": "UC Berkeley LLM Agents (deployment lectures)  |  industry practice",
+   "goal": "Take AI from pilot to production inside a real organisation - and measure the impact.",
+   "doneWhen": "Your AI pilot for a real organisation reaches production with an eval report on their data and measured business impact.",
+   "resources": "AI Engineering (Chip Huyen)  |  Berkeley LLM Agents MOOC (free)  |  your AI Engineer track",
+   "items": [
+    {
+     "key": "choosing-use-cases",
+     "title": "Choosing use cases",
+     "detail": "value, feasibility, data readiness, risk",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "pilots-with-success-criteria",
+     "title": "Pilots with success criteria",
+     "detail": "agreed before building",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "evals-on-customer-data",
+     "title": "Evals on customer data",
+     "detail": "golden sets built with subject-matter experts",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "human-in-the-loop-design",
+     "title": "Human-in-the-loop design",
+     "detail": "review, approval and escalation points",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "change-management",
+     "title": "Change management",
+     "detail": "training users, champions, adoption plans",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "governance",
+     "title": "Governance",
+     "detail": "data access, logging, guardrails, audit",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "agents-in-the-enterprise",
+     "title": "Agents in the enterprise",
+     "detail": "permissions, approvals, blast radius",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "measuring-impact",
+     "title": "Measuring impact",
+     "detail": "adoption, time saved, error rates, cost",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "why-ai-pilots-die",
+     "title": "Why AI pilots die",
+     "detail": "and the patterns that get them to production",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "ai-pilot-to-production",
+     "title": "AI pilot to production",
+     "detail": "eval report plus impact numbers",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "security-privacy-and-compliance",
+   "title": "Security, privacy and compliance",
+   "level": "Advanced",
+   "weeks": 3,
+   "benchmark": "Stanford CS155 (selected)  |  industry practice",
+   "goal": "Pass customer security reviews - and deserve to.",
+   "doneWhen": "You complete a full security questionnaire and a data-flow diagram for your deployment that a security reviewer accepts.",
+   "resources": "Stanford CS155 materials  |  SOC 2 and ISO 27001 overviews  |  OWASP resources",
+   "items": [
+    {
+     "key": "security-questionnaires",
+     "title": "Security questionnaires",
+     "detail": "SIG, CAIQ and custom questionnaires",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "soc-2-and-iso-27001",
+     "title": "SOC 2 and ISO 27001",
+     "detail": "what they mean for engineers",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "data-residency",
+     "title": "Data residency",
+     "detail": "where data lives and who can reach it",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "privacy-law-basics",
+     "title": "Privacy law basics",
+     "detail": "GDPR principles and local data-protection rules",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "handling-customer-data",
+     "title": "Handling customer data",
+     "detail": "least access, retention, deletion",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "access-reviews-and-audit-trails",
+     "title": "Access reviews and audit trails",
+     "detail": "",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "incident-disclosure",
+     "title": "Incident disclosure",
+     "detail": "what to tell customers, when and how",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "security-questionnaire-and-data-flow-diagram",
+     "title": "Security questionnaire and data-flow diagram",
+     "detail": "accepted by a reviewer",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "stakeholders-negotiation-and-trust",
+   "title": "Stakeholders, negotiation and trust",
+   "level": "Advanced",
+   "weeks": 3,
+   "benchmark": "Harvard Negotiation Project",
+   "goal": "Handle conflict, bad news and pressure while keeping trust.",
+   "doneWhen": "You negotiate a real re-scope, and document five hard conversations with what you would do differently.",
+   "resources": "Getting to Yes (Fisher & Ury)  |  Difficult Conversations (Stone, Patton, Heen)  |  The Trusted Advisor (Maister et al.)",
+   "items": [
+    {
+     "key": "champions-and-sponsors",
+     "title": "Champions and sponsors",
+     "detail": "finding and keeping them",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "managing-expectations",
+     "title": "Managing expectations",
+     "detail": "early, often, in writing",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "negotiation",
+     "title": "Negotiation",
+     "detail": "interests vs positions, options, BATNA",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "difficult-conversations",
+     "title": "Difficult conversations",
+     "detail": "delays, bad news, mistakes",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "saying-no",
+     "title": "Saying no",
+     "detail": "protecting scope without losing the relationship",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "building-trust",
+     "title": "Building trust",
+     "detail": "credibility, reliability, intimacy, self-orientation",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "culture-and-hierarchy",
+     "title": "Culture and hierarchy",
+     "detail": "working across organisations and countries",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "escalation",
+     "title": "Escalation",
+     "detail": "when and how",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "five-hard-conversations",
+     "title": "Five hard conversations",
+     "detail": "documented with reflection",
+     "kind": "PROJECT",
+     "optional": false
+    },
+    {
+     "key": "real-re-scope",
+     "title": "Real re-scope",
+     "detail": "negotiated and agreed in writing",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "commercial-awareness-and-value",
+   "title": "Commercial awareness and value",
+   "level": "Advanced",
+   "weeks": 3,
+   "benchmark": "Industry standard",
+   "goal": "Understand how your work turns into revenue and renewals.",
+   "doneWhen": "You write a business case with ROI for a real deployment that a decision-maker accepts.",
+   "resources": "The Trusted Advisor (Maister et al.)  |  public enterprise software case studies",
+   "items": [
+    {
+     "key": "how-enterprise-deals-work",
+     "title": "How enterprise deals work",
+     "detail": "pilot, proof of concept, contract, expansion",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "success-plans",
+     "title": "Success plans",
+     "detail": "mutual action plans with the customer",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "roi",
+     "title": "ROI",
+     "detail": "measuring value in time, money and risk",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "pricing-models",
+     "title": "Pricing models",
+     "detail": "per seat, usage, fixed fee",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "renewals-and-expansion",
+     "title": "Renewals and expansion",
+     "detail": "what makes customers stay",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "working-with-sales-and-customer-success",
+     "title": "Working with sales and customer success",
+     "detail": "without becoming a salesperson",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "business-case-with-roi",
+     "title": "Business case with ROI",
+     "detail": "accepted by a decision-maker",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "domain-expertise-pick-one",
+   "title": "Domain expertise (pick one)",
+   "level": "Advanced",
+   "weeks": 4,
+   "benchmark": "Depends on domain",
+   "goal": "Speak your customer's language and know their rules.",
+   "doneWhen": "You write a domain primer that a practitioner in that industry rates as accurate.",
+   "resources": "Domain regulators' publications  |  industry data-standard docs",
+   "items": [
+    {
+     "key": "finance-and-banking",
+     "title": "Finance and banking",
+     "detail": "workflows, regulation, payment standards (ISO 20022)",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "government-and-public-sector",
+     "title": "Government and public sector",
+     "detail": "procurement, security clearance, data rules",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "healthcare",
+     "title": "Healthcare",
+     "detail": "clinical workflows, privacy, HL7/FHIR data standards",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "insurance",
+     "title": "Insurance",
+     "detail": "underwriting, claims, document-heavy processes",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "energy-and-utilities",
+     "title": "Energy and utilities",
+     "detail": "operations data, safety, regulation",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "education",
+     "title": "Education",
+     "detail": "student data, institutional workflows, accreditation",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "domain-primer",
+     "title": "Domain primer",
+     "detail": "rated accurate by a practitioner",
+     "kind": "PROJECT",
+     "optional": false
+    },
+    {
+     "key": "domain-deployment-design",
+     "title": "Domain deployment design",
+     "detail": "a deployment designed for that industry",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "fde-interview-loop",
+   "title": "FDE interview loop",
+   "level": "Advanced",
+   "weeks": 2,
+   "benchmark": "Industry interview standard",
+   "goal": "Pass the interview loops FDE teams actually run.",
+   "doneWhen": "You pass a full mock loop: integration task, constrained system design, case study, and behavioural round.",
+   "resources": "Paraform and company FDE hiring guides  |  your own deployment case studies",
+   "items": [
+    {
+     "key": "practical-integration-task",
+     "title": "Practical integration task",
+     "detail": "messy data, difficult API, time limit",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "system-design-with-constraints",
+     "title": "System design with constraints",
+     "detail": "legacy databases, missing docs, on-prem",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "case-decomposition",
+     "title": "Case decomposition",
+     "detail": "scoping an ambiguous business problem out loud",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "behavioural",
+     "title": "Behavioural",
+     "detail": "stakeholder conflict, ambiguity, ownership stories",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "talking-in-outcomes",
+     "title": "Talking in outcomes",
+     "detail": "describing work by customer result, not code",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "full-mock-loop",
+     "title": "Full mock loop",
+     "detail": "recorded and reviewed",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "field-to-product-and-leading-deployments",
+   "title": "Field to product and leading deployments",
+   "level": "Expert",
+   "weeks": 6,
+   "benchmark": "Senior / lead FDE practice",
+   "goal": "Lead several deployments and turn field lessons into product.",
+   "doneWhen": "A reusable deployment kit you built is used in two or more deployments, and a product change you proposed from the field is adopted.",
+   "resources": "Staff Engineer (Larson)  |  your own deployment retrospectives",
+   "items": [
+    {
+     "key": "owning-accounts",
+     "title": "Owning accounts",
+     "detail": "end-to-end responsibility for outcomes",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "running-several-deployments",
+     "title": "Running several deployments",
+     "detail": "prioritising across customers",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "reusable-components",
+     "title": "Reusable components",
+     "detail": "deployment kits, connectors, templates",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "product-feedback",
+     "title": "Product feedback",
+     "detail": "writing field evidence that changes the roadmap",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "playbooks",
+     "title": "Playbooks",
+     "detail": "repeatable deployment methods",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "hiring-and-mentoring-fdes",
+     "title": "Hiring and mentoring FDEs",
+     "detail": "",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "reusable-deployment-kit",
+     "title": "Reusable deployment kit",
+     "detail": "used in two or more deployments",
+     "kind": "PROJECT",
+     "optional": false
+    },
+    {
+     "key": "field-to-product-proposal",
+     "title": "Field-to-product proposal",
+     "detail": "adopted",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "fde-capstone-three-real-deployments",
+   "title": "FDE capstone: three real deployments",
+   "level": "Expert",
+   "weeks": 10,
+   "benchmark": "Graduate capstone standard",
+   "goal": "Prove it with real customers.",
+   "doneWhen": "Three deployments reach production with outcome metrics and handovers; two written references; defended for 30 minutes.",
+   "resources": "Everything above",
+   "items": [
+    {
+     "key": "deployment-1",
+     "title": "Deployment 1",
+     "detail": "discovery to production, outcomes measured",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "deployment-2",
+     "title": "Deployment 2",
+     "detail": "in a different organisation or domain",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "deployment-3",
+     "title": "Deployment 3",
+     "detail": "led by you end to end",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "two-written-references",
+     "title": "Two written references",
+     "detail": "",
+     "kind": "PROJECT",
+     "optional": false
+    },
+    {
+     "key": "capstone-defence",
+     "title": "Capstone defence",
+     "detail": "30 minutes, mixed technical and non-technical panel",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  }
+ ]
+}

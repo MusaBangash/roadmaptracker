@@ -1,0 +1,487 @@
+{
+ "slug": "ai-for-everyone",
+ "title": "AI for Everyone",
+ "kind": "COURSE",
+ "edition": "Edition 2",
+ "subtitle": "12 weeks · 48 sessions · 96 hours",
+ "summary": "Practical AI skills for every profession.",
+ "expert": "",
+ "benchmarks": [],
+ "rubric": [
+  {
+   "criterion": "Task completion",
+   "levels": [
+    "Output not usable",
+    "Usable with major fixes",
+    "Usable with minor fixes",
+    "Ready to use as it is"
+   ]
+  },
+  {
+   "criterion": "Prompt quality",
+   "levels": [
+    "Vague, no structure",
+    "Some RCTF parts",
+    "Full RCTF and context",
+    "Clear, efficient, iterated well"
+   ]
+  },
+  {
+   "criterion": "Verification",
+   "levels": [
+    "Did not check",
+    "Checked one thing",
+    "Checked key facts and numbers",
+    "Checked everything that matters, explains how"
+   ]
+  },
+  {
+   "criterion": "Safety & privacy",
+   "levels": [
+    "Shared private data",
+    "Risky but no harm",
+    "Safe, anonymised where needed",
+    "Safe, and explains the risks avoided"
+   ]
+  },
+  {
+   "criterion": "Reflection",
+   "levels": [
+    "None",
+    "Describes what happened",
+    "Explains what worked and why",
+    "Names a specific improvement"
+   ]
+  }
+ ],
+ "stages": [
+  {
+   "key": "month-1",
+   "title": "Month 1 — Foundations",
+   "level": "Month 1",
+   "weeks": 4,
+   "benchmark": "",
+   "goal": "Learn to Speak to AI · Weeks 1–4",
+   "doneWhen": "",
+   "resources": "",
+   "items": [
+    {
+     "key": "w1-d1",
+     "title": "D1 — What AI actually is — demystifying LLMs; how they work in plain language",
+     "detail": "Outcome: I can explain in plain words what an AI chatbot does and does not do",
+     "kind": "LESSON",
+     "group": "Week 1 — What AI Actually Is"
+    },
+    {
+     "key": "w1-d2",
+     "title": "D2 — Tokens, prediction, and why answers vary — the “why” behind AI’s behaviour",
+     "detail": "Outcome: I can show the same prompt giving different answers and explain why",
+     "kind": "LESSON",
+     "group": "Week 1 — What AI Actually Is"
+    },
+    {
+     "key": "w1-d3",
+     "title": "D3 — Hands-on setup — accounts on ChatGPT, Claude & Gemini, secured with two-step verification",
+     "detail": "Outcome: I can sign in to three assistants on their own device, with accounts secured",
+     "kind": "LESSON",
+     "group": "Week 1 — What AI Actually Is"
+    },
+    {
+     "key": "w1-d4",
+     "title": "D4 — First real conversation — comparing the three tools on a task from your own work",
+     "detail": "Outcome: I can compare three tools on one real task and choose one, giving a reason",
+     "kind": "LESSON",
+     "group": "Week 1 — What AI Actually Is"
+    },
+    {
+     "key": "w2-d1",
+     "title": "D1 — The RCTF formula — Role, Context, Task, Format",
+     "detail": "Outcome: I can write a prompt that contains all four RCTF parts",
+     "kind": "LESSON",
+     "group": "Week 2 — Prompting Fundamentals"
+    },
+    {
+     "key": "w2-d2",
+     "title": "D2 — RCTF applied to your profession — guided practice",
+     "detail": "Outcome: I can rewrite three of their own work tasks as RCTF prompts",
+     "kind": "LESSON",
+     "group": "Week 2 — Prompting Fundamentals"
+    },
+    {
+     "key": "w2-d3",
+     "title": "D3 — The five layers of context — identity, world, task, examples, constraints",
+     "detail": "Outcome: I can add the five layers to a weak prompt and show the better result",
+     "kind": "LESSON",
+     "group": "Week 2 — Prompting Fundamentals"
+    },
+    {
+     "key": "w2-d4",
+     "title": "D4 — Workshop — combining RCTF and context layers into a strong prompt",
+     "detail": "Outcome: I can produce one strong prompt for a real weekly task",
+     "kind": "LESSON",
+     "group": "Week 2 — Prompting Fundamentals"
+    },
+    {
+     "key": "w3-d1",
+     "title": "D1 — Iteration and follow-ups — treating AI as a conversation, not a one-shot query",
+     "detail": "Outcome: I can improve an answer through three follow-ups instead of starting again",
+     "kind": "LESSON",
+     "group": "Week 3 — Advanced & Structured Prompting"
+    },
+    {
+     "key": "w3-d2",
+     "title": "D2 — Structured Markdown prompting — Role, Objective, Context, Instructions, Notes",
+     "detail": "Outcome: I can write a structured Markdown prompt for a multi-part task",
+     "kind": "LESSON",
+     "group": "Week 3 — Advanced & Structured Prompting"
+    },
+    {
+     "key": "w3-d3",
+     "title": "D3 — Reasoning vs. instant models — when to use which",
+     "detail": "Outcome: I can choose the right model type for five sample tasks and justify each choice",
+     "kind": "LESSON",
+     "group": "Week 3 — Advanced & Structured Prompting"
+    },
+    {
+     "key": "w3-d4",
+     "title": "D4 — Start the Personal Prompt Library — organising your best prompts for reuse",
+     "detail": "Outcome: I can keep an organised library of their first 10 tested prompts",
+     "kind": "LESSON",
+     "group": "Week 3 — Advanced & Structured Prompting"
+    },
+    {
+     "key": "w3-d4-check",
+     "title": "Library: 10 prompts",
+     "detail": "",
+     "kind": "MILESTONE",
+     "group": "Week 3 — Advanced & Structured Prompting"
+    },
+    {
+     "key": "w4-d1",
+     "title": "D1 — Hallucinations live demo and verification habits — spot-checking AI’s numbers, claims and quotes",
+     "detail": "Outcome: I can catch and correct a hallucinated fact using a second, trusted source",
+     "kind": "LESSON",
+     "group": "Week 4 — Trust, Truth & Safety"
+    },
+    {
+     "key": "w4-d2",
+     "title": "D2 — Privacy & data protection — the hard rule: never paste patient, client or student information into a public AI tool; anonymising before use",
+     "detail": "Outcome: I can anonymise a real document before using AI on it",
+     "kind": "LESSON",
+     "group": "Week 4 — Trust, Truth & Safety"
+    },
+    {
+     "key": "w4-d3",
+     "title": "D3 — Deepfakes, voice-cloning scams & AI content rights — spotting fake media, protecting family from scam calls, copyright and fair use of AI images",
+     "detail": "Outcome: I can name the warning signs of a deepfake or scam call, and the basic rules for using AI-generated images",
+     "kind": "LESSON",
+     "group": "Week 4 — Trust, Truth & Safety"
+    },
+    {
+     "key": "w4-d4",
+     "title": "D4 — Practical Assessment 1",
+     "detail": "Outcome: I can complete an unseen task with AI and verify the output in front of the instructor",
+     "kind": "LESSON",
+     "group": "Week 4 — Trust, Truth & Safety"
+    },
+    {
+     "key": "w4-d4-check",
+     "title": "PA1 · Library 10+ checked",
+     "detail": "",
+     "kind": "MILESTONE",
+     "group": "Week 4 — Trust, Truth & Safety"
+    }
+   ]
+  },
+  {
+   "key": "month-2",
+   "title": "Month 2 — AI at Work",
+   "level": "Month 2",
+   "weeks": 4,
+   "benchmark": "",
+   "goal": "The Four Superpowers · Weeks 5–8",
+   "doneWhen": "",
+   "resources": "",
+   "items": [
+    {
+     "key": "w5-d1",
+     "title": "D1 — Emails & letters — professional correspondence with tone control",
+     "detail": "Outcome: I can draft a real email and adjust its tone, in English and Urdu",
+     "kind": "LESSON",
+     "group": "Week 5 — Writing & Documents"
+    },
+    {
+     "key": "w5-d2",
+     "title": "D2 — Reports & structured documents",
+     "detail": "Outcome: I can turn rough notes into a structured report",
+     "kind": "LESSON",
+     "group": "Week 5 — Writing & Documents"
+    },
+    {
+     "key": "w5-d3",
+     "title": "D3 — CVs and Urdu/English translation control",
+     "detail": "Outcome: I can improve a CV and check an AI translation for meaning errors",
+     "kind": "LESSON",
+     "group": "Week 5 — Writing & Documents"
+    },
+    {
+     "key": "w5-d4",
+     "title": "D4 — Workshop — teaching AI your own writing voice",
+     "detail": "Outcome: I can create a reusable “my voice” instruction and test it on a new piece",
+     "kind": "LESSON",
+     "group": "Week 5 — Writing & Documents"
+    },
+    {
+     "key": "w6-d1",
+     "title": "D1 — Image prompting framework — subject, action, environment, camera, lighting",
+     "detail": "Outcome: I can generate an image that matches a written brief",
+     "kind": "LESSON",
+     "group": "Week 6 — Visual AI — Images & Video"
+    },
+    {
+     "key": "w6-d2",
+     "title": "D2 — Editing instead of regenerating + Canva AI design",
+     "detail": "Outcome: I can edit an image to a brief and design a poster or flyer in Canva",
+     "kind": "LESSON",
+     "group": "Week 6 — Visual AI — Images & Video"
+    },
+    {
+     "key": "w6-d3",
+     "title": "D3 — Intro to AI video — image-to-video with free tools",
+     "detail": "Outcome: I can produce a 5–10 second clip from a still image",
+     "kind": "LESSON",
+     "group": "Week 6 — Visual AI — Images & Video"
+    },
+    {
+     "key": "w6-d4",
+     "title": "D4 — Simple edits in CapCut — finish and keep a short video clip",
+     "detail": "Outcome: I can export a captioned short video",
+     "kind": "LESSON",
+     "group": "Week 6 — Visual AI — Images & Video"
+    },
+    {
+     "key": "w7-d1",
+     "title": "D1 — AI for spreadsheets & budgets — turning raw data into summaries",
+     "detail": "Outcome: I can summarise a raw table with AI and check two of its numbers by hand",
+     "kind": "LESSON",
+     "group": "Week 7 — Data & Numbers"
+    },
+    {
+     "key": "w7-d2",
+     "title": "D2 — Sales and marks sheets — building simple dashboards",
+     "detail": "Outcome: I can build a simple chart or dashboard from their own data",
+     "kind": "LESSON",
+     "group": "Week 7 — Data & Numbers"
+    },
+    {
+     "key": "w7-d3",
+     "title": "D3 — Verification discipline for data — why every AI number must be checked",
+     "detail": "Outcome: I can find a planted error in an AI-generated data summary",
+     "kind": "LESSON",
+     "group": "Week 7 — Data & Numbers"
+    },
+    {
+     "key": "w7-d4",
+     "title": "D4 — Workshop — bring your own data, produce a real summary",
+     "detail": "Outcome: I can produce a verified summary of their own data",
+     "kind": "LESSON",
+     "group": "Week 7 — Data & Numbers"
+    },
+    {
+     "key": "w8-d1",
+     "title": "D1 — NotebookLM — chat with your own PDFs and YouTube videos",
+     "detail": "Outcome: I can get answers with citations from their own documents",
+     "kind": "LESSON",
+     "group": "Week 8 — Research & Learning"
+    },
+    {
+     "key": "w8-d2",
+     "title": "D2 — Deep Research with citations",
+     "detail": "Outcome: I can produce a short research brief and verify three of its citations",
+     "kind": "LESSON",
+     "group": "Week 8 — Research & Learning"
+    },
+    {
+     "key": "w8-d3",
+     "title": "D3 — AI as a personal tutor — learning new things safely",
+     "detail": "Outcome: I can run a study-and-quiz session with AI on a new topic",
+     "kind": "LESSON",
+     "group": "Week 8 — Research & Learning"
+    },
+    {
+     "key": "w8-d4",
+     "title": "D4 — Practical Assessment 2",
+     "detail": "Outcome: I can complete an unseen writing, visual, data or research task and verify it",
+     "kind": "LESSON",
+     "group": "Week 8 — Research & Learning"
+    },
+    {
+     "key": "w8-d4-check",
+     "title": "PA2 · Library 25+ checked",
+     "detail": "",
+     "kind": "MILESTONE",
+     "group": "Week 8 — Research & Learning"
+    }
+   ]
+  },
+  {
+   "key": "month-3",
+   "title": "Month 3 — Your AI-Powered Profession",
+   "level": "Month 3",
+   "weeks": 4,
+   "benchmark": "",
+   "goal": "Build, Apply, Graduate · Weeks 9–12",
+   "doneWhen": "",
+   "resources": "",
+   "items": [
+    {
+     "key": "w9-d1",
+     "title": "D1 — Why build a custom assistant — from prompts to a packaged tool",
+     "detail": "Outcome: I can identify one repeated task in their own work worth packaging",
+     "kind": "LESSON",
+     "group": "Week 9 — Build Your Own AI Assistant"
+    },
+    {
+     "key": "w9-d2",
+     "title": "D2 — Custom GPTs & Gemini Gems — naming and instructions",
+     "detail": "Outcome: I can write clear, tested instructions for an assistant",
+     "kind": "LESSON",
+     "group": "Week 9 — Build Your Own AI Assistant"
+    },
+    {
+     "key": "w9-d3",
+     "title": "D3 — Adding knowledge files — giving your assistant real context",
+     "detail": "Outcome: I can add suitable, anonymised files and check that answers use them",
+     "kind": "LESSON",
+     "group": "Week 9 — Build Your Own AI Assistant"
+    },
+    {
+     "key": "w9-d4",
+     "title": "D4 — Build, test, and refine your first assistant",
+     "detail": "Outcome: I can show a working assistant tested on five real cases",
+     "kind": "LESSON",
+     "group": "Week 9 — Build Your Own AI Assistant"
+    },
+    {
+     "key": "w9-d4-check",
+     "title": "Deliverable: assistant",
+     "detail": "",
+     "kind": "MILESTONE",
+     "group": "Week 9 — Build Your Own AI Assistant"
+    },
+    {
+     "key": "w10-d1",
+     "title": "D1 — Profession track workshop — educators & business owners",
+     "detail": "Outcome: I can apply AI to three core tasks in their own profession",
+     "kind": "LESSON",
+     "group": "Week 10 — Profession Track Deep-Dives"
+    },
+    {
+     "key": "w10-d2",
+     "title": "D2 — Profession track workshop — office staff, students & health workers",
+     "detail": "Outcome: I can apply AI to three core tasks in their own profession",
+     "kind": "LESSON",
+     "group": "Week 10 — Profession Track Deep-Dives"
+    },
+    {
+     "key": "w10-d3",
+     "title": "D3 — No-code taste — live demo, building a simple app by describing it (Lovable / Bolt)",
+     "detail": "Outcome: I can describe a one-page app and generate a working first version",
+     "kind": "LESSON",
+     "group": "Week 10 — Profession Track Deep-Dives"
+    },
+    {
+     "key": "w10-d4",
+     "title": "D4 — Automation taste — connecting everyday tools with one simple trigger (Zapier / Make)",
+     "detail": "Outcome: I can explain trigger → action and set up one simple automation",
+     "kind": "LESSON",
+     "group": "Week 10 — Profession Track Deep-Dives"
+    },
+    {
+     "key": "w11-d1",
+     "title": "D1 — Capstone kickoff — choosing and scoping your real problem",
+     "detail": "Outcome: I can write a one-paragraph problem statement with a success measure",
+     "kind": "LESSON",
+     "group": "Week 11 — Capstone Build"
+    },
+    {
+     "key": "w11-d2",
+     "title": "D2 — Build day 1 — instructor-supported work time",
+     "detail": "Outcome: I can complete a first working version of their capstone",
+     "kind": "LESSON",
+     "group": "Week 11 — Capstone Build"
+    },
+    {
+     "key": "w11-d3",
+     "title": "D3 — Build day 2 — continued build + peer feedback",
+     "detail": "Outcome: I can improve the capstone using feedback from two peers",
+     "kind": "LESSON",
+     "group": "Week 11 — Capstone Build"
+    },
+    {
+     "key": "w11-d4",
+     "title": "D4 — Polish & rehearse — preparing to present",
+     "detail": "Outcome: I can deliver a timed 15-minute rehearsal",
+     "kind": "LESSON",
+     "group": "Week 11 — Capstone Build"
+    },
+    {
+     "key": "w12-d1",
+     "title": "D1 — Capstone presentations (part 1)",
+     "detail": "Outcome: I can present and defend their capstone, including how they verified it",
+     "kind": "LESSON",
+     "group": "Week 12 — Graduation"
+    },
+    {
+     "key": "w12-d1-check",
+     "title": "Capstone",
+     "detail": "",
+     "kind": "MILESTONE",
+     "group": "Week 12 — Graduation"
+    },
+    {
+     "key": "w12-d2",
+     "title": "D2 — Capstone presentations (part 2) + AI ethics & responsible use",
+     "detail": "Outcome: I can explain the main ethical risks of AI in their own profession",
+     "kind": "LESSON",
+     "group": "Week 12 — Graduation"
+    },
+    {
+     "key": "w12-d2-check",
+     "title": "Capstone",
+     "detail": "",
+     "kind": "MILESTONE",
+     "group": "Week 12 — Graduation"
+    },
+    {
+     "key": "w12-d3",
+     "title": "D3 — Final exam — practical prompting & safety scenarios",
+     "detail": "Outcome: I can pass a practical exam on prompting, verification and safety",
+     "kind": "LESSON",
+     "group": "Week 12 — Graduation"
+    },
+    {
+     "key": "w12-d3-check",
+     "title": "Final exam",
+     "detail": "",
+     "kind": "MILESTONE",
+     "group": "Week 12 — Graduation"
+    },
+    {
+     "key": "w12-d4",
+     "title": "D4 — Graduation & certification — next steps: AI Engineer entrance assessment, Automation & Agents course",
+     "detail": "Outcome: I can choose a next step and leave with a 40+ prompt library",
+     "kind": "LESSON",
+     "group": "Week 12 — Graduation"
+    },
+    {
+     "key": "w12-d4-check",
+     "title": "Library 40+ checked",
+     "detail": "",
+     "kind": "MILESTONE",
+     "group": "Week 12 — Graduation"
+    }
+   ]
+  }
+ ]
+}

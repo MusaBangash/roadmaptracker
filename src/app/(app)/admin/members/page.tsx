@@ -1,0 +1,84 @@
+import { and, eq, isNull } from "drizzle-orm";
+import { db, schema } from "@/db";
+import { requireRole } from "@/lib/access";
+import { setMemberRoleAction, removeMemberAction, createInviteAction, deleteInviteAction } from "@/app/actions/admin";
+import { PageHeader } from "@/components/ui";
+import { CopyButton } from "@/components/copy-button";
+import { baseUrl } from "@/lib/url";
+import { fmtDate, plural } from "@/lib/utils";
+
+export const metadata = { title: "People" };
+
+export default async function MembersPage() {
+  const ctx = await requireRole(["ADMIN"]);
+  const members = await db.select({ m: schema.memberships, u: schema.users }).from(schema.memberships)
+    .innerJoin(schema.users, eq(schema.memberships.userId, schema.users.id))
+    .where(eq(schema.memberships.orgId, ctx.org.id)).orderBy(schema.memberships.role, schema.users.name);
+  const invites = await db.query.invites.findMany({ where: and(eq(schema.invites.orgId, ctx.org.id), isNull(schema.invites.cohortId)) });
+  const url = await baseUrl();
+  const counts = { ADMIN: 0, INSTRUCTOR: 0, STUDENT: 0 } as Record<string, number>;
+  for (const { m } of members) counts[m.role]++;
+
+  return (
+    <>
+      <PageHeader title="People" sub={`${ctx.org.name} · ${plural(counts.ADMIN ?? 0, "admin")} · ${plural(counts.INSTRUCTOR ?? 0, "instructor")} · ${plural(counts.STUDENT ?? 0, "student")}`} />
+
+      <section className="mb-8">
+        <h2 className="h2 mb-1">School invite links</h2>
+        <p className="mb-3 text-sm text-muted">For staff, or students not yet in a cohort. To put students straight into a cohort, use the invite link on the cohort page.</p>
+        <div className="card divide-y divide-line">
+          {invites.map((inv) => {
+            const link = `${url}/join/${inv.code}`;
+            return (
+              <div key={inv.id} className="flex flex-wrap items-center gap-2 p-3 text-sm">
+                <span className="pill bg-surface-2 text-muted">{inv.role.toLowerCase()}</span>
+                <code className="min-w-0 flex-1 truncate font-mono text-xs">{link}</code>
+                <span className="text-xs text-muted">{inv.uses}/{inv.maxUses} used · until {fmtDate(inv.expiresAt)}</span>
+                <CopyButton text={link} />
+                <form action={deleteInviteAction}><input type="hidden" name="inviteId" value={inv.id} /><button className="text-xs text-danger">Delete</button></form>
+              </div>
+            );
+          })}
+          <form action={createInviteAction} className="flex flex-wrap items-end gap-2 p-3">
+            <div><label className="label" htmlFor="role">Role</label>
+              <select id="role" name="role" className="input py-1.5"><option value="INSTRUCTOR">Instructor</option><option value="ADMIN">Admin</option><option value="STUDENT">Student</option></select></div>
+            <div><label className="label" htmlFor="maxUses">Max uses</label><input id="maxUses" name="maxUses" type="number" defaultValue={5} min={1} max={500} className="input w-24 py-1.5" /></div>
+            <div><label className="label" htmlFor="days">Valid days</label><input id="days" name="days" type="number" defaultValue={14} min={1} max={365} className="input w-24 py-1.5" /></div>
+            <button className="btn-primary">Create link</button>
+          </form>
+        </div>
+      </section>
+
+      <section>
+        <h2 className="h2 mb-3">Members</h2>
+        <div className="card overflow-x-auto">
+          <table className="w-full min-w-[620px] text-sm">
+            <thead className="border-b border-line text-left text-xs uppercase tracking-wide text-muted"><tr><th className="p-3">Name</th><th className="p-3">Joined</th><th className="p-3">Role</th><th className="p-3" /></tr></thead>
+            <tbody className="divide-y divide-line">
+              {members.map(({ m, u }) => (
+                <tr key={m.id}>
+                  <td className="p-3"><div className="font-semibold">{u.name ?? "—"}</div><div className="text-xs text-muted">{u.email}</div></td>
+                  <td className="p-3 text-muted">{fmtDate(m.createdAt)}</td>
+                  <td className="p-3">
+                    <form action={setMemberRoleAction} className="flex gap-2">
+                      <input type="hidden" name="membershipId" value={m.id} />
+                      <select name="role" defaultValue={m.role} className="input py-1" aria-label={`Role for ${u.email}`}>
+                        <option value="STUDENT">Student</option><option value="INSTRUCTOR">Instructor</option><option value="ADMIN">Admin</option>
+                      </select>
+                      <button className="btn-ghost px-3 py-1 text-xs">Save</button>
+                    </form>
+                  </td>
+                  <td className="p-3 text-right">
+                    {m.userId !== ctx.user.id && (
+                      <form action={removeMemberAction}><input type="hidden" name="membershipId" value={m.id} /><button className="text-xs text-danger">Remove</button></form>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </>
+  );
+}

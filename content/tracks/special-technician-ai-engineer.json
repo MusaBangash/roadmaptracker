@@ -1,0 +1,1723 @@
+{
+ "slug": "special-technician-ai-engineer",
+ "title": "AI Engineer Roadmap (Special Technician)",
+ "kind": "COURSE",
+ "edition": "Edition 4",
+ "subtitle": "52 weeks after an 8-week gate · 12 milestones · 5 oral defenses",
+ "summary": "The Special Technician AI Engineer programme, week by week.",
+ "expert": "",
+ "benchmarks": [
+  {
+   "title": "Milestone 1",
+   "detail": "Beats the public baseline in a Kaggle competition."
+  },
+  {
+   "title": "Milestone 2",
+   "detail": "Fine-tuned model scored on a public dataset against an LLM zero-shot baseline."
+  },
+  {
+   "title": "Milestone 4",
+   "detail": "Hybrid search beats BM25 on NDCG@10 on a public BEIR dataset."
+  },
+  {
+   "title": "Milestone 5",
+   "detail": "Agent scored on a public agent-benchmark subset."
+  },
+  {
+   "title": "Month 9",
+   "detail": "A cloud AI certification (Azure AI-102 or an AWS AI/ML associate exam) and 150 graded DSA problems."
+  },
+  {
+   "title": "Lane A",
+   "detail": "CKA (Certified Kubernetes Administrator)."
+  },
+  {
+   "title": "Month 12",
+   "detail": "A real client reference."
+  }
+ ],
+ "rubric": [
+  {
+   "criterion": "Architecture reasoning",
+   "levels": [
+    "Can't say why",
+    "Names choices",
+    "Justifies with trade-offs",
+    "Compares alternatives with numbers"
+   ]
+  },
+  {
+   "criterion": "Fundamentals",
+   "levels": [
+    "Gaps on basics",
+    "Recites definitions",
+    "Explains the mechanism",
+    "Derives it on the board"
+   ]
+  },
+  {
+   "criterion": "Evidence",
+   "levels": [
+    "Demo only",
+    "Some metrics",
+    "Eval suite and baselines",
+    "Benchmarks with confidence intervals"
+   ]
+  },
+  {
+   "criterion": "Failure analysis",
+   "levels": [
+    "Unaware",
+    "Lists failures",
+    "Explains causes",
+    "Predicts failures under new conditions"
+   ]
+  },
+  {
+   "criterion": "Communication",
+   "levels": [
+    "Unclear",
+    "Clear to engineers",
+    "Clear to mixed audience",
+    "Concise, answers the question asked"
+   ]
+  }
+ ],
+ "stages": [
+  {
+   "key": "gate",
+   "title": "Prerequisite Gate",
+   "level": "Gate",
+   "weeks": 8,
+   "benchmark": "MIT 6.100A · Stanford CS106A · MIT Missing Semester · NPTEL Programming, Data Structures & Algorithms using Python",
+   "goal": "Pass the entrance project and timed DSA test.",
+   "doneWhen": "Entrance project passed and DSA test score 4/6 or higher.",
+   "resources": "",
+   "items": [
+    {
+     "key": "week-p1-python-f-syntax-variables-data-types-control-flow",
+     "title": "Syntax, variables, data types, control flow, functions",
+     "detail": "",
+     "kind": "LESSON",
+     "group": "Week P1 — Python Fundamentals"
+    },
+    {
+     "key": "week-p1-python-f-strings-and-f-strings-reading-and-writin",
+     "title": "Strings and f-strings; reading and writing text, CSV and JSON files",
+     "detail": "",
+     "kind": "LESSON",
+     "group": "Week P1 — Python Fundamentals"
+    },
+    {
+     "key": "week-p1-python-f-error-handling-try-except-debugging-prin",
+     "title": "Error handling (try/except), debugging (print → pdb)",
+     "detail": "",
+     "kind": "LESSON",
+     "group": "Week P1 — Python Fundamentals"
+    },
+    {
+     "key": "week-p2-python-d-lists-dicts-sets-tuples",
+     "title": "Lists, dicts, sets, tuples",
+     "detail": "when to use each; comprehensions",
+     "kind": "LESSON",
+     "group": "Week P2 — Python Data Structures & Functions"
+    },
+    {
+     "key": "week-p2-python-d-functions-in-depth",
+     "title": "Functions in depth",
+     "detail": "scope, default and keyword arguments, *args/**kwargs",
+     "kind": "LESSON",
+     "group": "Week P2 — Python Data Structures & Functions"
+    },
+    {
+     "key": "week-p2-python-d-modules-and-the-standard-library",
+     "title": "Modules and the standard library",
+     "detail": "pathlib, json, datetime, collections",
+     "kind": "LESSON",
+     "group": "Week P2 — Python Data Structures & Functions"
+    },
+    {
+     "key": "week-p2-python-d-oop-basics",
+     "title": "OOP basics",
+     "detail": "classes, objects, when procedural stops being enough",
+     "kind": "LESSON",
+     "group": "Week P2 — Python Data Structures & Functions"
+    },
+    {
+     "key": "week-p3-working-git-github",
+     "title": "Git & GitHub",
+     "detail": "commit, branch, pull request, resolving conflicts",
+     "kind": "LESSON",
+     "group": "Week P3 — Working Like an Engineer"
+    },
+    {
+     "key": "week-p3-working-command-line-basics-virtual-environments",
+     "title": "Command line basics, virtual environments, pip / uv package management",
+     "detail": "",
+     "kind": "LESSON",
+     "group": "Week P3 — Working Like an Engineer"
+    },
+    {
+     "key": "week-p3-working-first-test-with-pytest",
+     "title": "First test with pytest",
+     "detail": "why tests matter, before students hear the word \"eval\"",
+     "kind": "LESSON",
+     "group": "Week P3 — Working Like an Engineer"
+    },
+    {
+     "key": "week-p3-working-reading-documentation-and-stack-traces-l",
+     "title": "Reading documentation and stack traces; linting and formatting with Ruff",
+     "detail": "",
+     "kind": "LESSON",
+     "group": "Week P3 — Working Like an Engineer"
+    },
+    {
+     "key": "week-p4-apis-rea-http-requests-requests-working-with-json",
+     "title": "HTTP requests (requests), working with JSON",
+     "detail": "",
+     "kind": "LESSON",
+     "group": "Week P4 — APIs & Real Code"
+    },
+    {
+     "key": "week-p4-apis-rea-authentication-basics",
+     "title": "Authentication basics",
+     "detail": "API keys, headers, environment variables",
+     "kind": "LESSON",
+     "group": "Week P4 — APIs & Real Code"
+    },
+    {
+     "key": "week-p4-apis-rea-timeouts-retries-and-rate-limits",
+     "title": "Timeouts, retries and rate limits",
+     "detail": "code that survives the real internet",
+     "kind": "LESSON",
+     "group": "Week P4 — APIs & Real Code"
+    },
+    {
+     "key": "week-p5-data-sql-relational-thinking",
+     "title": "Relational thinking",
+     "detail": "tables, keys, basic schema design",
+     "kind": "LESSON",
+     "group": "Week P5 — Data & SQL Foundations"
+    },
+    {
+     "key": "week-p5-data-sql-select-where-join-group-by",
+     "title": "SELECT / WHERE / JOIN / GROUP BY",
+     "detail": "enough to query and design tables confidently",
+     "kind": "LESSON",
+     "group": "Week P5 — Data & SQL Foundations"
+    },
+    {
+     "key": "week-p5-data-sql-indexes",
+     "title": "Indexes",
+     "detail": "why a query gets slow and what actually fixes it",
+     "kind": "LESSON",
+     "group": "Week P5 — Data & SQL Foundations"
+    },
+    {
+     "key": "week-p5-data-sql-reading-and-writing-structured-data-from",
+     "title": "Reading and writing structured data from Python (sqlite3, CSV/JSON round-trip)",
+     "detail": "",
+     "kind": "LESSON",
+     "group": "Week P5 — Data & SQL Foundations"
+    },
+    {
+     "key": "week-p6-numpy-pa-numpy-arrays-vectorisation-broadcasting",
+     "title": "NumPy arrays, vectorisation, broadcasting",
+     "detail": "thinking in arrays instead of loops",
+     "kind": "LESSON",
+     "group": "Week P6 — NumPy & pandas"
+    },
+    {
+     "key": "week-p6-numpy-pa-pandas-dataframes",
+     "title": "pandas DataFrames",
+     "detail": "loading, cleaning, filtering, groupby, merge",
+     "kind": "LESSON",
+     "group": "Week P6 — NumPy & pandas"
+    },
+    {
+     "key": "week-p6-numpy-pa-plotting-with-matplotlib",
+     "title": "Plotting with Matplotlib",
+     "detail": "the first look at any dataset",
+     "kind": "LESSON",
+     "group": "Week P6 — NumPy & pandas"
+    },
+    {
+     "key": "week-p7-algorith-big-o",
+     "title": "Big-O",
+     "detail": "time and space complexity, why it decides what scales",
+     "kind": "LESSON",
+     "group": "Week P7 — Algorithms I"
+    },
+    {
+     "key": "week-p7-algorith-arrays-and-strings-hashing-two-pointers",
+     "title": "Arrays and strings, hashing, two pointers, sliding window",
+     "detail": "",
+     "kind": "LESSON",
+     "group": "Week P7 — Algorithms I"
+    },
+    {
+     "key": "week-p7-algorith-stacks-and-queues-15-graded-problems-wit",
+     "title": "Stacks and queues; 15 graded problems with stated complexity",
+     "detail": "",
+     "kind": "LESSON",
+     "group": "Week P7 — Algorithms I"
+    },
+    {
+     "key": "week-p8-algorith-recursion-sorting-binary-search",
+     "title": "Recursion, sorting, binary search",
+     "detail": "",
+     "kind": "LESSON",
+     "group": "Week P8 — Algorithms II & Entrance Build"
+    },
+    {
+     "key": "week-p8-algorith-trees-and-graphs",
+     "title": "Trees and graphs",
+     "detail": "traversals, BFS, DFS",
+     "kind": "LESSON",
+     "group": "Week P8 — Algorithms II & Entrance Build"
+    },
+    {
+     "key": "week-p8-algorith-15-more-graded-problems-entrance-project",
+     "title": "15 more graded problems; entrance project build and review",
+     "detail": "",
+     "kind": "LESSON",
+     "group": "Week P8 — Algorithms II & Entrance Build"
+    }
+   ]
+  },
+  {
+   "key": "month-1",
+   "title": "Month 1 — Maths & Machine Learning Foundations",
+   "level": "Quarter 1",
+   "weeks": 4,
+   "benchmark": "MIT 18.06 (selected) · Stanford CS109 (selected) · Stanford CS229 · NPTEL Introduction to ML (IIT Madras)",
+   "goal": "",
+   "doneWhen": "",
+   "resources": "",
+   "items": [
+    {
+     "key": "week-1-orientati-ai-engineer-vs-ml-engineer-vs-ai-researc",
+     "title": "AI Engineer vs ML Engineer vs AI Researcher; roles and product impact",
+     "detail": "",
+     "kind": "LESSON",
+     "group": "Week 1 — Orientation & the Maths of AI"
+    },
+    {
+     "key": "week-1-orientati-tool-skills-vs-systems-skills",
+     "title": "Tool skills vs systems skills",
+     "detail": "why \"prompting ChatGPT well\" expires but understanding context, retrieval and evaluation doesn't. Frames the whole track.",
+     "kind": "LESSON",
+     "group": "Week 1 — Orientation & the Maths of AI"
+    },
+    {
+     "key": "week-1-orientati-vectors-dot-products-norms-cosine-simila",
+     "title": "Vectors, dot products, norms, cosine similarity; matrices as transformations",
+     "detail": "hands-on in NumPy",
+     "kind": "LESSON",
+     "group": "Week 1 — Orientation & the Maths of AI"
+    },
+    {
+     "key": "week-1-orientati-why-an-embedding-is-just-a-vector-and-wh",
+     "title": "Why an embedding is just a vector, and why that matters for everything in Month 4",
+     "detail": "",
+     "kind": "LESSON",
+     "group": "Week 1 — Orientation & the Maths of AI"
+    },
+    {
+     "key": "week-1-orientati-cosine-similarity-search-over-1-000-sent",
+     "title": "cosine-similarity search over 1,000 sentences, from scratch in NumPy",
+     "detail": "",
+     "kind": "DELIVERABLE",
+     "group": "Week 1 — Orientation & the Maths of AI"
+    },
+    {
+     "key": "week-2-probabili-probability-conditional-probability-baye",
+     "title": "Probability, conditional probability, Bayes' theorem",
+     "detail": "with worked examples",
+     "kind": "LESSON",
+     "group": "Week 2 — Probability & Statistics for AI"
+    },
+    {
+     "key": "week-2-probabili-distributions-mean-and-variance-sampling",
+     "title": "Distributions, mean and variance, sampling, the central limit theorem (intuition)",
+     "detail": "",
+     "kind": "LESSON",
+     "group": "Week 2 — Probability & Statistics for AI"
+    },
+    {
+     "key": "week-2-probabili-confidence-intervals-and-error-bars",
+     "title": "Confidence intervals and error bars",
+     "detail": "why \"model A scored 82%, model B 80%\" may mean nothing",
+     "kind": "LESSON",
+     "group": "Week 2 — Probability & Statistics for AI"
+    },
+    {
+     "key": "week-2-probabili-two-classifiers-compared-with-confidence",
+     "title": "two classifiers compared with confidence intervals and a written verdict",
+     "detail": "",
+     "kind": "DELIVERABLE",
+     "group": "Week 2 — Probability & Statistics for AI"
+    },
+    {
+     "key": "week-3-classical-the-supervised-learning-setup",
+     "title": "The supervised learning setup",
+     "detail": "features, labels, loss, train / validation / test",
+     "kind": "LESSON",
+     "group": "Week 3 — Classical Machine Learning"
+    },
+    {
+     "key": "week-3-classical-linear-and-logistic-regression-gradient",
+     "title": "Linear and logistic regression; gradient descent as the engine of learning",
+     "detail": "",
+     "kind": "LESSON",
+     "group": "Week 3 — Classical Machine Learning"
+    },
+    {
+     "key": "week-3-classical-decision-trees-and-gradient-boosting-xgb",
+     "title": "Decision trees and gradient boosting (XGBoost / LightGBM)",
+     "detail": "the workhorses of tabular data",
+     "kind": "LESSON",
+     "group": "Week 3 — Classical Machine Learning"
+    },
+    {
+     "key": "week-3-classical-scikit-learn-pipelines-cross-validation",
+     "title": "scikit-learn pipelines, cross-validation and data leakage",
+     "detail": "",
+     "kind": "LESSON",
+     "group": "Week 3 — Classical Machine Learning"
+    },
+    {
+     "key": "week-4-evaluatio-metrics",
+     "title": "Metrics",
+     "detail": "confusion matrix, precision, recall, F1, ROC-AUC; choosing the metric the business needs",
+     "kind": "LESSON",
+     "group": "Week 4 — Evaluation & Milestone 1"
+    },
+    {
+     "key": "week-4-evaluatio-overfitting-and-regularisation-feature-e",
+     "title": "Overfitting and regularisation; feature engineering; imbalanced data",
+     "detail": "",
+     "kind": "LESSON",
+     "group": "Week 4 — Evaluation & Milestone 1"
+    },
+    {
+     "key": "week-4-evaluatio-interpretability-basics",
+     "title": "Interpretability basics",
+     "detail": "feature importance and SHAP",
+     "kind": "LESSON",
+     "group": "Week 4 — Evaluation & Milestone 1"
+    },
+    {
+     "key": "week-4-evaluatio-milestone-1-build-day",
+     "title": "Milestone 1 Build Day",
+     "detail": "end-to-end tabular ML pipeline submitted to a public Kaggle competition",
+     "kind": "LESSON",
+     "group": "Week 4 — Evaluation & Milestone 1"
+    },
+    {
+     "key": "week-4-evaluatio-milestone-1-beat-the-public-baseline-and",
+     "title": "Milestone 1: beat the public baseline and explain the confusion matrix out loud",
+     "detail": "",
+     "kind": "MILESTONE",
+     "group": "Week 4 — Evaluation & Milestone 1"
+    }
+   ]
+  },
+  {
+   "key": "month-2",
+   "title": "Month 2 — Deep Learning & Transformers",
+   "level": "Quarter 1",
+   "weeks": 4,
+   "benchmark": "CMU 11-785 · NPTEL Deep Learning (IIT Madras) · Stanford CS224n (selected)",
+   "goal": "",
+   "doneWhen": "",
+   "resources": "",
+   "items": [
+    {
+     "key": "week-5-neural-ne-neurons-layers-activations-the-forward-p",
+     "title": "Neurons, layers, activations; the forward pass",
+     "detail": "",
+     "kind": "LESSON",
+     "group": "Week 5 — Neural Networks from Scratch"
+    },
+    {
+     "key": "week-5-neural-ne-backpropagation-by-hand",
+     "title": "Backpropagation by hand",
+     "detail": "the chain rule on a computational graph",
+     "kind": "LESSON",
+     "group": "Week 5 — Neural Networks from Scratch"
+    },
+    {
+     "key": "week-5-neural-ne-sgd-momentum-adam",
+     "title": "SGD, momentum, Adam",
+     "detail": "what an optimiser actually does",
+     "kind": "LESSON",
+     "group": "Week 5 — Neural Networks from Scratch"
+    },
+    {
+     "key": "week-5-neural-ne-a-multi-layer-network-built-and-trained",
+     "title": "a multi-layer network built and trained from scratch in NumPy",
+     "detail": "",
+     "kind": "DELIVERABLE",
+     "group": "Week 5 — Neural Networks from Scratch"
+    },
+    {
+     "key": "week-6-pytorch-i-tensors-autograd-nn-module-dataloader-gp",
+     "title": "Tensors, autograd, nn.Module, DataLoader, GPUs on free Colab or Kaggle",
+     "detail": "",
+     "kind": "LESSON",
+     "group": "Week 6 — PyTorch in Practice"
+    },
+    {
+     "key": "week-6-pytorch-i-the-training-loop-and-how-to-debug-it",
+     "title": "The training loop and how to debug it",
+     "detail": "overfit one batch first, read the loss curve",
+     "kind": "LESSON",
+     "group": "Week 6 — PyTorch in Practice"
+    },
+    {
+     "key": "week-6-pytorch-i-convolutional-networks-and-transfer-lear",
+     "title": "Convolutional networks and transfer learning for images; reading TensorFlow/Keras code",
+     "detail": "",
+     "kind": "LESSON",
+     "group": "Week 6 — PyTorch in Practice"
+    },
+    {
+     "key": "week-6-pytorch-i-image-classifier-fine-tuned-from-a-pretr",
+     "title": "image classifier fine-tuned from a pretrained model",
+     "detail": "",
+     "kind": "DELIVERABLE",
+     "group": "Week 6 — PyTorch in Practice"
+    },
+    {
+     "key": "week-7-transform-tokenisation-bpe-embeddings-self-attenti",
+     "title": "Tokenisation (BPE), embeddings, self-attention, the transformer block",
+     "detail": "",
+     "kind": "LESSON",
+     "group": "Week 7 — Transformers & Embeddings"
+    },
+    {
+     "key": "week-7-transform-pretraining-objectives",
+     "title": "Pretraining objectives",
+     "detail": "BERT-style vs GPT-style; Hugging Face Transformers",
+     "kind": "LESSON",
+     "group": "Week 7 — Transformers & Embeddings"
+    },
+    {
+     "key": "week-7-transform-urdu-and-mixed-script-text",
+     "title": "Urdu and mixed-script text",
+     "detail": "what tokenisers do to it",
+     "kind": "LESSON",
+     "group": "Week 7 — Transformers & Embeddings"
+    },
+    {
+     "key": "week-7-transform-attention-implemented-in-pytorch-a-small",
+     "title": "attention implemented in PyTorch; a small GPT trained on Urdu or English text",
+     "detail": "",
+     "kind": "DELIVERABLE",
+     "group": "Week 7 — Transformers & Embeddings"
+    },
+    {
+     "key": "week-8-fine-tuni-fine-tuning-a-small-pretrained-model-for",
+     "title": "Fine-tuning a small pretrained model for classification; LoRA in one session",
+     "detail": "",
+     "kind": "LESSON",
+     "group": "Week 8 — Fine-Tuning & Milestone 2"
+    },
+    {
+     "key": "week-8-fine-tuni-held-out-evaluation-model-cards-honest-r",
+     "title": "Held-out evaluation, model cards, honest reporting",
+     "detail": "",
+     "kind": "LESSON",
+     "group": "Week 8 — Fine-Tuning & Milestone 2"
+    },
+    {
+     "key": "week-8-fine-tuni-milestone-2-build-day",
+     "title": "Milestone 2 Build Day",
+     "detail": "fine-tuned Urdu/English text classifier on a public dataset",
+     "kind": "LESSON",
+     "group": "Week 8 — Fine-Tuning & Milestone 2"
+    },
+    {
+     "key": "week-8-fine-tuni-milestone-2-compare-against-an-llm-zero",
+     "title": "Milestone 2: compare against an LLM zero-shot baseline — and defend which one you would ship",
+     "detail": "",
+     "kind": "MILESTONE",
+     "group": "Week 8 — Fine-Tuning & Milestone 2"
+    }
+   ]
+  },
+  {
+   "key": "month-3",
+   "title": "Month 3 — LLM Engineering — APIs, Prompts & Context",
+   "level": "Quarter 1",
+   "weeks": 4,
+   "benchmark": "Stanford CS324 / CS336 (selected lectures) · UC Berkeley LLM Agents (prompting)",
+   "goal": "",
+   "doneWhen": "",
+   "resources": "",
+   "items": [
+    {
+     "key": "week-9-core-llm-tokens-context-windows-inference-vs-trai",
+     "title": "Tokens, context windows, inference vs training",
+     "detail": "what the model does and does not do",
+     "kind": "LESSON",
+     "group": "Week 9 — Core LLM Mechanics"
+    },
+    {
+     "key": "week-9-core-llm-sampling-parameters",
+     "title": "Sampling parameters",
+     "detail": "temperature, top-k, top-p, repetition penalties (hands-on)",
+     "kind": "LESSON",
+     "group": "Week 9 — Core LLM Mechanics"
+    },
+    {
+     "key": "week-9-core-llm-closed-vs-open-source-vs-self-hosted-mod",
+     "title": "Closed vs open-source vs self-hosted models; set up Ollama or LM Studio",
+     "detail": "",
+     "kind": "LESSON",
+     "group": "Week 9 — Core LLM Mechanics"
+    },
+    {
+     "key": "week-9-core-llm-closed-vs-self-hosted-comparison-on-50-e",
+     "title": "closed vs self-hosted comparison on 50 examples — quality, latency and cost",
+     "detail": "",
+     "kind": "DELIVERABLE",
+     "group": "Week 9 — Core LLM Mechanics"
+    },
+    {
+     "key": "week-10-working-anthropic-claude-messages-api",
+     "title": "Anthropic Claude Messages API",
+     "detail": "system prompts, multi-turn calls",
+     "kind": "LESSON",
+     "group": "Week 10 — Working with Model APIs"
+    },
+    {
+     "key": "week-10-working-openai-compatible-apis",
+     "title": "OpenAI-compatible APIs",
+     "detail": "Chat Completions and the Responses API; compare request/response shapes",
+     "kind": "LESSON",
+     "group": "Week 10 — Working with Model APIs"
+    },
+    {
+     "key": "week-10-working-streaming-prompt-caching-function-callin",
+     "title": "Streaming, prompt caching, function calling / tool use",
+     "detail": "",
+     "kind": "LESSON",
+     "group": "Week 10 — Working with Model APIs"
+    },
+    {
+     "key": "week-10-working-structured-output",
+     "title": "Structured output",
+     "detail": "JSON schema, Pydantic validation, retry on failure",
+     "kind": "LESSON",
+     "group": "Week 10 — Working with Model APIs"
+    },
+    {
+     "key": "week-10-working-cli-tool-with-system-prompt-tool-call-an",
+     "title": "CLI tool with system prompt, tool call and validated output",
+     "detail": "",
+     "kind": "DELIVERABLE",
+     "group": "Week 10 — Working with Model APIs"
+    },
+    {
+     "key": "week-11-prompt-e-zero-shot-few-shot-chain-of-thought-reac",
+     "title": "Zero-shot, few-shot, chain-of-thought, ReAct patterns; system prompting",
+     "detail": "",
+     "kind": "LESSON",
+     "group": "Week 11 — Prompt Engineering"
+    },
+    {
+     "key": "week-11-prompt-e-workshop-rewrite-a-weak-prompt-using-eve",
+     "title": "Workshop: rewrite a weak prompt using every technique; measure the improvement on a fixed test set",
+     "detail": "",
+     "kind": "LESSON",
+     "group": "Week 11 — Prompt Engineering"
+    },
+    {
+     "key": "week-11-prompt-e-5-pattern-prompt-library-with-before-aft",
+     "title": "5-pattern prompt library with before/after scores",
+     "detail": "",
+     "kind": "DELIVERABLE",
+     "group": "Week 11 — Prompt Engineering"
+    },
+    {
+     "key": "week-12-context-prompt-engineering-vs-context-engineerin",
+     "title": "Prompt engineering vs context engineering",
+     "detail": "why context is the harder skill",
+     "kind": "LESSON",
+     "group": "Week 12 — Context Engineering & Oral Defense 1"
+    },
+    {
+     "key": "week-12-context-external-memory-context-compaction-conte",
+     "title": "External memory, context compaction, context isolation in multi-step tasks; RAG as dynamic context",
+     "detail": "",
+     "kind": "LESSON",
+     "group": "Week 12 — Context Engineering & Oral Defense 1"
+    },
+    {
+     "key": "week-12-context-milestone-3-build-day",
+     "title": "Milestone 3 Build Day",
+     "detail": "structured-output tool: system prompt + function calling + validated output",
+     "kind": "LESSON",
+     "group": "Week 12 — Context Engineering & Oral Defense 1"
+    },
+    {
+     "key": "week-12-context-milestone-3-oral-defense-1-foundations-m",
+     "title": "Milestone 3 + Oral Defense 1 — foundations: maths, ML evaluation, how a transformer works, design walkthrough",
+     "detail": "",
+     "kind": "MILESTONE",
+     "group": "Week 12 — Context Engineering & Oral Defense 1"
+    }
+   ]
+  },
+  {
+   "key": "month-4",
+   "title": "Month 4 — Retrieval & RAG",
+   "level": "Quarter 2",
+   "weeks": 4,
+   "benchmark": "Stanford CS276 (Information Retrieval) · Lewis et al. (RAG, 2020)",
+   "goal": "",
+   "doneWhen": "",
+   "resources": "",
+   "items": [
+    {
+     "key": "week-13-informat-inverted-indexes-tf-idf-and-bm25",
+     "title": "Inverted indexes, TF-IDF and BM25",
+     "detail": "built from scratch",
+     "kind": "LESSON",
+     "group": "Week 13 — Information Retrieval Foundations"
+    },
+    {
+     "key": "week-13-informat-retrieval-metrics",
+     "title": "Retrieval metrics",
+     "detail": "precision@k, recall@k, MRR, NDCG",
+     "kind": "LESSON",
+     "group": "Week 13 — Information Retrieval Foundations"
+    },
+    {
+     "key": "week-13-informat-public-benchmarks",
+     "title": "Public benchmarks",
+     "detail": "evaluating on a BEIR dataset",
+     "kind": "LESSON",
+     "group": "Week 13 — Information Retrieval Foundations"
+    },
+    {
+     "key": "week-13-informat-bm25-from-scratch-scored-on-a-beir-datas",
+     "title": "BM25 from scratch, scored on a BEIR dataset",
+     "detail": "",
+     "kind": "DELIVERABLE",
+     "group": "Week 13 — Information Retrieval Foundations"
+    },
+    {
+     "key": "week-14-embeddin-embedding-apis-vs-open-models-sentence-t",
+     "title": "Embedding APIs vs open models (Sentence Transformers); multilingual Urdu/English embeddings",
+     "detail": "",
+     "kind": "LESSON",
+     "group": "Week 14 — Embeddings, Vector Databases & Hybrid Search"
+    },
+    {
+     "key": "week-14-embeddin-chroma-qdrant-or-pgvector",
+     "title": "Chroma, Qdrant or pgvector",
+     "detail": "indexing, HNSW intuition, tuning top-k and score thresholds",
+     "kind": "LESSON",
+     "group": "Week 14 — Embeddings, Vector Databases & Hybrid Search"
+    },
+    {
+     "key": "week-14-embeddin-hybrid-search",
+     "title": "Hybrid search",
+     "detail": "BM25 plus dense with reciprocal rank fusion; reranking with cross-encoders",
+     "kind": "LESSON",
+     "group": "Week 14 — Embeddings, Vector Databases & Hybrid Search"
+    },
+    {
+     "key": "week-14-embeddin-hybrid-search-that-beats-bm25-on-ndcg-10",
+     "title": "hybrid search that beats BM25 on NDCG@10",
+     "detail": "",
+     "kind": "DELIVERABLE",
+     "group": "Week 14 — Embeddings, Vector Databases & Hybrid Search"
+    },
+    {
+     "key": "week-15-ingestio-what-rag-is-rag-vs-fine-tuning",
+     "title": "What RAG is; RAG vs fine-tuning",
+     "detail": "when NOT to use RAG",
+     "kind": "LESSON",
+     "group": "Week 15 — Ingestion, Chunking & RAG from Scratch"
+    },
+    {
+     "key": "week-15-ingestio-document-ingestion",
+     "title": "Document ingestion",
+     "detail": "PDF, DOCX and HTML; scanned pages and OCR; tables; mixed Urdu/English sources",
+     "kind": "LESSON",
+     "group": "Week 15 — Ingestion, Chunking & RAG from Scratch"
+    },
+    {
+     "key": "week-15-ingestio-chunking-strategy",
+     "title": "Chunking strategy",
+     "detail": "size, overlap, semantic chunking; why ingestion and chunking decide RAG quality",
+     "kind": "LESSON",
+     "group": "Week 15 — Ingestion, Chunking & RAG from Scratch"
+    },
+    {
+     "key": "week-15-ingestio-full-pipeline-built-raw-ingest-chunk-emb",
+     "title": "Full pipeline built raw: ingest → chunk → embed → store → retrieve → generate",
+     "detail": "",
+     "kind": "LESSON",
+     "group": "Week 15 — Ingestion, Chunking & RAG from Scratch"
+    },
+    {
+     "key": "week-16-framewor-langchain-and-llamaindex",
+     "title": "LangChain and LlamaIndex",
+     "detail": "now grounded, not a black box; rebuild Week 15 and compare",
+     "kind": "LESSON",
+     "group": "Week 16 — Frameworks, RAG Evaluation & Milestone 4"
+    },
+    {
+     "key": "week-16-framewor-rag-evaluation",
+     "title": "RAG evaluation",
+     "detail": "retrieval vs generation metrics, faithfulness, citations (Ragas)",
+     "kind": "LESSON",
+     "group": "Week 16 — Frameworks, RAG Evaluation & Milestone 4"
+    },
+    {
+     "key": "week-16-framewor-workshop-debug-a-deliberately-broken-rag",
+     "title": "Workshop: debug a deliberately broken RAG pipeline",
+     "detail": "",
+     "kind": "LESSON",
+     "group": "Week 16 — Frameworks, RAG Evaluation & Milestone 4"
+    },
+    {
+     "key": "week-16-framewor-milestone-4-build-day",
+     "title": "Milestone 4 Build Day",
+     "detail": "RAG over a real Pakistani-context corpus with at least one scanned or PDF source",
+     "kind": "LESSON",
+     "group": "Week 16 — Frameworks, RAG Evaluation & Milestone 4"
+    },
+    {
+     "key": "week-16-framewor-milestone-4-public-benchmark-numbers-exp",
+     "title": "Milestone 4: public-benchmark numbers + explain retrieval failures, not demo success + Delegation Review",
+     "detail": "",
+     "kind": "MILESTONE",
+     "group": "Week 16 — Frameworks, RAG Evaluation & Milestone 4"
+    }
+   ]
+  },
+  {
+   "key": "month-5",
+   "title": "Month 5 — Agents & Model Context Protocol",
+   "level": "Quarter 2",
+   "weeks": 4,
+   "benchmark": "UC Berkeley CS294/194-196 (LLM Agents) · modelcontextprotocol.io",
+   "goal": "",
+   "doneWhen": "",
+   "resources": "",
+   "items": [
+    {
+     "key": "week-17-ai-agent-agent-use-cases-the-react-loop-manual-im",
+     "title": "Agent use cases; the ReAct loop; manual implementation with no SDK",
+     "detail": "",
+     "kind": "LESSON",
+     "group": "Week 17 — AI Agents from Scratch"
+    },
+    {
+     "key": "week-17-ai-agent-tool-design",
+     "title": "Tool design",
+     "detail": "clear schemas, useful errors, idempotent actions",
+     "kind": "LESSON",
+     "group": "Week 17 — AI Agents from Scratch"
+    },
+    {
+     "key": "week-17-ai-agent-workflows-vs-agents",
+     "title": "Workflows vs agents",
+     "detail": "when a fixed workflow beats an autonomous agent",
+     "kind": "LESSON",
+     "group": "Week 17 — AI Agents from Scratch"
+    },
+    {
+     "key": "week-17-ai-agent-workshop-agent-using-2-tools-on-a-multi",
+     "title": "Workshop: agent using 2+ tools on a multi-step task",
+     "detail": "",
+     "kind": "LESSON",
+     "group": "Week 17 — AI Agents from Scratch"
+    },
+    {
+     "key": "week-18-agent-sd-claude-agent-sdk-and-openai-agents-sdk",
+     "title": "Claude Agent SDK and OpenAI Agents SDK",
+     "detail": "rebuild Week 17 with an SDK",
+     "kind": "LESSON",
+     "group": "Week 18 — Agent SDKs & Orchestration"
+    },
+    {
+     "key": "week-18-agent-sd-langgraph-in-depth",
+     "title": "LangGraph in depth",
+     "detail": "nodes, edges, state, checkpointing, human-in-the-loop interrupts",
+     "kind": "LESSON",
+     "group": "Week 18 — Agent SDKs & Orchestration"
+    },
+    {
+     "key": "week-18-agent-sd-surveyed-not-taught-crewai-autogen",
+     "title": "Surveyed, not taught: CrewAI / AutoGen",
+     "detail": "and how to evaluate an unfamiliar framework in a day",
+     "kind": "LESSON",
+     "group": "Week 18 — Agent SDKs & Orchestration"
+    },
+    {
+     "key": "week-19-model-co-core-components",
+     "title": "Core components",
+     "detail": "host, client, server, data layer, transport layer",
+     "kind": "LESSON",
+     "group": "Week 19 — Model Context Protocol"
+    },
+    {
+     "key": "week-19-model-co-building-an-mcp-server-and-an-mcp-client",
+     "title": "Building an MCP server and an MCP client; remote servers and OAuth",
+     "detail": "",
+     "kind": "LESSON",
+     "group": "Week 19 — Model Context Protocol"
+    },
+    {
+     "key": "week-19-model-co-mcp-security",
+     "title": "MCP security",
+     "detail": "tool poisoning, over-broad permissions, trust boundaries",
+     "kind": "LESSON",
+     "group": "Week 19 — Model Context Protocol"
+    },
+    {
+     "key": "week-19-model-co-mcp-server-for-a-real-system-e-g-a-schoo",
+     "title": "MCP server for a real system (e.g. a school database) plus client",
+     "detail": "",
+     "kind": "DELIVERABLE",
+     "group": "Week 19 — Model Context Protocol"
+    },
+    {
+     "key": "week-20-agent-me-memory",
+     "title": "Memory",
+     "detail": "episodic vs semantic, compaction and retrieval strategies",
+     "kind": "LESSON",
+     "group": "Week 20 — Agent Memory, Evaluation & Milestone 5"
+    },
+    {
+     "key": "week-20-agent-me-agent-evaluation",
+     "title": "Agent evaluation",
+     "detail": "task success, trajectory analysis, public benchmark subsets",
+     "kind": "LESSON",
+     "group": "Week 20 — Agent Memory, Evaluation & Milestone 5"
+    },
+    {
+     "key": "week-20-agent-me-cost-and-loop-control",
+     "title": "Cost and loop control",
+     "detail": "budgets, step limits, timeouts",
+     "kind": "LESSON",
+     "group": "Week 20 — Agent Memory, Evaluation & Milestone 5"
+    },
+    {
+     "key": "week-20-agent-me-milestone-5-build-day",
+     "title": "Milestone 5 Build Day",
+     "detail": "multi-step agent with tools, memory and human approvals",
+     "kind": "LESSON",
+     "group": "Week 20 — Agent Memory, Evaluation & Milestone 5"
+    },
+    {
+     "key": "week-20-agent-me-milestone-5-scored-on-a-public-agent-ben",
+     "title": "Milestone 5: scored on a public agent-benchmark subset; failure trajectories explained + Delegation Review",
+     "detail": "",
+     "kind": "MILESTONE",
+     "group": "Week 20 — Agent Memory, Evaluation & Milestone 5"
+    }
+   ]
+  },
+  {
+   "key": "month-6",
+   "title": "Month 6 — Evaluation, Safety & Capstone 1",
+   "level": "Quarter 2",
+   "weeks": 4,
+   "benchmark": "Stanford HELM methodology · OWASP Top 10 for LLM Applications",
+   "goal": "",
+   "doneWhen": "",
+   "resources": "",
+   "items": [
+    {
+     "key": "week-21-evaluati-deterministic-vs-model-based-vs-human-ev",
+     "title": "Deterministic vs model-based vs human evals",
+     "detail": "when to use each; error analysis first",
+     "kind": "LESSON",
+     "group": "Week 21 — Evaluation & Observability"
+    },
+    {
+     "key": "week-21-evaluati-golden-datasets-llm-as-judge-calibrated",
+     "title": "Golden datasets; LLM-as-judge calibrated against human labels; statistics for evals (from Week 2)",
+     "detail": "",
+     "kind": "LESSON",
+     "group": "Week 21 — Evaluation & Observability"
+    },
+    {
+     "key": "week-21-evaluati-regression-suites-in-ci-that-can-block-a",
+     "title": "Regression suites in CI that can block a release; tracing with Langfuse or LangSmith; cost and latency",
+     "detail": "",
+     "kind": "LESSON",
+     "group": "Week 21 — Evaluation & Observability"
+    },
+    {
+     "key": "week-21-evaluati-15-25-case-eval-suite-with-a-ci-gate-on",
+     "title": "15–25 case eval suite with a CI gate on the Milestone 4 project",
+     "detail": "",
+     "kind": "DELIVERABLE",
+     "group": "Week 21 — Evaluation & Observability"
+    },
+    {
+     "key": "week-22-safety-s-prompt-injection",
+     "title": "Prompt injection",
+     "detail": "direct and indirect (through documents, web pages and tools)",
+     "kind": "LESSON",
+     "group": "Week 22 — Safety & Security Essentials"
+    },
+    {
+     "key": "week-22-safety-s-data-exfiltration-jailbreaks-content-mod",
+     "title": "Data exfiltration, jailbreaks, content moderation, PII, end-user IDs, input/output constraints",
+     "detail": "",
+     "kind": "LESSON",
+     "group": "Week 22 — Safety & Security Essentials"
+    },
+    {
+     "key": "week-22-safety-s-red-team-log-against-your-own-rag-or-age",
+     "title": "red-team log against your own RAG or agent system",
+     "detail": "",
+     "kind": "DELIVERABLE",
+     "group": "Week 22 — Safety & Security Essentials"
+    },
+    {
+     "key": "week-23-advanced-multi-hop-retrieval-agentic-rag-graphrag",
+     "title": "Multi-hop retrieval, agentic RAG, GraphRAG concepts",
+     "detail": "",
+     "kind": "LESSON",
+     "group": "Week 23 — Advanced Retrieval & the Fine-Tuning Decision"
+    },
+    {
+     "key": "week-23-advanced-when-rag-is-not-enough",
+     "title": "When RAG is not enough",
+     "detail": "a decision framework: prompt vs RAG vs fine-tune (builds on Week 8)",
+     "kind": "LESSON",
+     "group": "Week 23 — Advanced Retrieval & the Fine-Tuning Decision"
+    },
+    {
+     "key": "week-23-advanced-optional-fine-tune-an-embedding-model-fo",
+     "title": "Optional: fine-tune an embedding model for Urdu retrieval and measure the gain",
+     "detail": "",
+     "kind": "LESSON",
+     "group": "Week 23 — Advanced Retrieval & the Fine-Tuning Decision"
+    },
+    {
+     "key": "week-24-capstone-capstone-build",
+     "title": "Capstone build",
+     "detail": "finalise the system with evals, logging and a written safety review",
+     "kind": "LESSON",
+     "group": "Week 24 — Capstone 1 Build & Oral Defense 2"
+    },
+    {
+     "key": "week-24-capstone-milestone-6-capstone-1-oral-defense-2-de",
+     "title": "Milestone 6: Capstone 1 + Oral Defense 2 + Delegation Review",
+     "detail": "",
+     "kind": "MILESTONE",
+     "group": "Week 24 — Capstone 1 Build & Oral Defense 2"
+    }
+   ]
+  },
+  {
+   "key": "month-7",
+   "title": "Month 7 — Shipping to Production",
+   "level": "Quarter 3",
+   "weeks": 4,
+   "benchmark": "Stanford CS142 (backend) · Google SRE Book, ch. 8 (Release Engineering)",
+   "goal": "",
+   "doneWhen": "",
+   "resources": "",
+   "items": [
+    {
+     "key": "week-25-serving-fastapi",
+     "title": "FastAPI",
+     "detail": "async-first, the AI-serving standard; streaming vs blocking, timeouts, idempotency",
+     "kind": "LESSON",
+     "group": "Week 25 — Serving AI Systems"
+    },
+    {
+     "key": "week-25-serving-django-django-rest-framework-essentials",
+     "title": "Django & Django REST framework essentials",
+     "detail": "ORM, admin, auth; what Lahore junior postings ask for",
+     "kind": "LESSON",
+     "group": "Week 25 — Serving AI Systems"
+    },
+    {
+     "key": "week-25-serving-workshop-rebuild-a-q2-project-behind-a-p",
+     "title": "Workshop: rebuild a Q2 project behind a proper FastAPI service",
+     "detail": "",
+     "kind": "LESSON",
+     "group": "Week 25 — Serving AI Systems"
+    },
+    {
+     "key": "week-26-containe-docker",
+     "title": "Docker",
+     "detail": "containerising an AI service, image size discipline",
+     "kind": "LESSON",
+     "group": "Week 26 — Containers & Cloud Deployment"
+    },
+    {
+     "key": "week-26-containe-railway-render-fly-io-for-speed-aws-or-a",
+     "title": "Railway/Render/Fly.io for speed; AWS or Azure basics; cloud AI services",
+     "detail": "Bedrock/SageMaker or Azure AI",
+     "kind": "LESSON",
+     "group": "Week 26 — Containers & Cloud Deployment"
+    },
+    {
+     "key": "week-26-containe-configuration-and-secrets",
+     "title": "Configuration and secrets",
+     "detail": "never hardcode a key, at any scale",
+     "kind": "LESSON",
+     "group": "Week 26 — Containers & Cloud Deployment"
+    },
+    {
+     "key": "week-26-containe-workshop-deploy-a-containerised-service",
+     "title": "Workshop: deploy a containerised service, publicly reachable, with a real domain",
+     "detail": "",
+     "kind": "LESSON",
+     "group": "Week 26 — Containers & Cloud Deployment"
+    },
+    {
+     "key": "week-27-database-postgres-schema-design-for-users-convers",
+     "title": "Postgres schema design for users, conversations and runs (builds on Week P5)",
+     "detail": "",
+     "kind": "LESSON",
+     "group": "Week 27 — Databases & State for AI Apps"
+    },
+    {
+     "key": "week-27-database-metadata-filtering-alongside-vector-sear",
+     "title": "Metadata filtering alongside vector search (pgvector)",
+     "detail": "the pattern most production RAG uses",
+     "kind": "LESSON",
+     "group": "Week 27 — Databases & State for AI Apps"
+    },
+    {
+     "key": "week-27-database-redis-for-cache-rate-limits-and-session",
+     "title": "Redis for cache, rate limits and session memory; Celery + Redis queues for long agent jobs",
+     "detail": "",
+     "kind": "LESSON",
+     "group": "Week 27 — Databases & State for AI Apps"
+    },
+    {
+     "key": "week-27-database-workshop-persistent-conversation-memory",
+     "title": "Workshop: persistent conversation memory for a deployed chatbot or agent",
+     "detail": "",
+     "kind": "LESSON",
+     "group": "Week 27 — Databases & State for AI Apps"
+    },
+    {
+     "key": "week-28-ci-cd-fr-github-actions",
+     "title": "GitHub Actions",
+     "detail": "automated testing and deployment; Terraform awareness",
+     "kind": "LESSON",
+     "group": "Week 28 — CI/CD, Frontend & Milestone 7"
+    },
+    {
+     "key": "week-28-ci-cd-fr-typescript-react-essentials",
+     "title": "TypeScript & React essentials",
+     "detail": "a streaming chat interface for your service",
+     "kind": "LESSON",
+     "group": "Week 28 — CI/CD, Frontend & Milestone 7"
+    },
+    {
+     "key": "week-28-ci-cd-fr-milestone-7-build-day",
+     "title": "Milestone 7 Build Day",
+     "detail": "live, authenticated, publicly accessible API and UI with automated deployment",
+     "kind": "LESSON",
+     "group": "Week 28 — CI/CD, Frontend & Milestone 7"
+    },
+    {
+     "key": "week-28-ci-cd-fr-milestone-7-instructor-live-tests-the-en",
+     "title": "Milestone 7: instructor live-tests the endpoint and tries to break it + Delegation Review",
+     "detail": "",
+     "kind": "MILESTONE",
+     "group": "Week 28 — CI/CD, Frontend & Milestone 7"
+    }
+   ]
+  },
+  {
+   "key": "month-8",
+   "title": "Month 8 — Agents in Production, Fine-Tuning & Inference",
+   "level": "Quarter 3",
+   "weeks": 4,
+   "benchmark": "Stanford CS336 (alignment) · MIT 6.5940 (efficient inference, selected)",
+   "goal": "",
+   "doneWhen": "",
+   "resources": "",
+   "items": [
+    {
+     "key": "week-29-agents-i-durable-execution-long-running-jobs-resu",
+     "title": "Durable execution, long-running jobs, resumable runs, trajectory observability",
+     "detail": "",
+     "kind": "LESSON",
+     "group": "Week 29 — Agents in Production"
+    },
+    {
+     "key": "week-29-agents-i-human-in-the-loop-in-real-products",
+     "title": "Human-in-the-loop in real products",
+     "detail": "when an agent should stop and ask",
+     "kind": "LESSON",
+     "group": "Week 29 — Agents in Production"
+    },
+    {
+     "key": "week-29-agents-i-multi-agent-only-where-it-pays-computer",
+     "title": "Multi-agent only where it pays; computer-use and browser agents",
+     "detail": "capabilities and risks",
+     "kind": "LESSON",
+     "group": "Week 29 — Agents in Production"
+    },
+    {
+     "key": "week-30-fine-tun-datasets",
+     "title": "Datasets",
+     "detail": "collection, synthetic data, filtering, decontamination",
+     "kind": "LESSON",
+     "group": "Week 30 — Fine-Tuning in Practice"
+    },
+    {
+     "key": "week-30-fine-tun-supervised-fine-tuning-with-lora-qlora-o",
+     "title": "Supervised fine-tuning with LoRA/QLoRA on an open model; DPO and distillation as concepts",
+     "detail": "",
+     "kind": "LESSON",
+     "group": "Week 30 — Fine-Tuning in Practice"
+    },
+    {
+     "key": "week-30-fine-tun-fine-tuned-small-model-vs-a-strong-promp",
+     "title": "fine-tuned small model vs a strong prompting baseline — quality and cost",
+     "detail": "",
+     "kind": "DELIVERABLE",
+     "group": "Week 30 — Fine-Tuning in Practice"
+    },
+    {
+     "key": "week-31-inferenc-gpu-memory-maths-quantisation-gguf-awq-v",
+     "title": "GPU memory maths; quantisation (GGUF, AWQ); vLLM or Ollama serving; batching and KV cache",
+     "detail": "",
+     "kind": "LESSON",
+     "group": "Week 31 — Inference & Self-Hosting"
+    },
+    {
+     "key": "week-31-inferenc-cost",
+     "title": "Cost",
+     "detail": "self-hosting vs API at different volumes",
+     "kind": "LESSON",
+     "group": "Week 31 — Inference & Self-Hosting"
+    },
+    {
+     "key": "week-31-inferenc-offline-and-low-connectivity-deployments",
+     "title": "Offline and low-connectivity deployments",
+     "detail": "the Pakistani reality, designed for",
+     "kind": "LESSON",
+     "group": "Week 31 — Inference & Self-Hosting"
+    },
+    {
+     "key": "week-32-guardrai-structured-output-enforcement-fallbacks",
+     "title": "Structured-output enforcement, fallbacks, circuit breakers, model routing",
+     "detail": "",
+     "kind": "LESSON",
+     "group": "Week 32 — Guardrails, Reliability & Milestone 8"
+    },
+    {
+     "key": "week-32-guardrai-milestone-8-build-day",
+     "title": "Milestone 8 Build Day",
+     "detail": "production agent system with memory, guardrails and fallbacks",
+     "kind": "LESSON",
+     "group": "Week 32 — Guardrails, Reliability & Milestone 8"
+    },
+    {
+     "key": "week-32-guardrai-milestone-8-a-live-tool-failure-is-trigg",
+     "title": "Milestone 8: a live tool failure is triggered — the system must degrade gracefully + Delegation Review",
+     "detail": "",
+     "kind": "MILESTONE",
+     "group": "Week 32 — Guardrails, Reliability & Milestone 8"
+    }
+   ]
+  },
+  {
+   "key": "month-9",
+   "title": "Month 9 — Scale, Cost, Security & Capstone 2",
+   "level": "Quarter 3",
+   "weeks": 4,
+   "benchmark": "Google SRE Book · MIT 6.1600 / Stanford CS155 (selected)",
+   "goal": "",
+   "doneWhen": "",
+   "resources": "",
+   "items": [
+    {
+     "key": "week-33-performa-caching",
+     "title": "Caching",
+     "detail": "semantic caching, response caching, when NOT to cache",
+     "kind": "LESSON",
+     "group": "Week 33 — Performance & Cost Optimisation"
+    },
+    {
+     "key": "week-33-performa-model-routing",
+     "title": "Model routing",
+     "detail": "cheap/fast model for simple tasks, expensive model only when needed",
+     "kind": "LESSON",
+     "group": "Week 33 — Performance & Cost Optimisation"
+    },
+    {
+     "key": "week-33-performa-prompt-compression-and-batching",
+     "title": "Prompt compression and batching",
+     "detail": "the levers that actually move a monthly AI bill",
+     "kind": "LESSON",
+     "group": "Week 33 — Performance & Cost Optimisation"
+    },
+    {
+     "key": "week-34-monitori-dashboards-for-latency-cost-error-rate-a",
+     "title": "Dashboards for latency, cost, error rate and quality drift",
+     "detail": "",
+     "kind": "LESSON",
+     "group": "Week 34 — Monitoring & Observability at Scale"
+    },
+    {
+     "key": "week-34-monitori-alerting-and-slos",
+     "title": "Alerting and SLOs",
+     "detail": "defining \"acceptable\" for an AI feature",
+     "kind": "LESSON",
+     "group": "Week 34 — Monitoring & Observability at Scale"
+    },
+    {
+     "key": "week-34-monitori-incident-response-basics",
+     "title": "Incident response basics",
+     "detail": "what to do when the dashboard goes red at 2am",
+     "kind": "LESSON",
+     "group": "Week 34 — Monitoring & Observability at Scale"
+    },
+    {
+     "key": "week-35-security-prompt-injection-defence-in-production",
+     "title": "Prompt-injection defence in production",
+     "detail": "real mitigation patterns",
+     "kind": "LESSON",
+     "group": "Week 35 — Security Hardening & AI Ethics"
+    },
+    {
+     "key": "week-35-security-bias-fairness-and-adversarial-testing",
+     "title": "Bias, fairness and adversarial testing",
+     "detail": "practical red-teaming of your own system",
+     "kind": "LESSON",
+     "group": "Week 35 — Security Hardening & AI Ethics"
+    },
+    {
+     "key": "week-35-security-rate-limiting-and-abuse-prevention-pii-o",
+     "title": "Rate limiting and abuse prevention; PII obligations for Pakistani health and education data",
+     "detail": "",
+     "kind": "LESSON",
+     "group": "Week 35 — Security Hardening & AI Ethics"
+    },
+    {
+     "key": "week-36-capstone-full-production-grade-system-deployed-mo",
+     "title": "Full production-grade system: deployed, monitored, cost-optimised, secured, load-tested",
+     "detail": "",
+     "kind": "LESSON",
+     "group": "Week 36 — Capstone 2 Build & Oral Defense 3"
+    },
+    {
+     "key": "week-36-capstone-certification-checkpoint",
+     "title": "Certification checkpoint",
+     "detail": "one cloud AI certification passed by the end of Month 9",
+     "kind": "LESSON",
+     "group": "Week 36 — Capstone 2 Build & Oral Defense 3"
+    },
+    {
+     "key": "week-36-capstone-dsa-checkpoint",
+     "title": "DSA checkpoint",
+     "detail": "150 graded problems logged, including 40 medium",
+     "kind": "LESSON",
+     "group": "Week 36 — Capstone 2 Build & Oral Defense 3"
+    },
+    {
+     "key": "week-36-capstone-milestone-9-capstone-2-oral-defense-3-wh",
+     "title": "Milestone 9: Capstone 2 + Oral Defense 3 — what breaks it, what it costs at scale, what changes at 10x users",
+     "detail": "",
+     "kind": "MILESTONE",
+     "group": "Week 36 — Capstone 2 Build & Oral Defense 3"
+    }
+   ]
+  },
+  {
+   "key": "lane-a",
+   "title": "Lane A — AI Infrastructure Engineer",
+   "level": "Quarter 4",
+   "weeks": 8,
+   "benchmark": "CKA exam · CMU 15-319 (selected)",
+   "goal": "job-ready for AI Platform, AI Infrastructure and MLOps-adjacent roles — the person other engineers depend on to keep AI systems running.",
+   "doneWhen": "",
+   "resources": "",
+   "items": [
+    {
+     "key": "month-10-serving-kubernetes-for-ai-workloads",
+     "title": "Kubernetes for AI workloads",
+     "detail": "deployments, autoscaling, GPU scheduling basics (CKA-aligned)",
+     "kind": "LESSON",
+     "group": "Month 10 — Serving & Orchestration"
+    },
+    {
+     "key": "month-10-serving-model-serving-at-scale",
+     "title": "Model serving at scale",
+     "detail": "vLLM, quantisation, continuous batching",
+     "kind": "LESSON",
+     "group": "Month 10 — Serving & Orchestration"
+    },
+    {
+     "key": "month-10-serving-llm-gateways",
+     "title": "LLM gateways",
+     "detail": "multi-provider routing, fallback and cost-based routing",
+     "kind": "LESSON",
+     "group": "Month 10 — Serving & Orchestration"
+    },
+    {
+     "key": "month-11-operate-observability-for-ai-platforms",
+     "title": "Observability for AI platforms",
+     "detail": "building the dashboards, not just using them",
+     "kind": "LESSON",
+     "group": "Month 11 — Operate & Govern"
+    },
+    {
+     "key": "month-11-operate-gpu-resource-management-and-per-team-cos",
+     "title": "GPU resource management and per-team cost governance",
+     "detail": "",
+     "kind": "LESSON",
+     "group": "Month 11 — Operate & Govern"
+    },
+    {
+     "key": "month-11-operate-security-and-audit",
+     "title": "Security and audit",
+     "detail": "access control, audit logging, data residency",
+     "kind": "LESSON",
+     "group": "Month 11 — Operate & Govern"
+    },
+    {
+     "key": "month-11-operate-lane-capstone-a-slice-of-an-internal-ai",
+     "title": "Lane capstone: a slice of an internal AI platform",
+     "detail": "self-serve access, usage tracking, per-team budgets",
+     "kind": "LESSON",
+     "group": "Month 11 — Operate & Govern"
+    },
+    {
+     "key": "assessment-milestone-10-lane-capstone-oral-defense",
+     "title": "Milestone 10: lane capstone + Oral Defense 4 + Delegation Review",
+     "detail": "",
+     "kind": "MILESTONE",
+     "group": "Assessment"
+    },
+    {
+     "key": "assessment-external-benchmark-cka-passed-or-75-on-a",
+     "title": "External benchmark: CKA passed (or 75%+ on a full timed mock).",
+     "detail": "",
+     "kind": "DELIVERABLE",
+     "group": "Assessment"
+    }
+   ],
+   "optional": true,
+   "choiceGroup": "lane"
+  },
+  {
+   "key": "lane-b",
+   "title": "Lane B — AI Product Engineer",
+   "level": "Quarter 4",
+   "weeks": 8,
+   "benchmark": "Stanford CS147 (HCI) · People + AI Guidebook",
+   "goal": "job-ready for AI Product Engineer and Founding Engineer roles at AI-native startups.",
+   "doneWhen": "",
+   "resources": "",
+   "items": [
+    {
+     "key": "month-10-ai-nati-ai-native-ux",
+     "title": "AI-native UX",
+     "detail": "streaming, error states, showing confidence without overwhelming the user",
+     "kind": "LESSON",
+     "group": "Month 10 — AI-Native Product"
+    },
+    {
+     "key": "month-10-ai-nati-typescript-and-next-js-in-depth-for-ai-p",
+     "title": "TypeScript and Next.js in depth for AI products",
+     "detail": "",
+     "kind": "LESSON",
+     "group": "Month 10 — AI-Native Product"
+    },
+    {
+     "key": "month-10-ai-nati-product-metrics",
+     "title": "Product metrics",
+     "detail": "task success, latency-to-value, cost per interaction",
+     "kind": "LESSON",
+     "group": "Month 10 — AI-Native Product"
+    },
+    {
+     "key": "month-10-ai-nati-localisation",
+     "title": "Localisation",
+     "detail": "Urdu/English dual-language product design",
+     "kind": "LESSON",
+     "group": "Month 10 — AI-Native Product"
+    },
+    {
+     "key": "month-11-iterate-experimentation-with-non-deterministic-o",
+     "title": "Experimentation with non-deterministic output",
+     "detail": "why A/B testing needs adjustment",
+     "kind": "LESSON",
+     "group": "Month 11 — Iterate & Grow"
+    },
+    {
+     "key": "month-11-iterate-feedback-loops-feature-flags-gradual-rol",
+     "title": "Feedback loops, feature flags, gradual rollouts, safe rollback",
+     "detail": "",
+     "kind": "LESSON",
+     "group": "Month 11 — Iterate & Grow"
+    },
+    {
+     "key": "month-11-iterate-admin-tooling",
+     "title": "Admin tooling",
+     "detail": "prompt management and moderation dashboards for non-technical teams",
+     "kind": "LESSON",
+     "group": "Month 11 — Iterate & Grow"
+    },
+    {
+     "key": "month-11-iterate-lane-capstone-a-user-facing-ai-product",
+     "title": "Lane capstone: a user-facing AI product",
+     "detail": "onboarding, core loop, feedback, analytics",
+     "kind": "LESSON",
+     "group": "Month 11 — Iterate & Grow"
+    },
+    {
+     "key": "assessment-milestone-10-lane-capstone-oral-defense",
+     "title": "Milestone 10: lane capstone + Oral Defense 4 + Delegation Review",
+     "detail": "",
+     "kind": "MILESTONE",
+     "group": "Assessment"
+    },
+    {
+     "key": "assessment-external-benchmark-20-real-users-with-re",
+     "title": "External benchmark: 20+ real users, with retention and task-success measured.",
+     "detail": "",
+     "kind": "DELIVERABLE",
+     "group": "Assessment"
+    }
+   ],
+   "optional": true,
+   "choiceGroup": "lane"
+  },
+  {
+   "key": "lane-c",
+   "title": "Lane C — Data & Reliability Engineering",
+   "level": "Quarter 4",
+   "weeks": 8,
+   "benchmark": "UC Berkeley Data 100 · CMU 15-445 (selected) · MIT Data-Centric AI",
+   "goal": "job-ready for Data Engineer, AI Reliability/Evaluation Engineer and AI-security-adjacent roles. Needs no GPU budget.",
+   "doneWhen": "",
+   "resources": "",
+   "items": [
+    {
+     "key": "month-10-data-fo-pipelines-and-orchestration",
+     "title": "Pipelines and orchestration",
+     "detail": "batch vs streaming, retries, idempotency; one tool hands-on (Airflow or Dagster)",
+     "kind": "LESSON",
+     "group": "Month 10 — Data Foundations"
+    },
+    {
+     "key": "month-10-data-fo-ingestion-at-scale",
+     "title": "Ingestion at scale",
+     "detail": "incremental loads, schema drift, backfills",
+     "kind": "LESSON",
+     "group": "Month 10 — Data Foundations"
+    },
+    {
+     "key": "month-10-data-fo-data-quality-and-contracts",
+     "title": "Data quality and contracts",
+     "detail": "why a silent bad load is worse than an outage",
+     "kind": "LESSON",
+     "group": "Month 10 — Data Foundations"
+    },
+    {
+     "key": "month-11-evaluat-custom-benchmarks-and-golden-datasets-st",
+     "title": "Custom benchmarks and golden datasets; statistical rigour when comparing two systems",
+     "detail": "",
+     "kind": "LESSON",
+     "group": "Month 11 — Evaluation & Security Depth"
+    },
+    {
+     "key": "month-11-evaluat-ai-security-engineering",
+     "title": "AI security engineering",
+     "detail": "threat modelling, prompt injection at the architecture level, agent permission boundaries",
+     "kind": "LESSON",
+     "group": "Month 11 — Evaluation & Security Depth"
+    },
+    {
+     "key": "month-11-evaluat-governance",
+     "title": "Governance",
+     "detail": "access control, PII, audit logging; obligations for Pakistani health and education data",
+     "kind": "LESSON",
+     "group": "Month 11 — Evaluation & Security Depth"
+    },
+    {
+     "key": "month-11-evaluat-lane-capstone-the-data-evaluation-and-se",
+     "title": "Lane capstone: the data, evaluation and security layer underneath a real system",
+     "detail": "",
+     "kind": "LESSON",
+     "group": "Month 11 — Evaluation & Security Depth"
+    },
+    {
+     "key": "assessment-milestone-10-lane-capstone-oral-defense",
+     "title": "Milestone 10: lane capstone + Oral Defense 4 + Delegation Review",
+     "detail": "",
+     "kind": "MILESTONE",
+     "group": "Assessment"
+    },
+    {
+     "key": "assessment-external-benchmark-your-regression-gate",
+     "title": "External benchmark: Your regression gate catches a planted regression that a human reviewer missed.",
+     "detail": "",
+     "kind": "DELIVERABLE",
+     "group": "Assessment"
+    }
+   ],
+   "optional": true,
+   "choiceGroup": "lane"
+  },
+  {
+   "key": "month-12",
+   "title": "Month 12 — Real-World Client Engagement",
+   "level": "Quarter 4",
+   "weeks": 4,
+   "benchmark": "Stanford ENGR 245 (customer discovery) · CMU 17-313 (team practice)",
+   "goal": "",
+   "doneWhen": "",
+   "resources": "",
+   "items": [
+    {
+     "key": "week-45-working-agile-and-scrum-basics",
+     "title": "Agile and Scrum basics",
+     "detail": "sprint planning, stand-ups, code-review culture",
+     "kind": "LESSON",
+     "group": "Week 45 — Working Like a Real Team"
+    },
+    {
+     "key": "week-45-working-customer-discovery",
+     "title": "Customer discovery",
+     "detail": "interviews about past behaviour, not opinions (The Mom Test)",
+     "kind": "LESSON",
+     "group": "Week 45 — Working Like a Real Team"
+    },
+    {
+     "key": "week-45-working-working-with-ambiguous-or-changing-requi",
+     "title": "Working with ambiguous or changing requirements",
+     "detail": "",
+     "kind": "LESSON",
+     "group": "Week 45 — Working Like a Real Team"
+    },
+    {
+     "key": "weeks-46-47-live-paired-or-small-group-work-on-a-real-spe",
+     "title": "Paired or small-group work on a real Special Technician client or partner engagement",
+     "detail": "",
+     "kind": "LESSON",
+     "group": "Weeks 46–47 — Live Client Project"
+    },
+    {
+     "key": "weeks-46-47-live-real-deadlines-real-stakeholder-feedback",
+     "title": "Real deadlines, real stakeholder feedback, real scope negotiation",
+     "detail": "",
+     "kind": "LESSON",
+     "group": "Weeks 46–47 — Live Client Project"
+    },
+    {
+     "key": "week-48-client-d-presenting-deliverables-directly-to-the",
+     "title": "Presenting deliverables directly to the client",
+     "detail": "not the instructor",
+     "kind": "LESSON",
+     "group": "Week 48 — Client Delivery & Retrospective"
+    },
+    {
+     "key": "week-48-client-d-handling-change-requests-and-pushback-pr",
+     "title": "Handling change requests and pushback professionally; project retrospective",
+     "detail": "",
+     "kind": "LESSON",
+     "group": "Week 48 — Client Delivery & Retrospective"
+    },
+    {
+     "key": "week-48-client-d-milestone-11-a-real-client-testimonial-o",
+     "title": "Milestone 11: a real client testimonial or reference",
+     "detail": "",
+     "kind": "MILESTONE",
+     "group": "Week 48 — Client Delivery & Retrospective"
+    }
+   ]
+  },
+  {
+   "key": "month-13",
+   "title": "Month 13 — Portfolio, Interviews & Launch",
+   "level": "Quarter 4",
+   "weeks": 4,
+   "benchmark": "Industry interview standards (AI system design, ML theory, DSA)",
+   "goal": "",
+   "doneWhen": "",
+   "resources": "",
+   "items": [
+    {
+     "key": "week-49-portfoli-turning-capstones-lane-work-and-client-w",
+     "title": "Turning capstones, lane work and client work into a polished portfolio site",
+     "detail": "",
+     "kind": "LESSON",
+     "group": "Week 49 — Portfolio & Case Studies"
+    },
+    {
+     "key": "week-49-portfoli-writing-real-case-studies",
+     "title": "Writing real case studies",
+     "detail": "problem, approach, trade-offs, numbers, what you'd change",
+     "kind": "LESSON",
+     "group": "Week 49 — Portfolio & Case Studies"
+    },
+    {
+     "key": "week-50-technica-ai-system-design",
+     "title": "AI system design",
+     "detail": "whiteboarding a RAG or agent architecture live, with numbers",
+     "kind": "LESSON",
+     "group": "Week 50 — Technical Interviews"
+    },
+    {
+     "key": "week-50-technica-ml-theory-out-loud-live-debugging",
+     "title": "ML theory out loud; live debugging",
+     "detail": "\"something's broken, think out loud\"",
+     "kind": "LESSON",
+     "group": "Week 50 — Technical Interviews"
+    },
+    {
+     "key": "week-50-technica-timed-dsa-round",
+     "title": "Timed DSA round",
+     "detail": "interview practice built on the DSA thread completed in Month 9",
+     "kind": "LESSON",
+     "group": "Week 50 — Technical Interviews"
+    },
+    {
+     "key": "week-51-behaviou-star-stories-salary-negotiation-for-loca",
+     "title": "STAR stories; salary negotiation for local and international remote roles",
+     "detail": "",
+     "kind": "LESSON",
+     "group": "Week 51 — Behavioural, Negotiation & Freelance"
+    },
+    {
+     "key": "week-51-behaviou-contract-and-freelance-rate-setting-prop",
+     "title": "Contract and freelance rate-setting; proposals; Upwork positioning; local business outreach",
+     "detail": "",
+     "kind": "LESSON",
+     "group": "Week 51 — Behavioural, Negotiation & Freelance"
+    },
+    {
+     "key": "week-52-demo-day-public-showcase",
+     "title": "Public showcase",
+     "detail": "local companies, parents, press; an external industry panel where possible",
+     "kind": "LESSON",
+     "group": "Week 52 — Demo Day & Final Oral Defense"
+    },
+    {
+     "key": "week-52-demo-day-milestone-12-oral-defense-5-the-whole-po",
+     "title": "Milestone 12 / Oral Defense 5: the whole portfolio defended — graduation, certification, alumni onboarding",
+     "detail": "",
+     "kind": "MILESTONE",
+     "group": "Week 52 — Demo Day & Final Oral Defense"
+    }
+   ]
+  }
+ ]
+}

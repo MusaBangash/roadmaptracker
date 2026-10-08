@@ -1,0 +1,1755 @@
+{
+ "slug": "python-developer",
+ "title": "Python Developer",
+ "kind": "ROLE",
+ "edition": "Edition 2  -  University-grade",
+ "subtitle": "The CS core of a top university degree, plus the engineering jobs demand",
+ "summary": "Build, test and ship real software in Python - on the same foundations as a top CS graduate.",
+ "expert": "Designs and owns production Python systems, and understands every layer underneath them - algorithms, memory, the operating system, the network, the database, distributed systems - well enough to stand next to a Stanford, MIT or IIT graduate.",
+ "benchmarks": [
+  {
+   "title": "Codeforces rating",
+   "detail": "Specialist (1400+) by the end of Intermediate; Expert (1600+) by the end of Advanced."
+  },
+  {
+   "title": "LeetCode",
+   "detail": "300 problems solved, including 50 hard, each with stated complexity."
+  },
+  {
+   "title": "University labs passed",
+   "detail": "CMU 15-213 malloc lab; three MIT 6.1810 xv6 labs; MIT 6.5840 Raft lab test suite."
+  },
+  {
+   "title": "Production proof",
+   "detail": "A deployed service with CI/CD and monitoring; a package on PyPI; a merged open-source pull request."
+  },
+  {
+   "title": "Defended out loud",
+   "detail": "Explain any project's design choices for 30 minutes under questioning - the same way top programmes run viva and design reviews."
+  }
+ ],
+ "stages": [
+  {
+   "key": "programming-fundamentals",
+   "title": "Programming fundamentals",
+   "level": "Foundation",
+   "weeks": 5,
+   "benchmark": "Stanford CS106A  |  MIT 6.100A  |  NPTEL: Programming, Data Structures and Algorithms using Python",
+   "goal": "Write, read and debug programs without help.",
+   "doneWhen": "You complete the MIT 6.100A problem sets and solve 40 beginner problems without looking anything up.",
+   "resources": "MIT 6.100A on OCW (free)  |  Stanford CS106A materials  |  Official Python Tutorial",
+   "items": [
+    {
+     "key": "setup",
+     "title": "Setup",
+     "detail": "Python, VS Code, running scripts, REPL, Jupyter/Colab",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "variables-types-and-operators",
+     "title": "Variables, types and operators",
+     "detail": "int, float, str, bool, None; arithmetic, comparison, logical; conversion",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "strings",
+     "title": "Strings",
+     "detail": "indexing, slicing, methods, f-strings, Unicode",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "lists-tuples-dicts-and-sets",
+     "title": "Lists, tuples, dicts and sets",
+     "detail": "mutation, aliasing, iteration, nesting",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "control-flow",
+     "title": "Control flow",
+     "detail": "if/elif/else, for, while, range, enumerate, zip",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "functions-and-decomposition",
+     "title": "Functions and decomposition",
+     "detail": "parameters, return, scope, docstrings, breaking problems into functions",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "recursion-first-look",
+     "title": "Recursion (first look)",
+     "detail": "base case, recursive case, tracing the call stack",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "files-and-errors",
+     "title": "Files and errors",
+     "detail": "text, CSV and JSON; try/except/finally; raising errors",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "modules-and-the-standard-library",
+     "title": "Modules and the standard library",
+     "detail": "os, pathlib, json, csv, datetime, random, math",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "comprehensions",
+     "title": "Comprehensions",
+     "detail": "list, dict and set comprehensions",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "floating-point",
+     "title": "Floating point",
+     "detail": "why 0.1 + 0.2 != 0.3; approximation and bisection search",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "mit-6-100a-problem-sets",
+     "title": "MIT 6.100A problem sets",
+     "detail": "all sets completed and pushed to GitHub",
+     "kind": "PROJECT",
+     "optional": false
+    },
+    {
+     "key": "command-line-to-do-app",
+     "title": "Command-line to-do app",
+     "detail": "add, list, complete, delete; saved to JSON",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "the-engineer-s-toolkit",
+   "title": "The engineer's toolkit",
+   "level": "Foundation",
+   "weeks": 3,
+   "benchmark": "MIT Missing Semester",
+   "goal": "Work the way professional engineers work.",
+   "doneWhen": "Your project has a clean Git history, a README, linting, formatting, type checks, and installs in one command.",
+   "resources": "MIT Missing Semester (missing.csail.mit.edu)  |  Pro Git (free)  |  Ruff and uv docs",
+   "items": [
+    {
+     "key": "shell",
+     "title": "Shell",
+     "detail": "navigation, permissions, pipes, environment variables, shell scripting",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "editors",
+     "title": "Editors",
+     "detail": "VS Code fluently; basic Vim",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "git-in-depth",
+     "title": "Git in depth",
+     "detail": "branches, merge vs rebase, pull requests, conflicts, bisect",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "environments",
+     "title": "Environments",
+     "detail": "venv, uv or Poetry, lock files, pyproject.toml",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "code-quality",
+     "title": "Code quality",
+     "detail": "PEP 8, Ruff, pre-commit hooks",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "type-hints",
+     "title": "Type hints",
+     "detail": "annotations, mypy or pyright",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "debugging",
+     "title": "Debugging",
+     "detail": "tracebacks, breakpoints, pdb, VS Code debugger",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "logging",
+     "title": "Logging",
+     "detail": "logging module, levels, structured logs",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "clean-up-project",
+     "title": "Clean-up project",
+     "detail": "to-do app restructured, typed, linted and tested",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "discrete-mathematics-and-proofs",
+   "title": "Discrete mathematics and proofs",
+   "level": "Foundation",
+   "weeks": 6,
+   "benchmark": "MIT 6.1200 (Mathematics for CS)  |  Stanford CS103",
+   "goal": "Think and reason like a computer scientist - with proofs, not guesses.",
+   "doneWhen": "You can write a correct proof by induction and solve the MIT 6.1200 problem sets for each topic below.",
+   "resources": "Mathematics for Computer Science (Lehman, Leighton, Meyer - free PDF)  |  MIT 6.1200 on OCW",
+   "items": [
+    {
+     "key": "logic",
+     "title": "Logic",
+     "detail": "propositions, quantifiers, truth tables",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "proof-techniques",
+     "title": "Proof techniques",
+     "detail": "direct, contradiction, contrapositive, cases",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "induction",
+     "title": "Induction",
+     "detail": "ordinary and strong induction, well-ordering",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "sets-functions-and-relations",
+     "title": "Sets, functions and relations",
+     "detail": "bijections, equivalence relations, partial orders",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "number-theory",
+     "title": "Number theory",
+     "detail": "divisibility, gcd, modular arithmetic",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "counting",
+     "title": "Counting",
+     "detail": "sum and product rules, permutations, combinations, pigeonhole",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "graph-theory",
+     "title": "Graph theory",
+     "detail": "paths, trees, connectivity, colouring, bipartite graphs",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "discrete-probability",
+     "title": "Discrete probability",
+     "detail": "events, conditional probability, expectation, independence",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "asymptotics",
+     "title": "Asymptotics",
+     "detail": "Big-O, Big-Theta, Big-Omega; comparing growth rates",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "recurrences",
+     "title": "Recurrences",
+     "detail": "solving recurrences, the Master theorem",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "proof-portfolio",
+     "title": "Proof portfolio",
+     "detail": "25 written proofs, each checked against a solution",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "data-structures-and-abstraction",
+   "title": "Data structures and abstraction",
+   "level": "Intermediate",
+   "weeks": 6,
+   "benchmark": "Stanford CS106B  |  MIT 6.1010",
+   "goal": "Build every core data structure yourself and know when each one wins.",
+   "doneWhen": "You implement each structure below from scratch, with tests, and state the cost of every operation.",
+   "resources": "MIT 6.1010 on OCW  |  Stanford CS106B materials  |  Problem Solving with Algorithms and Data Structures using Python (free online)",
+   "items": [
+    {
+     "key": "abstract-data-types",
+     "title": "Abstract data types",
+     "detail": "interface vs implementation, invariants",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "recursion-and-backtracking-in-depth",
+     "title": "Recursion and backtracking in depth",
+     "detail": "permutations, subsets, N-queens, memoization",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "dynamic-arrays",
+     "title": "Dynamic arrays",
+     "detail": "amortized growth, why list.append is fast",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "linked-lists",
+     "title": "Linked lists",
+     "detail": "singly, doubly; when they beat arrays",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "stacks-and-queues",
+     "title": "Stacks and queues",
+     "detail": "array and linked implementations, deque",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "hash-tables",
+     "title": "Hash tables",
+     "detail": "hashing, collisions, chaining vs open addressing, load factor",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "trees",
+     "title": "Trees",
+     "detail": "binary trees, traversals, binary search trees",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "balanced-trees",
+     "title": "Balanced trees",
+     "detail": "AVL or red-black (concept), why balance matters",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "heaps-and-priority-queues",
+     "title": "Heaps and priority queues",
+     "detail": "binary heap, heapq",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "graphs",
+     "title": "Graphs",
+     "detail": "adjacency list vs matrix, BFS, DFS",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "tries-and-union-find",
+     "title": "Tries and union-find",
+     "detail": "prefix search, disjoint sets",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "data-structure-library",
+     "title": "Data-structure library",
+     "detail": "all structures above, from scratch, fully tested",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "algorithms",
+   "title": "Algorithms",
+   "level": "Intermediate",
+   "weeks": 8,
+   "benchmark": "MIT 6.1210 / 6.1220  |  Stanford CS161  |  NPTEL: Design and Analysis of Algorithms",
+   "goal": "Design algorithms, prove they are correct, and analyse their cost.",
+   "doneWhen": "You finish the MIT 6.1210 problem sets, solve 200 LeetCode problems (incl. 30 hard), and reach Codeforces Specialist (1400+).",
+   "resources": "MIT 6.1210 on OCW  |  Introduction to Algorithms (CLRS)  |  Competitive Programmer's Handbook (Laaksonen, free)  |  cp-algorithms.com",
+   "items": [
+    {
+     "key": "analysis",
+     "title": "Analysis",
+     "detail": "worst/average case, recurrences, amortized analysis",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "sorting",
+     "title": "Sorting",
+     "detail": "merge sort, quicksort, heap sort, counting/radix sort, lower bound",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "searching",
+     "title": "Searching",
+     "detail": "binary search and its variants, two pointers, sliding window",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "divide-and-conquer",
+     "title": "Divide and conquer",
+     "detail": "design pattern and analysis",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "hashing",
+     "title": "Hashing",
+     "detail": "universal hashing, expected-time analysis",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "graph-algorithms",
+     "title": "Graph algorithms",
+     "detail": "BFS, DFS, topological sort, strongly connected components",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "shortest-paths",
+     "title": "Shortest paths",
+     "detail": "Dijkstra, Bellman-Ford, Floyd-Warshall",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "minimum-spanning-trees",
+     "title": "Minimum spanning trees",
+     "detail": "Kruskal, Prim",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "greedy-algorithms",
+     "title": "Greedy algorithms",
+     "detail": "exchange arguments, proofs of correctness",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "dynamic-programming",
+     "title": "Dynamic programming",
+     "detail": "subproblems, knapsack, LIS, edit distance, DP on trees",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "intractability",
+     "title": "Intractability",
+     "detail": "P, NP, NP-completeness, reductions (intuition)",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "200-leetcode-problems",
+     "title": "200 LeetCode problems",
+     "detail": "logged with approach and complexity",
+     "kind": "PROJECT",
+     "optional": false
+    },
+    {
+     "key": "codeforces",
+     "title": "Codeforces",
+     "detail": "30 rated contests; reach Specialist (1400+)",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "software-construction-and-design",
+   "title": "Software construction and design",
+   "level": "Intermediate",
+   "weeks": 5,
+   "benchmark": "MIT 6.1020  |  Stanford CS108",
+   "goal": "Write code that is correct, readable and ready for change.",
+   "doneWhen": "You refactor a 500-line script into well-specified, tested modules and defend each design choice.",
+   "resources": "MIT 6.1020 readings (free)  |  A Philosophy of Software Design (Ousterhout)  |  Fluent Python (Ramalho)  |  pytest docs",
+   "items": [
+    {
+     "key": "specifications",
+     "title": "Specifications",
+     "detail": "preconditions, postconditions, contracts",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "testing",
+     "title": "Testing",
+     "detail": "pytest, fixtures, parametrize, mocking, coverage, test pyramid",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "test-first-and-property-based-testing",
+     "title": "Test-first and property-based testing",
+     "detail": "TDD; Hypothesis",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "adts-and-representation-invariants",
+     "title": "ADTs and representation invariants",
+     "detail": "abstraction functions, rep exposure",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "immutability",
+     "title": "Immutability",
+     "detail": "why it prevents bugs; frozen dataclasses",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "classes-in-depth",
+     "title": "Classes in depth",
+     "detail": "inheritance vs composition, dunder methods, dataclasses, properties",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "interfaces",
+     "title": "Interfaces",
+     "detail": "abc.ABC, typing.Protocol",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "design-principles",
+     "title": "Design principles",
+     "detail": "SOLID, deep vs shallow modules, information hiding",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "design-patterns",
+     "title": "Design patterns",
+     "detail": "factory, strategy, observer, adapter, repository",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "refactoring",
+     "title": "Refactoring",
+     "detail": "code smells, safe refactoring with tests",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "library-management-system",
+     "title": "Library management system",
+     "detail": "specified, tested, 80%+ coverage, CI on every push",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "advanced-python",
+   "title": "Advanced Python",
+   "level": "Intermediate",
+   "weeks": 4,
+   "benchmark": "Fluent Python level  |  no single course equivalent",
+   "goal": "Master the language features that separate experts from users.",
+   "doneWhen": "You write your own decorator, context manager and generator pipeline and explain how each works.",
+   "resources": "Fluent Python (Ramalho)  |  Python docs: data model, functools, itertools",
+   "items": [
+    {
+     "key": "iterators-and-generators",
+     "title": "Iterators and generators",
+     "detail": "iteration protocol, yield, pipelines, lazy evaluation",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "closures-and-decorators",
+     "title": "Closures and decorators",
+     "detail": "functions as objects, decorators with arguments",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "context-managers",
+     "title": "Context managers",
+     "detail": "with, __enter__/__exit__, contextlib",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "standard-library-power-tools",
+     "title": "Standard-library power tools",
+     "detail": "collections, itertools, functools",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "advanced-typing",
+     "title": "Advanced typing",
+     "detail": "generics, TypedDict, Literal, Callable, Protocol",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "error-handling-patterns",
+     "title": "Error-handling patterns",
+     "detail": "custom exceptions, chaining, fail fast",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "the-data-model",
+     "title": "The data model",
+     "detail": "how Python objects, attributes and operators really work",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "log-analyser",
+     "title": "Log analyser",
+     "detail": "generator pipeline processing a large file in constant memory",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "computer-systems",
+   "title": "Computer systems",
+   "level": "Intermediate",
+   "weeks": 8,
+   "benchmark": "Stanford CS107  |  CMU 15-213  |  MIT 6.1910",
+   "goal": "Understand what really happens when code runs on a machine.",
+   "doneWhen": "You pass the CMU 15-213 data, bomb and malloc labs.",
+   "resources": "Computer Systems: A Programmer's Perspective (Bryant & O'Hallaron)  |  CMU 15-213 lectures and self-study labs  |  Stanford CS107 materials",
+   "items": [
+    {
+     "key": "c-programming",
+     "title": "C programming",
+     "detail": "types, pointers, arrays, structs, the compiler",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "bits-and-integers",
+     "title": "Bits and integers",
+     "detail": "binary, two's complement, overflow, bitwise operations",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "floating-point",
+     "title": "Floating point",
+     "detail": "IEEE 754 representation and rounding",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "memory",
+     "title": "Memory",
+     "detail": "stack vs heap, pointers, memory layout of a process",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "machine-code",
+     "title": "Machine code",
+     "detail": "x86-64 assembly basics, calling conventions",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "memory-hierarchy",
+     "title": "Memory hierarchy",
+     "detail": "caches, locality, why access patterns matter",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "linking",
+     "title": "Linking",
+     "detail": "compilation, object files, shared libraries",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "exceptional-control-flow",
+     "title": "Exceptional control flow",
+     "detail": "processes, signals, fork/exec",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "virtual-memory",
+     "title": "Virtual memory",
+     "detail": "address translation, paging",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "dynamic-memory-allocation",
+     "title": "Dynamic memory allocation",
+     "detail": "malloc and free, fragmentation",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "how-python-runs",
+     "title": "How Python runs",
+     "detail": "CPython objects in memory, reference counting",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "cmu-15-213-data-lab-and-bomb-lab",
+     "title": "CMU 15-213 data lab and bomb lab",
+     "detail": "completed",
+     "kind": "PROJECT",
+     "optional": false
+    },
+    {
+     "key": "cmu-15-213-malloc-lab",
+     "title": "CMU 15-213 malloc lab",
+     "detail": "your own memory allocator",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "operating-systems-and-concurrency",
+   "title": "Operating systems and concurrency",
+   "level": "Intermediate",
+   "weeks": 6,
+   "benchmark": "MIT 6.1810  |  Stanford CS111",
+   "goal": "Understand processes, threads, memory and files - and write correct concurrent code.",
+   "doneWhen": "You complete three MIT 6.1810 xv6 labs and build a correct concurrent program in Python.",
+   "resources": "Operating Systems: Three Easy Pieces (free)  |  MIT 6.1810 xv6 labs  |  Python docs: asyncio, concurrent.futures",
+   "items": [
+    {
+     "key": "processes-and-threads",
+     "title": "Processes and threads",
+     "detail": "creation, scheduling, context switches",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "synchronization",
+     "title": "Synchronization",
+     "detail": "locks, condition variables, semaphores, deadlock",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "memory-management",
+     "title": "Memory management",
+     "detail": "paging, page tables, page faults",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "file-systems",
+     "title": "File systems",
+     "detail": "inodes, directories, journaling",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "i-o",
+     "title": "I/O",
+     "detail": "blocking vs non-blocking, system calls",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "python-threading",
+     "title": "Python threading",
+     "detail": "threads, locks, the GIL and what it really limits",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "python-multiprocessing",
+     "title": "Python multiprocessing",
+     "detail": "process pools, concurrent.futures",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "asyncio-in-depth",
+     "title": "asyncio in depth",
+     "detail": "event loop, tasks, gather, timeouts",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "free-threaded-python",
+     "title": "Free-threaded Python",
+     "detail": "what removing the GIL changes",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "three-xv6-labs",
+     "title": "Three xv6 labs",
+     "detail": "e.g. system calls, page tables, copy-on-write",
+     "kind": "PROJECT",
+     "optional": false
+    },
+    {
+     "key": "concurrent-web-crawler",
+     "title": "Concurrent web crawler",
+     "detail": "asyncio, rate limiting, correct shutdown",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "computer-networks",
+   "title": "Computer networks",
+   "level": "Intermediate",
+   "weeks": 4,
+   "benchmark": "Stanford CS144",
+   "goal": "Know how data moves across the internet, down to the packet.",
+   "doneWhen": "You build an HTTP server from raw sockets and explain every layer a request passes through.",
+   "resources": "Computer Networking: A Top-Down Approach (Kurose & Ross)  |  Stanford CS144 materials and labs",
+   "items": [
+    {
+     "key": "layering",
+     "title": "Layering",
+     "detail": "the internet model and why it is layered",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "ip-and-routing",
+     "title": "IP and routing",
+     "detail": "addressing, CIDR, forwarding, NAT",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "tcp",
+     "title": "TCP",
+     "detail": "reliable delivery, flow control, congestion control",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "udp-and-dns",
+     "title": "UDP and DNS",
+     "detail": "resolution, records, caching",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "http",
+     "title": "HTTP",
+     "detail": "HTTP/1.1, HTTP/2, keep-alive, caching headers",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "tls",
+     "title": "TLS",
+     "detail": "certificates, handshake, why HTTPS matters",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "sockets-in-python",
+     "title": "Sockets in Python",
+     "detail": "socket API, servers and clients",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "tools",
+     "title": "Tools",
+     "detail": "tcpdump, Wireshark, curl, dig",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "http-server-from-raw-sockets",
+     "title": "HTTP server from raw sockets",
+     "detail": "parsing, routing, static files, concurrency",
+     "kind": "PROJECT",
+     "optional": false
+    },
+    {
+     "key": "stanford-cs144-labs",
+     "title": "Stanford CS144 labs",
+     "detail": "build parts of TCP yourself",
+     "kind": "PROJECT",
+     "optional": true
+    }
+   ]
+  },
+  {
+   "key": "database-systems",
+   "title": "Database systems",
+   "level": "Intermediate",
+   "weeks": 6,
+   "benchmark": "CMU 15-445  |  Stanford CS145",
+   "goal": "Use databases expertly and understand how they work inside.",
+   "doneWhen": "You design a real schema, fix a slow query with an index, and build a small storage engine with a write-ahead log.",
+   "resources": "CMU 15-445 lectures (Andy Pavlo, free)  |  PostgreSQL docs  |  SQLAlchemy 2.0 tutorial  |  Use The Index, Luke (free)",
+   "items": [
+    {
+     "key": "relational-model",
+     "title": "Relational model",
+     "detail": "relations, keys, relational algebra",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "sql-in-depth",
+     "title": "SQL in depth",
+     "detail": "JOINs, subqueries, CTEs, window functions",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "schema-design",
+     "title": "Schema design",
+     "detail": "normalization (to 3NF/BCNF), when to denormalize",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "storage",
+     "title": "Storage",
+     "detail": "pages, heap files, buffer pool",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "indexes",
+     "title": "Indexes",
+     "detail": "B+ trees, hash indexes, EXPLAIN ANALYZE",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "query-processing",
+     "title": "Query processing",
+     "detail": "joins (nested-loop, hash, merge), query optimization",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "transactions",
+     "title": "Transactions",
+     "detail": "ACID, isolation levels, concurrency control, MVCC",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "recovery",
+     "title": "Recovery",
+     "detail": "write-ahead logging, crash recovery",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "python-and-databases",
+     "title": "Python and databases",
+     "detail": "SQLAlchemy ORM, Alembic migrations, N+1 problem",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "nosql",
+     "title": "NoSQL",
+     "detail": "Redis, MongoDB - when each fits",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "mini-storage-engine",
+     "title": "Mini storage engine",
+     "detail": "key-value store with WAL and crash recovery in Python",
+     "kind": "PROJECT",
+     "optional": false
+    },
+    {
+     "key": "data-layer",
+     "title": "Data layer",
+     "detail": "PostgreSQL schema, models and migrations for a real app",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "web-backend-and-apis",
+   "title": "Web backend and APIs",
+   "level": "Intermediate",
+   "weeks": 7,
+   "benchmark": "Stanford CS142 (backend half)",
+   "goal": "Build the backend services companies actually hire for.",
+   "doneWhen": "Your API is documented, authenticated, tested, and handles bad input and load without crashing.",
+   "resources": "FastAPI docs  |  Django official tutorial  |  Django REST framework docs  |  MDN Web Docs",
+   "items": [
+    {
+     "key": "web-basics",
+     "title": "Web basics",
+     "detail": "HTML, CSS and JavaScript fundamentals; the DOM; fetch",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "http-for-backends",
+     "title": "HTTP for backends",
+     "detail": "methods, status codes, headers, cookies",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "rest-api-design",
+     "title": "REST API design",
+     "detail": "resources, versioning, pagination, errors, idempotency",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "fastapi",
+     "title": "FastAPI",
+     "detail": "routing, Pydantic, dependency injection, async endpoints",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "django",
+     "title": "Django",
+     "detail": "models, ORM, admin, views, templates",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "django-rest-framework",
+     "title": "Django REST framework",
+     "detail": "serializers, viewsets, permissions",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "flask-basics",
+     "title": "Flask basics",
+     "detail": "enough to read and maintain existing code",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "authentication",
+     "title": "Authentication",
+     "detail": "sessions, JWT, OAuth2, password hashing",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "background-jobs",
+     "title": "Background jobs",
+     "detail": "Celery or RQ with Redis",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "message-queues",
+     "title": "Message queues",
+     "detail": "RabbitMQ and Kafka basics, pub/sub, at-least-once delivery",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "real-time",
+     "title": "Real-time",
+     "detail": "WebSockets",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "api-documentation",
+     "title": "API documentation",
+     "detail": "OpenAPI/Swagger",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "fastapi-service",
+     "title": "FastAPI service",
+     "detail": "auth, PostgreSQL, background jobs, tests",
+     "kind": "PROJECT",
+     "optional": false
+    },
+    {
+     "key": "django-web-app",
+     "title": "Django web app",
+     "detail": "admin, auth, REST API for a real school or business",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "software-engineering-in-teams",
+   "title": "Software engineering in teams",
+   "level": "Intermediate",
+   "weeks": 3,
+   "benchmark": "CMU 17-313  |  Stanford CS190",
+   "goal": "Work effectively in a team on a shared codebase.",
+   "doneWhen": "Your team ships a project over three sprints with code review on every change.",
+   "resources": "A Philosophy of Software Design (Ousterhout)  |  Scrum Guide (free)  |  Google engineering practices docs",
+   "items": [
+    {
+     "key": "agile-and-scrum",
+     "title": "Agile and Scrum",
+     "detail": "sprints, stand-ups, backlogs, retrospectives",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "estimation",
+     "title": "Estimation",
+     "detail": "breaking work down, story points, buffers",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "code-review",
+     "title": "Code review",
+     "detail": "giving and receiving review; small pull requests",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "design-docs",
+     "title": "Design docs",
+     "detail": "writing and reviewing a design before coding",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "documentation",
+     "title": "Documentation",
+     "detail": "READMEs, docstrings, MkDocs",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "legacy-code",
+     "title": "Legacy code",
+     "detail": "reading unfamiliar code, safe changes",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "team-project",
+     "title": "Team project",
+     "detail": "2-4 people, three sprints, full review process",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "production-engineering",
+   "title": "Production engineering",
+   "level": "Advanced",
+   "weeks": 5,
+   "benchmark": "No single course - this is what industry adds",
+   "goal": "Ship code to production and keep it running.",
+   "doneWhen": "Every push runs tests and deploys automatically; you can see errors and latency in production.",
+   "resources": "Docker docs  |  GitHub Actions docs  |  AWS official tutorials  |  High Performance Python (Gorelick & Ozsvald)",
+   "items": [
+    {
+     "key": "docker",
+     "title": "Docker",
+     "detail": "Dockerfile, multi-stage builds, Compose",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "serving-python",
+     "title": "Serving Python",
+     "detail": "Gunicorn/Uvicorn, Nginx reverse proxy",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "configuration-and-secrets",
+     "title": "Configuration and secrets",
+     "detail": "environment variables, 12-factor app",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "ci-cd",
+     "title": "CI/CD",
+     "detail": "GitHub Actions: lint, test, build, deploy",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "aws-essentials",
+     "title": "AWS essentials",
+     "detail": "EC2, S3, RDS, IAM, Lambda",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "kubernetes-basics",
+     "title": "Kubernetes basics",
+     "detail": "deployments, services",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "monitoring",
+     "title": "Monitoring",
+     "detail": "Sentry, logs, metrics, uptime checks",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "profiling-and-performance",
+     "title": "Profiling and performance",
+     "detail": "cProfile, py-spy, memory profilers, caching",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "production-deployment",
+     "title": "Production deployment",
+     "detail": "your app live with CI/CD and monitoring",
+     "kind": "PROJECT",
+     "optional": false
+    },
+    {
+     "key": "speed-up-report",
+     "title": "Speed-up report",
+     "detail": "before/after benchmarks on a real bottleneck",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "security",
+   "title": "Security",
+   "level": "Advanced",
+   "weeks": 3,
+   "benchmark": "Stanford CS155 (selected topics)",
+   "goal": "Build software that resists attack.",
+   "doneWhen": "Your app passes an OWASP Top 10 self-review with every finding fixed or documented.",
+   "resources": "Stanford CS155 materials  |  OWASP Top 10 and Cheat Sheet Series",
+   "items": [
+    {
+     "key": "threat-modeling",
+     "title": "Threat modeling",
+     "detail": "assets, attackers, trust boundaries",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "owasp-top-10",
+     "title": "OWASP Top 10",
+     "detail": "how each appears in Python web apps",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "injection",
+     "title": "Injection",
+     "detail": "SQL and command injection; parameterized queries",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "web-attacks",
+     "title": "Web attacks",
+     "detail": "XSS, CSRF, CORS, session security",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "cryptography-basics",
+     "title": "Cryptography basics",
+     "detail": "hashing, encryption, signatures - what to use, never roll your own",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "secrets-and-dependencies",
+     "title": "Secrets and dependencies",
+     "detail": "secret managers, pip-audit, Dependabot",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "security-review",
+     "title": "Security review",
+     "detail": "written review of your own app, findings fixed",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "distributed-systems",
+   "title": "Distributed systems",
+   "level": "Advanced",
+   "weeks": 8,
+   "benchmark": "MIT 6.5840",
+   "goal": "Build systems that keep working when machines and networks fail.",
+   "doneWhen": "Your Raft implementation passes the MIT 6.5840 lab test suite.",
+   "resources": "MIT 6.5840 lectures, papers and labs (free; labs in Go)  |  Designing Data-Intensive Applications (Kleppmann)",
+   "items": [
+    {
+     "key": "why-distributed",
+     "title": "Why distributed",
+     "detail": "scaling, fault tolerance, failure models",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "rpc",
+     "title": "RPC",
+     "detail": "remote calls, timeouts, retries",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "mapreduce",
+     "title": "MapReduce",
+     "detail": "the paper and the model",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "replication",
+     "title": "Replication",
+     "detail": "primary-backup, state machines",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "consistency-models",
+     "title": "Consistency models",
+     "detail": "linearizability, eventual consistency",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "consensus",
+     "title": "Consensus",
+     "detail": "Raft: elections, log replication, persistence",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "sharding",
+     "title": "Sharding",
+     "detail": "partitioning data, rebalancing",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "distributed-transactions",
+     "title": "Distributed transactions",
+     "detail": "two-phase commit",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "cap-and-trade-offs",
+     "title": "CAP and trade-offs",
+     "detail": "what you give up and when",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "go-basics",
+     "title": "Go basics",
+     "detail": "enough Go to complete the labs",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "mit-6-5840-mapreduce-lab",
+     "title": "MIT 6.5840 MapReduce lab",
+     "detail": "",
+     "kind": "PROJECT",
+     "optional": false
+    },
+    {
+     "key": "mit-6-5840-raft-lab",
+     "title": "MIT 6.5840 Raft lab",
+     "detail": "passes the full test suite",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "system-design",
+   "title": "System design",
+   "level": "Advanced",
+   "weeks": 4,
+   "benchmark": "Industry interview standard",
+   "goal": "Design large systems and defend the trade-offs.",
+   "doneWhen": "You design 10 classic systems out loud in 45 minutes each, with numbers.",
+   "resources": "Designing Data-Intensive Applications (Kleppmann)  |  System Design Interview (Xu), vols 1-2",
+   "items": [
+    {
+     "key": "estimation",
+     "title": "Estimation",
+     "detail": "back-of-envelope numbers: QPS, storage, bandwidth",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "building-blocks",
+     "title": "Building blocks",
+     "detail": "load balancers, caches, CDNs, queues, databases",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "caching-strategies",
+     "title": "Caching strategies",
+     "detail": "write-through, write-back, invalidation",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "rate-limiting-and-back-pressure",
+     "title": "Rate limiting and back-pressure",
+     "detail": "",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "architecture-styles",
+     "title": "Architecture styles",
+     "detail": "monolith vs microservices, service boundaries, API gateways",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "data-choices",
+     "title": "Data choices",
+     "detail": "SQL vs NoSQL, replication, partitioning",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "case-studies",
+     "title": "Case studies",
+     "detail": "URL shortener, chat, feed, payments, search",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "10-designs",
+     "title": "10 designs",
+     "detail": "each written up with diagram and trade-offs",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "specialisation-pick-at-least-one",
+   "title": "Specialisation (pick at least one)",
+   "level": "Advanced",
+   "weeks": 6,
+   "benchmark": "Depends on choice",
+   "goal": "Add the second skill that makes you stand out.",
+   "doneWhen": "One portfolio project in your specialisation, deployed or published.",
+   "resources": "Airflow and dbt docs  |  Anthropic and OpenAI API docs  |  Playwright docs",
+   "items": [
+    {
+     "key": "data-engineering",
+     "title": "Data engineering",
+     "detail": "Airflow, dbt, Spark basics, ETL pipelines",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "ai-features",
+     "title": "AI features",
+     "detail": "LLM APIs, structured output, basic RAG (continues in the AI Engineer track)",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "scientific-python",
+     "title": "Scientific Python",
+     "detail": "NumPy and pandas (continues in the ML Engineer track)",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "automation-and-scraping",
+     "title": "Automation and scraping",
+     "detail": "requests, Playwright, scheduled jobs",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "specialisation-project",
+     "title": "Specialisation project",
+     "detail": "one complete project in your chosen area",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "interview-and-career-readiness",
+   "title": "Interview and career readiness",
+   "level": "Advanced",
+   "weeks": 3,
+   "benchmark": "Industry standard",
+   "goal": "Turn your skills into offers.",
+   "doneWhen": "You pass three mock interviews: one coding, one system design, one behavioural.",
+   "resources": "Cracking the Coding Interview (McDowell)  |  your own project write-ups",
+   "items": [
+    {
+     "key": "resume",
+     "title": "Resume",
+     "detail": "one page, results not duties, links to proof",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "github-and-linkedin",
+     "title": "GitHub and LinkedIn",
+     "detail": "pinned projects, clear READMEs",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "coding-interviews",
+     "title": "Coding interviews",
+     "detail": "thinking out loud, testing your own code",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "system-design-interviews",
+     "title": "System design interviews",
+     "detail": "structure and time management",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "behavioural-interviews",
+     "title": "Behavioural interviews",
+     "detail": "STAR stories from your projects",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "negotiation",
+     "title": "Negotiation",
+     "detail": "local and remote offers",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "three-mock-interviews",
+     "title": "Three mock interviews",
+     "detail": "recorded, reviewed, improved",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "language-internals",
+   "title": "Language internals",
+   "level": "Expert",
+   "weeks": 6,
+   "benchmark": "Stanford CS143 (lite)  |  CPython source",
+   "goal": "Understand how a language is built - and how Python itself works.",
+   "doneWhen": "You build a working interpreter and a C extension for Python.",
+   "resources": "Crafting Interpreters (Nystrom, free online)  |  CPython Internals (Shaw)  |  Python Developer's Guide",
+   "items": [
+    {
+     "key": "interpreters",
+     "title": "Interpreters",
+     "detail": "scanning, parsing, ASTs, evaluation",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "cpython-internals",
+     "title": "CPython internals",
+     "detail": "bytecode and dis, the eval loop, object model",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "memory-management",
+     "title": "Memory management",
+     "detail": "reference counting, cyclic garbage collector",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "the-gil-and-free-threading",
+     "title": "The GIL and free-threading",
+     "detail": "how and why",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "metaprogramming",
+     "title": "Metaprogramming",
+     "detail": "descriptors, metaclasses, __init_subclass__",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "c-extensions",
+     "title": "C extensions",
+     "detail": "the C API, or Cython / Rust with PyO3",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "interpreter",
+     "title": "Interpreter",
+     "detail": "tree-walk interpreter for a small language",
+     "kind": "PROJECT",
+     "optional": false
+    },
+    {
+     "key": "c-extension",
+     "title": "C extension",
+     "detail": "a fast native module with benchmarks",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "expert-engineering-and-leadership",
+   "title": "Expert engineering and leadership",
+   "level": "Expert",
+   "weeks": 10,
+   "benchmark": "Senior / staff engineer practice",
+   "goal": "Design systems others build on, and help others grow.",
+   "doneWhen": "You publish a package to PyPI, merge pull requests into a real open-source project, and defend a capstone for 30 minutes.",
+   "resources": "Architecture Patterns with Python (Percival & Gregory, free online)  |  Staff Engineer (Larson)",
+   "items": [
+    {
+     "key": "library-design",
+     "title": "Library design",
+     "detail": "clean public APIs, versioning, deprecation",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "packaging-and-publishing",
+     "title": "Packaging and publishing",
+     "detail": "build backends, wheels, PyPI",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "architecture",
+     "title": "Architecture",
+     "detail": "hexagonal architecture, domain-driven design",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "large-codebases",
+     "title": "Large codebases",
+     "detail": "monorepos, migrations, refactoring at scale",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "open-source",
+     "title": "Open source",
+     "detail": "contributing, reviewing, maintaining",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "technical-leadership",
+     "title": "Technical leadership",
+     "detail": "design reviews, mentoring, writing decisions",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "package-on-pypi",
+     "title": "Package on PyPI",
+     "detail": "documented, tested, versioned",
+     "kind": "PROJECT",
+     "optional": false
+    },
+    {
+     "key": "open-source-contributions",
+     "title": "Open-source contributions",
+     "detail": "three merged pull requests",
+     "kind": "PROJECT",
+     "optional": false
+    },
+    {
+     "key": "capstone",
+     "title": "Capstone",
+     "detail": "production-grade system, defended for 30 minutes",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  }
+ ]
+}

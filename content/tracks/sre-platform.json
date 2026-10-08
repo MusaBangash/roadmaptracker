@@ -1,0 +1,1624 @@
+{
+ "slug": "sre-platform",
+ "title": "SRE & Platform",
+ "kind": "ROLE",
+ "edition": "Edition 2  -  University-grade",
+ "subtitle": "Keep systems - from web services to GPU clusters - fast, safe and running",
+ "summary": "Run production systems reliably at scale, from the Linux kernel to multi-region platforms and GPU clusters.",
+ "expert": "Diagnoses failures from the kernel to the GPU fabric, runs reliability through SLOs and error budgets rather than heroics, designs platforms that survive real traffic and real outages, and leads incidents calmly - at the level of an SRE at a top technology company.",
+ "benchmarks": [
+  {
+   "title": "Certifications",
+   "detail": "RHCSA or LFCS by the end of Foundation; CKA and Terraform Associate by the end of Intermediate; CKS and a cloud associate certification by the end of Advanced."
+  },
+  {
+   "title": "University labs",
+   "detail": "A container runtime built from namespaces and cgroups; the MIT 6.5840 Raft lab test suite passed."
+  },
+  {
+   "title": "Operated, not just built",
+   "detail": "Your platform runs 30+ days with an SLO dashboard, burn-rate alerts, an on-call log and at least two written postmortems."
+  },
+  {
+   "title": "GPU clusters",
+   "detail": "nccl-tests across nodes reach the expected bus bandwidth, and you diagnose five injected faults (driver, NVLink, InfiniBand, Slurm, storage)."
+  },
+  {
+   "title": "Defended out loud",
+   "detail": "Pass a 45-minute NALSD design interview, then defend your capstone platform for 30 minutes."
+  }
+ ],
+ "stages": [
+  {
+   "key": "linux-administration",
+   "title": "Linux administration",
+   "level": "Foundation",
+   "weeks": 5,
+   "benchmark": "Red Hat RHCSA / LFCS exam objectives  |  MIT Missing Semester",
+   "goal": "Run and repair Linux servers confidently with only a terminal.",
+   "doneWhen": "You pass RHCSA or LFCS (or a full timed mock exam) and solve 15 broken-server scenarios with written root causes.",
+   "resources": "The Linux Command Line (Shotts, free)  |  Linux Foundation: Introduction to Linux (free)  |  RHCSA exam objectives  |  OverTheWire: Bandit",
+   "items": [
+    {
+     "key": "shell-fluency",
+     "title": "Shell fluency",
+     "detail": "navigation, globbing, pipes, redirection, job control",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "files-and-permissions",
+     "title": "Files and permissions",
+     "detail": "ownership, chmod, ACLs, special bits, links",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "users-and-access",
+     "title": "Users and access",
+     "detail": "users, groups, sudo, PAM basics",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "processes",
+     "title": "Processes",
+     "detail": "ps, top/htop, signals, nice, /proc",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "systemd",
+     "title": "systemd",
+     "detail": "units, targets, timers, dependencies, journald",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "packages",
+     "title": "Packages",
+     "detail": "apt and dnf, repositories, version pinning",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "storage",
+     "title": "Storage",
+     "detail": "partitions, LVM, file systems, mounts, swap, quotas",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "networking-configuration",
+     "title": "Networking configuration",
+     "detail": "ip, nmcli, routes, resolv.conf, hostnames",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "ssh",
+     "title": "SSH",
+     "detail": "keys, hardening, tunnels, bastions",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "firewalls-and-mandatory-access-control",
+     "title": "Firewalls and mandatory access control",
+     "detail": "nftables/firewalld, SELinux, AppArmor",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "boot-and-recovery",
+     "title": "Boot and recovery",
+     "detail": "GRUB, rescue mode, resetting a lost root password",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "scheduling-and-backups",
+     "title": "Scheduling and backups",
+     "detail": "cron, timers, rsync, tar, restore tests",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "virtualisation",
+     "title": "Virtualisation",
+     "detail": "KVM, Proxmox or VMware basics, VM networking",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "broken-server-drills",
+     "title": "Broken-server drills",
+     "detail": "15 scenarios, each with a written root cause",
+     "kind": "PROJECT",
+     "optional": false
+    },
+    {
+     "key": "certification",
+     "title": "Certification",
+     "detail": "RHCSA or LFCS passed (or full timed mock)",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "scripting-and-automation",
+   "title": "Scripting and automation",
+   "level": "Foundation",
+   "weeks": 3,
+   "benchmark": "MIT Missing Semester (shell and tools)",
+   "goal": "Never do the same manual task twice - and make automation safe to rerun.",
+   "doneWhen": "Your ops CLI is tested, idempotent, and safe to run twice in a row.",
+   "resources": "Bash Guide (mywiki.wooledge.org)  |  Python docs: subprocess, pathlib, argparse  |  jq manual",
+   "items": [
+    {
+     "key": "robust-bash",
+     "title": "Robust Bash",
+     "detail": "set -euo pipefail, quoting, traps, getopts, exit codes",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "text-processing",
+     "title": "Text processing",
+     "detail": "grep, sed, awk, cut, sort, jq for JSON",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "python-for-operations",
+     "title": "Python for operations",
+     "detail": "subprocess, pathlib, requests, parsing logs, Typer CLIs",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "cloud-sdks",
+     "title": "Cloud SDKs",
+     "detail": "boto3 and the Azure SDK basics",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "powershell-basics",
+     "title": "PowerShell basics",
+     "detail": "enough for Windows and Azure environments",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "idempotency",
+     "title": "Idempotency",
+     "detail": "designing scripts that are safe to rerun",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "testing-scripts",
+     "title": "Testing scripts",
+     "detail": "bats for Bash, pytest for Python",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "ops-toolkit-cli",
+     "title": "Ops toolkit CLI",
+     "detail": "health checks, backups, log triage - tested and idempotent",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "networking-for-operators",
+   "title": "Networking for operators",
+   "level": "Foundation",
+   "weeks": 5,
+   "benchmark": "Stanford CS144  |  Computer Networks: A Systems Approach",
+   "goal": "Know where every packet goes - and find exactly where it fails.",
+   "doneWhen": "You subnet 20 problems in 10 minutes and diagnose 10 network fault scenarios from packet captures.",
+   "resources": "Computer Networks: A Systems Approach (Peterson & Davie, free online)  |  Stanford CS144 materials  |  Julia Evans' networking zines",
+   "items": [
+    {
+     "key": "layering",
+     "title": "Layering",
+     "detail": "the internet model, encapsulation",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "ip-addressing",
+     "title": "IP addressing",
+     "detail": "subnetting and CIDR at speed",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "routing",
+     "title": "Routing",
+     "detail": "routing tables, static routes, ARP, ICMP",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "tcp-and-udp",
+     "title": "TCP and UDP",
+     "detail": "handshake, state machine, retransmission, congestion control",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "dns-in-depth",
+     "title": "DNS in depth",
+     "detail": "recursion, authoritative servers, records, TTLs, DNSSEC basics",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "http",
+     "title": "HTTP",
+     "detail": "HTTP/1.1, HTTP/2, HTTP/3 and QUIC",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "tls-and-pki",
+     "title": "TLS and PKI",
+     "detail": "certificates, chains, ACME/Let's Encrypt, mTLS",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "load-balancing",
+     "title": "Load balancing",
+     "detail": "L4 vs L7; HAProxy, Nginx, Envoy",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "nat-firewalls-and-vpns",
+     "title": "NAT, firewalls and VPNs",
+     "detail": "WireGuard, site-to-site tunnels",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "internet-routing",
+     "title": "Internet routing",
+     "detail": "BGP and anycast basics",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "data-centre-networks",
+     "title": "Data-centre networks",
+     "detail": "leaf-spine (Clos) fabrics, VLANs, MTU",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "troubleshooting-toolkit",
+     "title": "Troubleshooting toolkit",
+     "detail": "tcpdump, Wireshark, mtr, ss, dig, curl -v",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "home-lab-network",
+     "title": "Home-lab network",
+     "detail": "WireGuard, reverse proxy, TLS, internal DNS",
+     "kind": "PROJECT",
+     "optional": false
+    },
+    {
+     "key": "packet-capture-analysis",
+     "title": "Packet-capture analysis",
+     "detail": "10 fault scenarios diagnosed from captures",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "systems-and-os-internals",
+   "title": "Systems and OS internals",
+   "level": "Foundation",
+   "weeks": 5,
+   "benchmark": "CMU 15-213  |  MIT 6.1810 (operator's view)",
+   "goal": "Understand what the kernel is doing when production misbehaves.",
+   "doneWhen": "You build a minimal container runtime from namespaces and cgroups, and explain an OOM kill from the logs.",
+   "resources": "Operating Systems: Three Easy Pieces (free)  |  CS:APP (Bryant & O'Hallaron)  |  Linux man pages (man7.org)",
+   "items": [
+    {
+     "key": "processes-and-threads",
+     "title": "Processes and threads",
+     "detail": "scheduling, context switches, load average",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "memory",
+     "title": "Memory",
+     "detail": "virtual memory, page cache, swap, the OOM killer",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "file-systems-and-i-o",
+     "title": "File systems and I/O",
+     "detail": "inodes, journaling, buffered vs direct I/O",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "system-calls",
+     "title": "System calls",
+     "detail": "strace, ltrace, what the kernel is doing for you",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "signals-and-process-lifecycle",
+     "title": "Signals and process lifecycle",
+     "detail": "zombies, orphans, graceful shutdown",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "namespaces-and-cgroups",
+     "title": "Namespaces and cgroups",
+     "detail": "the foundation of every container",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "kernel-tuning",
+     "title": "Kernel tuning",
+     "detail": "sysctl, ulimits, /proc and /sys",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "container-runtime-from-scratch",
+     "title": "Container runtime from scratch",
+     "detail": "namespaces plus cgroups, in Go, Python or C",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "containers-and-kubernetes",
+   "title": "Containers and Kubernetes",
+   "level": "Intermediate",
+   "weeks": 7,
+   "benchmark": "CKA exam (then CKAD)  |  Kubernetes the Hard Way",
+   "goal": "Run, scale, upgrade and repair Kubernetes clusters.",
+   "doneWhen": "You pass CKA (or score 75%+ on a full timed mock) and complete Kubernetes the Hard Way.",
+   "resources": "Kubernetes docs  |  Kubernetes the Hard Way (Kelsey Hightower)  |  CKA curriculum",
+   "items": [
+    {
+     "key": "docker-in-depth",
+     "title": "Docker in depth",
+     "detail": "images, layers, multi-stage builds, registries, image security",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "container-runtimes",
+     "title": "Container runtimes",
+     "detail": "containerd, the OCI standard",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "kubernetes-architecture",
+     "title": "Kubernetes architecture",
+     "detail": "API server, etcd, scheduler, controllers, kubelet",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "workloads",
+     "title": "Workloads",
+     "detail": "pods, deployments, statefulsets, daemonsets, jobs",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "scheduling",
+     "title": "Scheduling",
+     "detail": "requests and limits, affinity, taints and tolerations",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "networking",
+     "title": "Networking",
+     "detail": "CNI, Services, Ingress and Gateway API, NetworkPolicy, CoreDNS",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "storage",
+     "title": "Storage",
+     "detail": "CSI, PV/PVC, storage classes, OpenEBS or Longhorn",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "configuration-and-access",
+     "title": "Configuration and access",
+     "detail": "ConfigMaps, Secrets, RBAC, service accounts",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "autoscaling",
+     "title": "Autoscaling",
+     "detail": "HPA, VPA, cluster autoscaler",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "packaging-and-extension",
+     "title": "Packaging and extension",
+     "detail": "Helm, operators and CRDs",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "cluster-operations",
+     "title": "Cluster operations",
+     "detail": "upgrades, etcd backup and restore",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "on-prem-and-managed",
+     "title": "On-prem and managed",
+     "detail": "kubeadm, k3s, EKS/AKS/GKE differences",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "troubleshooting",
+     "title": "Troubleshooting",
+     "detail": "CrashLoopBackOff, Pending, OOMKilled, DNS failures",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "kubernetes-the-hard-way",
+     "title": "Kubernetes the Hard Way",
+     "detail": "completed and written up",
+     "kind": "PROJECT",
+     "optional": false
+    },
+    {
+     "key": "cka",
+     "title": "CKA",
+     "detail": "passed (or 75%+ on a full timed mock)",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "cloud-infrastructure",
+   "title": "Cloud infrastructure",
+   "level": "Intermediate",
+   "weeks": 6,
+   "benchmark": "CMU 15-319 (Cloud Computing)  |  AWS or Azure associate certification",
+   "goal": "Design and run infrastructure on a major cloud - and keep the bill under control.",
+   "doneWhen": "Your three-tier architecture autoscales under load, and you can explain every line of its monthly bill.",
+   "resources": "CMU 15-319 materials  |  AWS and Azure official training (free tiers)  |  AWS Well-Architected Framework",
+   "items": [
+    {
+     "key": "cloud-fundamentals",
+     "title": "Cloud fundamentals",
+     "detail": "regions, zones, shared responsibility",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "identity",
+     "title": "Identity",
+     "detail": "IAM in depth, roles, least privilege",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "network",
+     "title": "Network",
+     "detail": "VPC/VNet, subnets, route tables, NAT, peering, private endpoints",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "compute",
+     "title": "Compute",
+     "detail": "VMs, autoscaling groups, spot/preemptible capacity",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "storage",
+     "title": "Storage",
+     "detail": "block, object and file storage; lifecycle policies",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "managed-services",
+     "title": "Managed services",
+     "detail": "databases, queues, load balancers, DNS",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "serverless",
+     "title": "Serverless",
+     "detail": "functions and when not to use them",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "second-cloud",
+     "title": "Second cloud",
+     "detail": "Azure if you learned AWS first, or the reverse - working level",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "cost-management",
+     "title": "Cost management",
+     "detail": "tagging, budgets, rightsizing, FinOps basics",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "architecture",
+     "title": "Architecture",
+     "detail": "the Well-Architected pillars",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "three-tier-architecture",
+     "title": "Three-tier architecture",
+     "detail": "autoscaling, private networking, cost report",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "infrastructure-as-code-and-configuration",
+   "title": "Infrastructure as code and configuration",
+   "level": "Intermediate",
+   "weeks": 4,
+   "benchmark": "HashiCorp Terraform Associate",
+   "goal": "Create, change and destroy infrastructure only through reviewed code.",
+   "doneWhen": "You pass Terraform Associate, and your whole environment can be rebuilt from Git in one pipeline run.",
+   "resources": "Terraform docs  |  Ansible docs  |  Argo CD docs",
+   "items": [
+    {
+     "key": "terraform-in-depth",
+     "title": "Terraform in depth",
+     "detail": "state, remote backends, locking, modules, workspaces",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "terraform-practice",
+     "title": "Terraform practice",
+     "detail": "testing, drift detection, safe refactoring",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "ansible-in-depth",
+     "title": "Ansible in depth",
+     "detail": "roles, dynamic inventories, idempotency, Vault",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "puppet-awareness",
+     "title": "Puppet awareness",
+     "detail": "reading and maintaining existing Puppet code",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "images",
+     "title": "Images",
+     "detail": "immutable infrastructure, Packer",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "policy-as-code",
+     "title": "Policy as code",
+     "detail": "OPA / Conftest checks in pipelines",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "gitops",
+     "title": "GitOps",
+     "detail": "Argo CD or Flux",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "environment-as-code",
+     "title": "Environment as code",
+     "detail": "Terraform plus Ansible plus GitOps, rebuilt from scratch",
+     "kind": "PROJECT",
+     "optional": false
+    },
+    {
+     "key": "terraform-associate",
+     "title": "Terraform Associate",
+     "detail": "passed",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "ci-cd-and-release-engineering",
+   "title": "CI/CD and release engineering",
+   "level": "Intermediate",
+   "weeks": 3,
+   "benchmark": "Google SRE Book, chapter 8 (Release Engineering)",
+   "goal": "Ship changes safely, many times a day.",
+   "doneWhen": "Your pipeline rolls out a canary and automatically rolls back when an SLO is breached.",
+   "resources": "Google SRE Book (free at sre.google)  |  GitHub Actions and GitLab CI docs  |  Argo Rollouts docs",
+   "items": [
+    {
+     "key": "pipelines",
+     "title": "Pipelines",
+     "detail": "GitHub Actions and GitLab CI, stages, caching, artifacts",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "supply-chain-security",
+     "title": "Supply-chain security",
+     "detail": "SBOMs, signing with Sigstore/cosign",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "deployment-strategies",
+     "title": "Deployment strategies",
+     "detail": "rolling, blue-green, canary",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "progressive-delivery",
+     "title": "Progressive delivery",
+     "detail": "Argo Rollouts, analysis-driven promotion",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "feature-flags",
+     "title": "Feature flags",
+     "detail": "decoupling deploy from release",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "rollback",
+     "title": "Rollback",
+     "detail": "fast, rehearsed and automatic",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "canary-pipeline",
+     "title": "Canary pipeline",
+     "detail": "automatic rollback on SLO breach",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "observability",
+   "title": "Observability",
+   "level": "Intermediate",
+   "weeks": 4,
+   "benchmark": "Google SRE Book, chapter 6 (Monitoring)",
+   "goal": "See what any system is doing - without guessing.",
+   "doneWhen": "Your alerts use multi-window burn rates, page only on user-visible symptoms, and every dashboard answers a stated question.",
+   "resources": "Google SRE Book and Workbook  |  Prometheus and OpenTelemetry docs  |  Observability Engineering (Majors, Fong-Jones, Miranda)",
+   "items": [
+    {
+     "key": "metrics-theory",
+     "title": "Metrics theory",
+     "detail": "counters, gauges, histograms, cardinality",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "prometheus-and-promql-in-depth",
+     "title": "Prometheus and PromQL in depth",
+     "detail": "recording and alerting rules",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "dashboards",
+     "title": "Dashboards",
+     "detail": "Grafana; designing dashboards that answer questions",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "logs",
+     "title": "Logs",
+     "detail": "structured logging, Loki, the ELK stack",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "traces",
+     "title": "Traces",
+     "detail": "OpenTelemetry, Jaeger or Tempo",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "signals",
+     "title": "Signals",
+     "detail": "golden signals, RED and USE methods",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "alert-design",
+     "title": "Alert design",
+     "detail": "symptom-based alerting, multi-window burn-rate alerts",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "commercial-tools",
+     "title": "Commercial tools",
+     "detail": "Datadog awareness",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "ebpf-based-observability",
+     "title": "eBPF-based observability",
+     "detail": "an introduction",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "full-observability-stack",
+     "title": "Full observability stack",
+     "detail": "metrics, logs, traces and burn-rate alerts on your cluster",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "databases-and-data-reliability",
+   "title": "Databases and data reliability",
+   "level": "Intermediate",
+   "weeks": 4,
+   "benchmark": "CMU 15-445 (operator's view)",
+   "goal": "Keep data safe, available and fast - and prove you can restore it.",
+   "doneWhen": "Your Postgres cluster survives a primary failure, and a point-in-time restore is tested and timed.",
+   "resources": "Database Reliability Engineering (Campbell & Majors)  |  PostgreSQL docs  |  CMU 15-445 lectures (free)",
+   "items": [
+    {
+     "key": "postgres-replication",
+     "title": "Postgres replication",
+     "detail": "streaming and logical replication",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "backups",
+     "title": "Backups",
+     "detail": "full, incremental, point-in-time recovery - and restore drills",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "high-availability",
+     "title": "High availability",
+     "detail": "failover with Patroni, split-brain risks",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "connection-management",
+     "title": "Connection management",
+     "detail": "PgBouncer, connection limits",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "maintenance",
+     "title": "Maintenance",
+     "detail": "vacuum, bloat, index health",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "query-performance",
+     "title": "Query performance",
+     "detail": "EXPLAIN ANALYZE, slow-query logs",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "redis",
+     "title": "Redis",
+     "detail": "persistence, replication, clustering",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "kafka-operations",
+     "title": "Kafka operations",
+     "detail": "brokers, partitions, consumer lag",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "safe-schema-changes",
+     "title": "Safe schema changes",
+     "detail": "online migrations, rollback plans",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "postgres-ha-cluster",
+     "title": "Postgres HA cluster",
+     "detail": "failover tested, PITR restore timed",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "sre-principles-and-practice",
+   "title": "SRE principles and practice",
+   "level": "Advanced",
+   "weeks": 5,
+   "benchmark": "Google SRE Book and Workbook",
+   "goal": "Run reliability as an engineering discipline, not heroics.",
+   "doneWhen": "You write an SLO document and error-budget policy, run a game day, handle the incident, and publish a blameless postmortem.",
+   "resources": "Google SRE Book and SRE Workbook (free at sre.google)  |  PagerDuty Incident Response docs (free)",
+   "items": [
+    {
+     "key": "slis-slos-and-error-budgets",
+     "title": "SLIs, SLOs and error budgets",
+     "detail": "choosing, measuring, enforcing",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "error-budget-policies",
+     "title": "Error-budget policies",
+     "detail": "what happens when the budget runs out",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "toil",
+     "title": "Toil",
+     "detail": "measuring it and engineering it away",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "on-call",
+     "title": "On-call",
+     "detail": "rotations, handoffs, sustainable load",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "incident-command",
+     "title": "Incident command",
+     "detail": "roles, communication, decision-making under pressure",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "postmortems",
+     "title": "Postmortems",
+     "detail": "blameless format, root causes, tracked action items",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "production-readiness-reviews",
+     "title": "Production readiness reviews",
+     "detail": "launch checklists",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "capacity-planning",
+     "title": "Capacity planning",
+     "detail": "demand forecasting, headroom",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "load-testing",
+     "title": "Load testing",
+     "detail": "k6 or Locust, realistic traffic models",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "managing-risk",
+     "title": "Managing risk",
+     "detail": "reliability vs feature velocity",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "slo-document-and-error-budget-policy",
+     "title": "SLO document and error-budget policy",
+     "detail": "",
+     "kind": "PROJECT",
+     "optional": false
+    },
+    {
+     "key": "game-day",
+     "title": "Game day",
+     "detail": "incident handled, postmortem published",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "performance-engineering",
+   "title": "Performance engineering",
+   "level": "Advanced",
+   "weeks": 5,
+   "benchmark": "MIT 6.106 (selected)  |  Brendan Gregg's methodology",
+   "goal": "Find exactly where time goes - and make systems measurably faster.",
+   "doneWhen": "You produce a performance investigation with flame graphs and before/after numbers on a real bottleneck.",
+   "resources": "Systems Performance, 2nd ed. (Brendan Gregg)  |  brendangregg.com (free)  |  MIT 6.106 on OCW",
+   "items": [
+    {
+     "key": "methodology",
+     "title": "Methodology",
+     "detail": "USE method, workload characterisation, latency analysis",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "cpu",
+     "title": "CPU",
+     "detail": "perf, flame graphs, scheduler latency",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "memory",
+     "title": "Memory",
+     "detail": "leaks, page cache behaviour, NUMA",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "disk-i-o",
+     "title": "Disk I/O",
+     "detail": "iostat, fio, I/O schedulers",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "network-performance",
+     "title": "Network performance",
+     "detail": "throughput vs latency, tuning",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "ebpf-and-bpftrace",
+     "title": "eBPF and bpftrace",
+     "detail": "tracing in production safely",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "benchmarking",
+     "title": "Benchmarking",
+     "detail": "pitfalls and how to benchmark honestly",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "tail-latency",
+     "title": "Tail latency",
+     "detail": "why p99 matters and how to fix it",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "performance-investigation",
+     "title": "Performance investigation",
+     "detail": "flame graphs, before/after numbers",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "distributed-systems-for-reliability",
+   "title": "Distributed systems for reliability",
+   "level": "Advanced",
+   "weeks": 6,
+   "benchmark": "MIT 6.5840",
+   "goal": "Understand how distributed systems fail - and design them not to.",
+   "doneWhen": "Your Raft implementation passes the MIT 6.5840 test suite, and you chaos-test a three-node etcd cluster.",
+   "resources": "MIT 6.5840 lectures, papers and labs (free)  |  Designing Data-Intensive Applications (Kleppmann)",
+   "items": [
+    {
+     "key": "failure-models",
+     "title": "Failure models",
+     "detail": "crashes, partitions, slow nodes",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "timeouts-retries-backoff-and-jitter",
+     "title": "Timeouts, retries, backoff and jitter",
+     "detail": "",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "idempotency-and-exactly-once-myths",
+     "title": "Idempotency and exactly-once myths",
+     "detail": "",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "circuit-breakers-and-load-shedding",
+     "title": "Circuit breakers and load shedding",
+     "detail": "",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "consensus",
+     "title": "Consensus",
+     "detail": "Raft; etcd and ZooKeeper in practice",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "replication-and-consistency",
+     "title": "Replication and consistency",
+     "detail": "trade-offs you will operate",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "leader-election",
+     "title": "Leader election",
+     "detail": "leases, fencing",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "queues-and-back-pressure",
+     "title": "Queues and back-pressure",
+     "detail": "",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "cascading-and-metastable-failures",
+     "title": "Cascading and metastable failures",
+     "detail": "how small problems become outages",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "mit-6-5840-raft-lab",
+     "title": "MIT 6.5840 Raft lab",
+     "detail": "passes the test suite",
+     "kind": "PROJECT",
+     "optional": false
+    },
+    {
+     "key": "etcd-chaos-test",
+     "title": "etcd chaos test",
+     "detail": "partitions and node loss, findings written up",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "infrastructure-security",
+   "title": "Infrastructure security",
+   "level": "Advanced",
+   "weeks": 4,
+   "benchmark": "MIT 6.1600  |  Stanford CS155 (selected)  |  CKS exam",
+   "goal": "Make infrastructure hard to break into - and fast to recover when it is.",
+   "doneWhen": "Your cluster passes a kube-bench audit with findings fixed, and you pass CKS (or a full timed mock).",
+   "resources": "MIT 6.1600 on OCW  |  Stanford CS155 materials  |  CKS curriculum  |  CIS Benchmarks",
+   "items": [
+    {
+     "key": "threat-modelling-infrastructure",
+     "title": "Threat modelling infrastructure",
+     "detail": "assets, attackers, blast radius",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "identity-and-least-privilege",
+     "title": "Identity and least privilege",
+     "detail": "IAM, RBAC, short-lived credentials",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "secrets-management",
+     "title": "Secrets management",
+     "detail": "HashiCorp Vault, cloud secret managers",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "network-security",
+     "title": "Network security",
+     "detail": "segmentation, zero trust, service mesh with mTLS",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "container-and-kubernetes-security",
+     "title": "Container and Kubernetes security",
+     "detail": "Pod Security, image scanning, admission control",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "supply-chain",
+     "title": "Supply chain",
+     "detail": "signed images, provenance, dependency scanning",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "audit-and-detection",
+     "title": "Audit and detection",
+     "detail": "audit logs, Falco-style runtime detection",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "security-incident-response",
+     "title": "Security incident response",
+     "detail": "containment, evidence, recovery",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "compliance-basics",
+     "title": "Compliance basics",
+     "detail": "SOC 2 and ISO 27001 - what they ask of operations",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "hardening-report",
+     "title": "Hardening report",
+     "detail": "kube-bench results, fixes, residual risks",
+     "kind": "PROJECT",
+     "optional": false
+    },
+    {
+     "key": "cks",
+     "title": "CKS",
+     "detail": "passed (or full timed mock)",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "gpu-and-ai-infrastructure",
+   "title": "GPU and AI infrastructure",
+   "level": "Advanced",
+   "weeks": 7,
+   "benchmark": "Stanford CS149 (selected)  |  NVIDIA documentation",
+   "goal": "Keep GPU clusters healthy, fast and fully used.",
+   "doneWhen": "nccl-tests across nodes reach the expected bus bandwidth, and you diagnose five injected faults.",
+   "resources": "NVIDIA NCCL, nccl-tests, DCGM, Fabric Manager and GPU Operator docs  |  Slurm docs  |  Stanford CS149 materials",
+   "items": [
+    {
+     "key": "gpu-architecture-for-operators",
+     "title": "GPU architecture for operators",
+     "detail": "SMs, HBM, NVLink, NVSwitch",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "topology",
+     "title": "Topology",
+     "detail": "PCIe, NUMA affinity, nvidia-smi topo",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "driver-stack",
+     "title": "Driver stack",
+     "detail": "driver, CUDA and toolkit compatibility, Fabric Manager",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "gpu-health",
+     "title": "GPU health",
+     "detail": "Xid errors, ECC, DCGM diagnostics, RMA triage",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "gpu-monitoring",
+     "title": "GPU monitoring",
+     "detail": "dcgm-exporter into Prometheus and Grafana",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "nccl",
+     "title": "NCCL",
+     "detail": "collectives, nccl-tests, NCCL_DEBUG, common failure patterns",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "infiniband-and-roce",
+     "title": "InfiniBand and RoCE",
+     "detail": "subnet manager, ibstat, perftest, GPUDirect RDMA",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "slurm",
+     "title": "Slurm",
+     "detail": "partitions, gres, accounting, fair-share, preemption",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "gpus-on-kubernetes",
+     "title": "GPUs on Kubernetes",
+     "detail": "GPU Operator, device plugin, MIG, time-slicing",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "storage-for-ai",
+     "title": "Storage for AI",
+     "detail": "Lustre, WEKA or GPFS; NFS limits; checkpoint I/O",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "job-failure-triage",
+     "title": "Job failure triage",
+     "detail": "hangs, slow ranks, stragglers",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "power-and-thermal",
+     "title": "Power and thermal",
+     "detail": "throttling, monitoring",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "multi-node-nccl-tests",
+     "title": "Multi-node nccl-tests",
+     "detail": "expected bus bandwidth reached and documented",
+     "kind": "PROJECT",
+     "optional": false
+    },
+    {
+     "key": "gpu-cluster-runbooks",
+     "title": "GPU cluster runbooks",
+     "detail": "five injected faults diagnosed and written up",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "chaos-engineering-and-disaster-recovery",
+   "title": "Chaos engineering and disaster recovery",
+   "level": "Advanced",
+   "weeks": 3,
+   "benchmark": "Industry practice (Netflix, Google DiRT)",
+   "goal": "Find weaknesses before your users do.",
+   "doneWhen": "Your disaster-recovery drill restores service with measured RTO and RPO that meet targets.",
+   "resources": "Chaos Engineering (Rosenthal & Jones)  |  Chaos Mesh and LitmusChaos docs",
+   "items": [
+    {
+     "key": "principles",
+     "title": "Principles",
+     "detail": "steady state, hypotheses, blast radius",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "experiment-design",
+     "title": "Experiment design",
+     "detail": "from small to production",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "tools",
+     "title": "Tools",
+     "detail": "Chaos Mesh, LitmusChaos",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "disaster-recovery",
+     "title": "Disaster recovery",
+     "detail": "RTO and RPO, backup tiers",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "multi-region-failover",
+     "title": "Multi-region failover",
+     "detail": "design and rehearsal",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "dr-drill",
+     "title": "DR drill",
+     "detail": "measured RTO and RPO against targets",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "platform-engineering",
+   "title": "Platform engineering",
+   "level": "Expert",
+   "weeks": 5,
+   "benchmark": "Industry standard - CNCF platforms guidance",
+   "goal": "Build the platform other engineering teams love to use.",
+   "doneWhen": "Teams can create, deploy and observe a new service through your self-service platform without asking you.",
+   "resources": "Team Topologies (Skelton & Pais)  |  CNCF Platforms White Paper (free)  |  DORA research reports (free)  |  Backstage docs",
+   "items": [
+    {
+     "key": "platform-as-a-product",
+     "title": "Platform as a product",
+     "detail": "users, roadmap, feedback",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "internal-developer-platforms",
+     "title": "Internal developer platforms",
+     "detail": "golden paths, templates",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "self-service",
+     "title": "Self-service",
+     "detail": "Backstage, service catalogues",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "multi-tenancy",
+     "title": "Multi-tenancy",
+     "detail": "isolation, quotas, chargeback",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "developer-experience-metrics",
+     "title": "Developer experience metrics",
+     "detail": "DORA metrics",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "cost-governance",
+     "title": "Cost governance",
+     "detail": "per-team budgets, showback",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "internal-developer-platform",
+     "title": "Internal developer platform",
+     "detail": "Backstage templates to production in one flow",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "large-scale-architecture-and-leadership",
+   "title": "Large-scale architecture and leadership",
+   "level": "Expert",
+   "weeks": 6,
+   "benchmark": "Senior / staff SRE practice",
+   "goal": "Design for scale and lead reliability across an organisation.",
+   "doneWhen": "You write and defend a reliability strategy and a multi-region architecture review.",
+   "resources": "The Site Reliability Workbook  |  Staff Engineer (Larson)  |  USENIX SREcon talks (free)",
+   "items": [
+    {
+     "key": "multi-region-architecture",
+     "title": "Multi-region architecture",
+     "detail": "active-active vs active-passive",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "capacity-at-scale",
+     "title": "Capacity at scale",
+     "detail": "forecasting, procurement, efficiency",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "reliability-strategy",
+     "title": "Reliability strategy",
+     "detail": "prioritising across teams",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "design-reviews",
+     "title": "Design reviews",
+     "detail": "writing and running them",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "incident-command-at-scale",
+     "title": "Incident command at scale",
+     "detail": "major incidents, executive communication",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "mentoring-and-team-building",
+     "title": "Mentoring and team building",
+     "detail": "growing other SREs",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "reliability-strategy-document",
+     "title": "Reliability strategy document",
+     "detail": "defended in review",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "interviews-and-career",
+   "title": "Interviews and career",
+   "level": "Expert",
+   "weeks": 3,
+   "benchmark": "Google SRE interview format (NALSD)",
+   "goal": "Turn your skills into offers.",
+   "doneWhen": "You pass three mock interviews: Linux troubleshooting, NALSD system design, and an incident deep-dive.",
+   "resources": "SRE Workbook chapter 12: Non-Abstract Large System Design  |  your own postmortems and runbooks",
+   "items": [
+    {
+     "key": "linux-troubleshooting-interviews",
+     "title": "Linux troubleshooting interviews",
+     "detail": "thinking out loud under time pressure",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "nalsd",
+     "title": "NALSD",
+     "detail": "non-abstract large system design, with real numbers",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "coding-for-sres",
+     "title": "Coding for SREs",
+     "detail": "scripting and tooling questions",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "incident-stories",
+     "title": "Incident stories",
+     "detail": "STAR format from your postmortems",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "three-mock-interviews",
+     "title": "Three mock interviews",
+     "detail": "recorded and reviewed",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "sre-capstone",
+   "title": "SRE capstone",
+   "level": "Expert",
+   "weeks": 6,
+   "benchmark": "Graduate capstone standard",
+   "goal": "Operate a real platform end to end - and defend it.",
+   "doneWhen": "Your platform runs 30+ days with SLOs, on-call and postmortems, and you defend it for 30 minutes.",
+   "resources": "Everything above",
+   "items": [
+    {
+     "key": "design",
+     "title": "Design",
+     "detail": "architecture, SLOs, capacity, security, cost",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "build",
+     "title": "Build",
+     "detail": "infrastructure as code, CI/CD, observability",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "operate",
+     "title": "Operate",
+     "detail": "30+ days of on-call, incidents and postmortems",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "sre-capstone",
+     "title": "SRE capstone",
+     "detail": "operated platform, defended for 30 minutes",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  }
+ ]
+}

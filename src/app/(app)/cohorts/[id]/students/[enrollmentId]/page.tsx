@@ -1,0 +1,144 @@
+import { desc, eq } from "drizzle-orm";
+import { db, schema } from "@/db";
+import { requireTeachableEnrollment } from "@/lib/access";
+import { loadTrackTree, loadProgress, summarize, expectedPct } from "@/lib/progress";
+import { reviewItemAction, signoffStageAction, setEnrollmentStatusAction } from "@/app/actions/teach";
+import { PageHeader, ProgressBar, Stat, LevelPill, KindPill, StatusPill } from "@/components/ui";
+import { AssessmentForm } from "@/components/assessment-form";
+import { DEFAULT_RUBRIC } from "@/lib/rubric";
+import { pct, fmtDate } from "@/lib/utils";
+
+export const metadata = { title: "Student" };
+
+export default async function StudentPage({ params }: { params: Promise<{ id: string; enrollmentId: string }> }) {
+  const { enrollmentId } = await params;
+  const { cohort, enrollment } = await requireTeachableEnrollment(enrollmentId);
+  const student = (await db.query.users.findFirst({ where: eq(schema.users.id, enrollment.userId) }))!;
+  const track = (await db.query.tracks.findFirst({ where: eq(schema.tracks.id, cohort.trackId) }))!;
+  const tree = await loadTrackTree(track.id);
+  const { progress, signoffs } = await loadProgress([enrollment.id]);
+  const sum = summarize(tree, progress, signoffs);
+  const byItem = new Map(progress.map((p) => [p.itemId, p]));
+  const signBy = new Map(signoffs.map((s) => [s.stageId, s]));
+  const [assessments, logs] = await Promise.all([
+    db.query.assessments.findMany({ where: eq(schema.assessments.enrollmentId, enrollment.id), orderBy: desc(schema.assessments.date) }),
+    db.query.weeklyLogs.findMany({ where: eq(schema.weeklyLogs.enrollmentId, enrollment.id), orderBy: desc(schema.weeklyLogs.weekStart), limit: 8 }),
+  ]);
+  const rubric = track.rubric?.length ? track.rubric : DEFAULT_RUBRIC;
+
+  return (
+    <>
+      <PageHeader
+        title={student.name ?? student.email ?? "Student"}
+        sub={<>{student.email} · {cohort.name}</>}
+        back={{ href: `/cohorts/${cohort.id}`, label: cohort.name }}
+        actions={
+          <form action={setEnrollmentStatusAction} className="flex gap-2">
+            <input type="hidden" name="enrollmentId" value={enrollment.id} />
+            <select name="status" defaultValue={enrollment.status} className="input py-1.5" aria-label="Enrollment status">
+              {["ACTIVE", "PAUSED", "COMPLETED", "WITHDRAWN"].map((s) => <option key={s} value={s}>{s.toLowerCase()}</option>)}
+            </select>
+            <button className="btn-ghost">Update</button>
+          </form>
+        }
+      />
+      <div className="mb-6 grid gap-3 sm:grid-cols-4">
+        <div className="card p-4 sm:col-span-2">
+          <div className="flex items-baseline justify-between"><span className="text-xs font-semibold uppercase tracking-wide text-muted">Progress</span><span className="font-serif text-2xl">{pct(sum.pct)}</span></div>
+          <div className="mt-3"><ProgressBar value={sum.pct} expected={expectedPct(tree, cohort.startDate)} /></div>
+        </div>
+        <Stat label="Stages passed" value={`${sum.stagesPassed}/${tree.length}`} />
+        <Stat label="Verified items" value={sum.verified} sub={`${sum.done} done in total`} />
+      </div>
+
+      <h2 className="h2 mb-3">Stages and sign-off</h2>
+      <div className="mb-8 space-y-3">
+        {tree.map((stage, i) => {
+          const s = sum.stages[i];
+          const so = signBy.get(stage.id);
+          return (
+            <details key={stage.id} className="card">
+              <summary className="flex cursor-pointer list-none flex-wrap items-center gap-3 p-4">
+                <span className="min-w-0 flex-1">
+                  <span className="flex flex-wrap items-center gap-2">
+                    <span className="font-semibold">{i + 1}. {stage.title}</span><LevelPill level={stage.level} />
+                    {so?.passed === true && <span className="pill bg-forest-tint text-forest">✓ passed</span>}
+                    {so?.passed === false && <span className="pill bg-danger-tint text-danger">not passed</span>}
+                  </span>
+                  <span className="mt-2 block max-w-md"><ProgressBar value={s.pct} /></span>
+                </span>
+                <span className="text-sm text-muted">{s.done}/{s.required} · {s.verified} verified</span>
+              </summary>
+              <div className="border-t border-line p-4">
+                {stage.doneWhen && <p className="mb-3 text-sm"><b className="text-saffron-ink">Done when:</b> {stage.doneWhen}</p>}
+                <form action={signoffStageAction} className="mb-4 flex flex-wrap items-center gap-2 rounded-lg bg-surface-2 p-3">
+                  <input type="hidden" name="enrollmentId" value={enrollment.id} /><input type="hidden" name="stageId" value={stage.id} />
+                  <input name="notes" defaultValue={so?.notes ?? ""} placeholder="Sign-off notes (evidence seen, test passed…)" className="input min-w-0 flex-1" />
+                  <button name="decision" value="PASS" className="btn-primary">Pass stage</button>
+                  <button name="decision" value="FAIL" className="btn-danger">Not yet</button>
+                  {so && <button name="decision" value="CLEAR" className="btn-ghost">Clear</button>}
+                  {so && <span className="w-full text-xs text-muted">Last decision {fmtDate(so.signedAt)}</span>}
+                </form>
+                <ul className="divide-y divide-line">
+                  {stage.items.map((it) => {
+                    const p = byItem.get(it.id);
+                    return (
+                      <li key={it.id} className="flex flex-wrap items-center gap-2 py-2 text-sm">
+                        <span className="min-w-0 flex-1">
+                          <span className="font-medium">{it.title}</span> <KindPill kind={it.kind} /> <StatusPill status={p?.status} />
+                          {p?.evidenceUrl && <a href={p.evidenceUrl} target="_blank" rel="noreferrer" className="ml-2 text-xs text-sky underline">evidence</a>}
+                          {p?.note && <span className="block text-xs text-muted">“{p.note}”</span>}
+                        </span>
+                        {p?.status !== "VERIFIED" && (
+                          <form action={reviewItemAction}>
+                            <input type="hidden" name="enrollmentId" value={enrollment.id} /><input type="hidden" name="itemId" value={it.id} />
+                            <button name="decision" value="VERIFIED" className="text-xs font-semibold text-forest">Verify</button>
+                          </form>
+                        )}
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            </details>
+          );
+        })}
+      </div>
+
+      <div className="grid gap-8 lg:grid-cols-2">
+        <section>
+          <h2 className="h2 mb-3">Score an assessment</h2>
+          <AssessmentForm enrollmentId={enrollment.id} rubric={rubric} today={new Date().toISOString().slice(0, 10)} />
+          {assessments.length > 0 && (
+            <div className="card mt-4 divide-y divide-line">
+              {assessments.map((a) => (
+                <div key={a.id} className="p-3 text-sm">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <span className="font-semibold">{a.title}</span>
+                    <span className={`pill ${a.passed ? "bg-forest-tint text-forest" : "bg-danger-tint text-danger"}`}>{a.passed ? "passed" : "not passed"} · {a.average?.toFixed(2)}</span>
+                  </div>
+                  <div className="text-xs text-muted">{fmtDate(a.date)}</div>
+                  <div className="mt-1 flex flex-wrap gap-x-3 text-xs text-muted">{Object.entries(a.scores).map(([k, v]) => <span key={k}>{k}: {v.join(" / ")}</span>)}</div>
+                  {a.notes && <p className="mt-1 text-xs">{a.notes}</p>}
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+        <section>
+          <h2 className="h2 mb-3">Recent weekly logs</h2>
+          <div className="card divide-y divide-line">
+            {logs.length === 0 && <p className="p-4 text-sm text-muted">No weeks logged yet.</p>}
+            {logs.map((l) => (
+              <div key={l.id} className="p-3 text-sm">
+                <div className="flex justify-between"><span className="font-semibold">Week of {fmtDate(l.weekStart)}</span><span className="text-muted">{l.hours} h</span></div>
+                {l.finished && <p className="mt-1">{l.finished}</p>}
+                {l.stuck && <p className="mt-1 text-muted">Stuck: {l.stuck}</p>}
+              </div>
+            ))}
+          </div>
+        </section>
+      </div>
+    </>
+  );
+}

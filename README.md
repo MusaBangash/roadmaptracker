@@ -1,36 +1,51 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# NoorAI Tracks
 
-## Getting Started
+Roadmap trackers for schools — students tick off lessons and submit project evidence, instructors verify work and sign off stages, admins run cohorts and see who is falling behind. It replaces the printed PDF trackers with one shared record.
 
-First, run the development server:
+Built for Special Technician and any other school that joins: every school's data is kept separate.
+
+## What's inside
+
+**9 tracks, 152 stages, 1,423 items**, loaded from `content/tracks/*.json`:
+Python Developer · ML Engineer · AI Engineer · SRE & Platform · Forward-Deployed Engineer · Data Engineer · Security Engineer · AI Engineer Roadmap (Special Technician, Edition 4) · AI for Everyone (NAVTTC, Edition 2).
+
+| Role | Can do |
+|---|---|
+| **Student** | Join with an invite link · tick lessons · submit evidence links for projects/deliverables · weekly log (hours, finished, stuck) · see progress against the cohort plan and what the instructor verified |
+| **Instructor** | Review queue (verify / needs work) · sign off stages · score assessments with the 5-criterion rubric (pass = average ≥ 3 and no criterion below 2) · attendance · invite students · CSV export |
+| **Admin** | Everything an instructor can, for every cohort · create cohorts · invite instructors/admins · manage people and roles · turn tracks on/off for the school |
+| **Platform admin** | Create new schools and hand each one to its own admin |
+
+A student is flagged **at risk** when inactive for 14 days or more than 15 points behind where the cohort plan expects them to be.
+
+## Stack
+
+Next.js 15 (App Router, server actions) · React 19 · Tailwind CSS 4 · Auth.js v5 (email + password and Google) · Drizzle ORM · PostgreSQL (Neon) · deployed on Vercel.
+
+> Drizzle is used instead of Prisma so the build needs no downloaded query-engine binary — pure TypeScript, smaller cold starts on Vercel.
+
+## Run it on your computer
+
+Requirements: Node.js 20+, a Postgres database (a free Neon project works).
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+cp .env.example .env          # then fill in DATABASE_URL, DIRECT_URL, AUTH_SECRET, SEED_*
+npm run db:migrate            # creates the tables
+npm run db:sync               # loads the tracks + creates your admin and first school
+npm run dev                   # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Sign in with `SEED_ADMIN_EMAIL` / `SEED_ADMIN_PASSWORD`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Updating roadmap content
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Edit or replace the JSON files in `content/tracks/`, then run `npm run db:sync` (Vercel runs it on every deploy). Sync is safe to repeat: stages and items are matched by key, existing student progress is kept, and anything removed from the JSON is archived rather than deleted.
 
-## Learn More
+## Changing the database schema
 
-To learn more about Next.js, take a look at the following resources:
+Edit `src/db/schema.ts`, run `npm run db:generate`, commit the new file in `drizzle/`. Vercel applies it on the next deploy.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Deploying
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+See **DEPLOY.md** for the step-by-step guide (Neon → Google sign-in → Vercel).

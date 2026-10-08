@@ -1,0 +1,1218 @@
+{
+ "slug": "data-engineer",
+ "title": "Data Engineer",
+ "kind": "ROLE",
+ "edition": "Edition 1  -  University-grade",
+ "subtitle": "Build the pipelines, warehouses and platforms every AI and analytics team depends on",
+ "summary": "Move, model, clean and serve data reliably at scale - for analytics and for AI.",
+ "expert": "Designs data platforms that are correct, fast, cheap and trusted: models data so the business can answer real questions, runs batch and streaming pipelines that recover on their own, understands storage and query engines from the inside, and feeds analytics and AI systems with data people can rely on.",
+ "benchmarks": [
+  {
+   "title": "Certification",
+   "detail": "One cloud data-engineering certification: Microsoft Fabric Data Engineer (DP-700), AWS Certified Data Engineer - Associate, Databricks Certified Data Engineer Associate, or Google Professional Data Engineer."
+  },
+  {
+   "title": "SQL",
+   "detail": "LeetCode SQL 50 study plan plus 100 further SQL problems, including 30 hard, each with a written explanation."
+  },
+  {
+   "title": "Peer-reviewed project",
+   "detail": "A DataTalksClub Data Engineering Zoomcamp project passed through its public peer review."
+  },
+  {
+   "title": "Scale",
+   "detail": "A pipeline that processes the full NYC TLC taxi trip dataset (over a billion rows) with documented run time and cost."
+  },
+  {
+   "title": "Defended out loud",
+   "detail": "Defend your capstone platform for 30 minutes: data model, failure recovery, data quality, cost at 10x volume."
+  }
+ ],
+ "stages": [
+  {
+   "key": "python-for-data-engineering",
+   "title": "Python for data engineering",
+   "level": "Foundation",
+   "weeks": 3,
+   "benchmark": "MIT 6.100A (applied)  |  Berkeley Data 100 (selected)",
+   "goal": "Write clean, tested Python that moves and transforms data.",
+   "doneWhen": "You write a tested script that ingests three formats (CSV, JSON, API), cleans them and loads a database idempotently.",
+   "resources": "Python Data Science Handbook (free)  |  pandas and Polars docs  |  Python Developer track stages 1-2",
+   "items": [
+    {
+     "key": "file-formats",
+     "title": "File formats",
+     "detail": "CSV, JSON, Parquet, Avro - trade-offs and schemas",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "pandas-and-polars",
+     "title": "pandas and Polars",
+     "detail": "loading, cleaning, joining, aggregating; when Polars is faster",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "working-with-apis",
+     "title": "Working with APIs",
+     "detail": "pagination, rate limits, retries, incremental pulls",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "typing-and-validation",
+     "title": "Typing and validation",
+     "detail": "type hints, Pydantic models for records",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "testing-data-code",
+     "title": "Testing data code",
+     "detail": "pytest, fixtures, sample datasets",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "packaging",
+     "title": "Packaging",
+     "detail": "uv/Poetry, pyproject, CLI entry points",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "ingestion-script",
+     "title": "Ingestion script",
+     "detail": "three sources to Postgres, tested and idempotent",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "sql-mastery",
+   "title": "SQL mastery",
+   "level": "Foundation",
+   "weeks": 5,
+   "benchmark": "Stanford CS145  |  Berkeley CS186 (SQL)  |  CMU 15-445 (lectures 1-2)",
+   "goal": "Answer any business question in SQL - correctly and efficiently.",
+   "doneWhen": "You finish LeetCode SQL 50 plus 50 harder problems, and can explain the query plan of your slowest query.",
+   "resources": "CMU 15-445 lectures (free)  |  Use The Index, Luke (free)  |  PostgreSQL docs  |  LeetCode and StrataScratch SQL",
+   "items": [
+    {
+     "key": "relational-algebra",
+     "title": "Relational algebra",
+     "detail": "selection, projection, joins - what SQL really does",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "joins-in-depth",
+     "title": "Joins in depth",
+     "detail": "inner, outer, semi, anti, self joins; join pitfalls",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "aggregation",
+     "title": "Aggregation",
+     "detail": "GROUP BY, HAVING, ROLLUP, CUBE",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "window-functions",
+     "title": "Window functions",
+     "detail": "ranking, running totals, lag/lead, gaps and islands",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "ctes-and-recursion",
+     "title": "CTEs and recursion",
+     "detail": "readable queries, recursive hierarchies",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "nulls-and-data-types",
+     "title": "NULLs and data types",
+     "detail": "three-valued logic, dates and time zones",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "query-plans",
+     "title": "Query plans",
+     "detail": "EXPLAIN ANALYZE, indexes, why a query is slow",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "100-sql-problems",
+     "title": "100 SQL problems",
+     "detail": "logged with explanations",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "data-modelling",
+   "title": "Data modelling",
+   "level": "Foundation",
+   "weeks": 4,
+   "benchmark": "Stanford CS145 (design)  |  Kimball dimensional modelling",
+   "goal": "Design data models that make questions easy to answer.",
+   "doneWhen": "Your model for a real business passes review: it answers 10 stated business questions with simple queries.",
+   "resources": "The Data Warehouse Toolkit (Kimball & Ross)  |  Designing Data-Intensive Applications (Kleppmann), ch. 2-3",
+   "items": [
+    {
+     "key": "oltp-vs-olap",
+     "title": "OLTP vs OLAP",
+     "detail": "why operational and analytical models differ",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "normalisation",
+     "title": "Normalisation",
+     "detail": "keys, 3NF, when to denormalise",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "dimensional-modelling",
+     "title": "Dimensional modelling",
+     "detail": "facts, dimensions, grain, star and snowflake schemas",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "slowly-changing-dimensions",
+     "title": "Slowly changing dimensions",
+     "detail": "types 1, 2 and 3",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "other-approaches",
+     "title": "Other approaches",
+     "detail": "Data Vault and one-big-table - when each fits",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "semi-structured-data",
+     "title": "Semi-structured data",
+     "detail": "JSON in warehouses, nested data",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "dimensional-model",
+     "title": "Dimensional model",
+     "detail": "for a real school, shop or clinic, with 10 answered questions",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "linux-git-and-containers-for-data",
+   "title": "Linux, Git and containers for data",
+   "level": "Foundation",
+   "weeks": 2,
+   "benchmark": "MIT Missing Semester",
+   "goal": "Run data tools on servers and in containers with confidence.",
+   "doneWhen": "Your whole local data stack (Postgres, Airflow, your code) starts with one docker compose command.",
+   "resources": "MIT Missing Semester (free)  |  Docker docs  |  SRE & Platform track stage 1",
+   "items": [
+    {
+     "key": "linux-for-data",
+     "title": "Linux for data",
+     "detail": "shell, cron, permissions, disk and memory",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "git-workflows",
+     "title": "Git workflows",
+     "detail": "branches, pull requests, reviewing data code",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "docker-and-compose",
+     "title": "Docker and Compose",
+     "detail": "images for data tools, volumes, networks",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "one-command-local-data-stack",
+     "title": "One-command local data stack",
+     "detail": "",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "warehousing-and-analytics-engineering",
+   "title": "Warehousing and analytics engineering",
+   "level": "Intermediate",
+   "weeks": 5,
+   "benchmark": "Kimball methodology  |  dbt Fundamentals",
+   "goal": "Build a warehouse people trust, with transformations as tested code.",
+   "doneWhen": "Your dbt project has tests on every model, documentation, and a lineage graph a non-engineer can read.",
+   "resources": "dbt docs and dbt Fundamentals course (free)  |  BigQuery, Snowflake or Postgres docs",
+   "items": [
+    {
+     "key": "warehouses",
+     "title": "Warehouses",
+     "detail": "Snowflake, BigQuery, Redshift, Postgres - architecture and pricing",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "elt-vs-etl",
+     "title": "ELT vs ETL",
+     "detail": "why transformation moved into the warehouse",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "dbt",
+     "title": "dbt",
+     "detail": "models, sources, refs, materialisations, incremental models",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "testing-in-dbt",
+     "title": "Testing in dbt",
+     "detail": "generic and custom tests, freshness",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "documentation-and-lineage",
+     "title": "Documentation and lineage",
+     "detail": "dbt docs, exposures",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "semantic-layer",
+     "title": "Semantic layer",
+     "detail": "metrics definitions, one source of truth",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "bi-tools",
+     "title": "BI tools",
+     "detail": "Power BI, Looker Studio or Metabase - dashboards on your models",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "dbt-warehouse",
+     "title": "dbt warehouse",
+     "detail": "staged, modelled, tested and documented, with a dashboard",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "batch-pipelines-and-orchestration",
+   "title": "Batch pipelines and orchestration",
+   "level": "Intermediate",
+   "weeks": 5,
+   "benchmark": "Industry standard  |  Fundamentals of Data Engineering",
+   "goal": "Run pipelines that schedule themselves, recover from failure and can be re-run safely.",
+   "doneWhen": "You kill your pipeline mid-run and it recovers without duplicates; a 30-day backfill runs with one command.",
+   "resources": "Fundamentals of Data Engineering (Reis & Housley)  |  Apache Airflow and Dagster docs",
+   "items": [
+    {
+     "key": "pipeline-design",
+     "title": "Pipeline design",
+     "detail": "extract, load, transform; batch windows",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "orchestration",
+     "title": "Orchestration",
+     "detail": "Airflow DAGs, tasks, sensors; Dagster assets",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "idempotency",
+     "title": "Idempotency",
+     "detail": "safe re-runs, upserts, partition overwrites",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "backfills-and-incremental-loads",
+     "title": "Backfills and incremental loads",
+     "detail": "watermarks, late data",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "failure-handling",
+     "title": "Failure handling",
+     "detail": "retries, alerting, dead-letter handling",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "scheduling-and-dependencies",
+     "title": "Scheduling and dependencies",
+     "detail": "SLAs, cross-pipeline dependencies",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "change-data-capture-basics",
+     "title": "Change data capture basics",
+     "detail": "why and when",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "orchestrated-pipeline",
+     "title": "Orchestrated pipeline",
+     "detail": "API to warehouse, idempotent, backfillable, alerting",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "distributed-data-processing",
+   "title": "Distributed data processing",
+   "level": "Intermediate",
+   "weeks": 6,
+   "benchmark": "Stanford CS246  |  Berkeley (Spark origin, AMPLab papers)",
+   "goal": "Process data far bigger than one machine - and know why it is slow.",
+   "doneWhen": "Your Spark job on a billion-row dataset runs within a stated time and cost, and you can explain every shuffle in its plan.",
+   "resources": "Mining of Massive Datasets (Leskovec, Rajaraman, Ullman - free)  |  Spark docs  |  Learning Spark (O'Reilly)",
+   "items": [
+    {
+     "key": "mapreduce",
+     "title": "MapReduce",
+     "detail": "the model and the paper",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "spark-architecture",
+     "title": "Spark architecture",
+     "detail": "driver, executors, DAGs, lazy evaluation",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "pyspark-and-spark-sql",
+     "title": "PySpark and Spark SQL",
+     "detail": "DataFrames, UDFs and when to avoid them",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "partitioning-and-shuffles",
+     "title": "Partitioning and shuffles",
+     "detail": "skew, joins at scale, broadcast joins",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "performance",
+     "title": "Performance",
+     "detail": "caching, file sizes, the Spark UI",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "databricks",
+     "title": "Databricks",
+     "detail": "workspace, jobs, clusters, notebooks",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "alternatives",
+     "title": "Alternatives",
+     "detail": "DuckDB and Polars for 'medium data'",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "billion-row-pipeline",
+     "title": "Billion-row pipeline",
+     "detail": "NYC TLC taxi data, documented time and cost",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "cloud-data-platforms",
+   "title": "Cloud data platforms",
+   "level": "Intermediate",
+   "weeks": 5,
+   "benchmark": "Cloud certification objectives (DP-700, AWS Data Engineer, Google PDE)",
+   "goal": "Build data systems on a major cloud - securely and without surprise bills.",
+   "doneWhen": "You pass one cloud data-engineering certification (or a full timed practice exam at 80%+).",
+   "resources": "Microsoft Learn (free)  |  AWS Skill Builder (free tier)  |  Google Cloud Skills Boost",
+   "items": [
+    {
+     "key": "object-storage",
+     "title": "Object storage",
+     "detail": "S3, ADLS, GCS - layouts and lifecycle",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "azure-data-stack",
+     "title": "Azure data stack",
+     "detail": "Data Factory, Fabric, Synapse, Databricks on Azure",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "aws-data-stack",
+     "title": "AWS data stack",
+     "detail": "Glue, Athena, Redshift, EMR, Lambda",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "google-data-stack",
+     "title": "Google data stack",
+     "detail": "BigQuery, Dataflow, Pub/Sub (awareness)",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "identity-and-access",
+     "title": "Identity and access",
+     "detail": "IAM roles, service accounts, least privilege",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "cost-control",
+     "title": "Cost control",
+     "detail": "storage tiers, compute sizing, budgets and alerts",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "cloud-pipeline",
+     "title": "Cloud pipeline",
+     "detail": "your batch pipeline moved to Azure or AWS, with a cost report",
+     "kind": "PROJECT",
+     "optional": false
+    },
+    {
+     "key": "certification",
+     "title": "Certification",
+     "detail": "passed (or 80%+ on a full timed mock)",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "lakehouse-and-table-formats",
+   "title": "Lakehouse and table formats",
+   "level": "Intermediate",
+   "weeks": 3,
+   "benchmark": "CMU 15-721 (storage, selected)  |  Delta Lake and Iceberg papers",
+   "goal": "Store analytical data in open formats that behave like a database.",
+   "doneWhen": "Your lakehouse supports time travel, schema evolution and a MERGE upsert, demonstrated on real data.",
+   "resources": "Delta Lake and Apache Iceberg docs  |  Parquet format docs",
+   "items": [
+    {
+     "key": "columnar-storage",
+     "title": "Columnar storage",
+     "detail": "Parquet and ORC internals, compression, encoding",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "table-formats",
+     "title": "Table formats",
+     "detail": "Delta Lake, Apache Iceberg, Hudi - ACID on object storage",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "medallion-architecture",
+     "title": "Medallion architecture",
+     "detail": "bronze, silver, gold layers",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "schema-evolution-and-time-travel",
+     "title": "Schema evolution and time travel",
+     "detail": "",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "partitioning-clustering-and-compaction",
+     "title": "Partitioning, clustering and compaction",
+     "detail": "",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "lakehouse",
+     "title": "Lakehouse",
+     "detail": "medallion layers with MERGE, time travel and compaction",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "data-quality-testing-and-contracts",
+   "title": "Data quality, testing and contracts",
+   "level": "Intermediate",
+   "weeks": 3,
+   "benchmark": "MIT Introduction to Data-Centric AI (data quality)",
+   "goal": "Catch bad data before anyone downstream sees it.",
+   "doneWhen": "A planted bad load is caught automatically and blocked before it reaches the dashboard.",
+   "resources": "Great Expectations or Soda docs  |  MIT Data-Centric AI lectures (free)",
+   "items": [
+    {
+     "key": "dimensions-of-quality",
+     "title": "Dimensions of quality",
+     "detail": "completeness, validity, uniqueness, timeliness",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "testing-tools",
+     "title": "Testing tools",
+     "detail": "dbt tests, Great Expectations, Soda",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "data-contracts",
+     "title": "Data contracts",
+     "detail": "agreements between producers and consumers",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "data-observability",
+     "title": "Data observability",
+     "detail": "freshness, volume, schema and distribution monitoring",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "incident-handling",
+     "title": "Incident handling",
+     "detail": "quarantine, backfill, communicating with users",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "quality-gate",
+     "title": "Quality gate",
+     "detail": "planted bad load caught and blocked",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "software-engineering-for-data",
+   "title": "Software engineering for data",
+   "level": "Intermediate",
+   "weeks": 3,
+   "benchmark": "CMU 17-313 (selected)",
+   "goal": "Treat pipelines as production software.",
+   "doneWhen": "Every change to your pipeline goes through review, automated tests and a CI/CD deploy.",
+   "resources": "GitHub Actions docs  |  Terraform docs  |  dbt CI docs",
+   "items": [
+    {
+     "key": "ci-cd-for-data",
+     "title": "CI/CD for data",
+     "detail": "tests on pull requests, deploy on merge",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "environments",
+     "title": "Environments",
+     "detail": "dev, staging, production; data in each",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "infrastructure-as-code",
+     "title": "Infrastructure as code",
+     "detail": "Terraform for data resources",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "code-review-for-sql-and-pipelines",
+     "title": "Code review for SQL and pipelines",
+     "detail": "",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "agile-in-data-teams",
+     "title": "Agile in data teams",
+     "detail": "tickets, sprints, estimation",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "documentation",
+     "title": "Documentation",
+     "detail": "runbooks, data dictionaries",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "ci-cd-for-your-warehouse",
+     "title": "CI/CD for your warehouse",
+     "detail": "tests and deploy on every merge",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "streaming-data",
+   "title": "Streaming data",
+   "level": "Advanced",
+   "weeks": 5,
+   "benchmark": "Designing Data-Intensive Applications, ch. 11  |  Streaming Systems",
+   "goal": "Process data the moment it arrives - correctly.",
+   "doneWhen": "Your streaming pipeline handles late and duplicate events correctly, shown with tests.",
+   "resources": "Streaming Systems (Akidau, Chernyak, Lax)  |  Apache Kafka and Flink docs  |  Debezium docs",
+   "items": [
+    {
+     "key": "event-streaming",
+     "title": "Event streaming",
+     "detail": "logs, topics, partitions, consumer groups (Kafka)",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "delivery-guarantees",
+     "title": "Delivery guarantees",
+     "detail": "at-least-once, exactly-once, idempotent consumers",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "stream-processing",
+     "title": "Stream processing",
+     "detail": "Flink or Spark Structured Streaming",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "time",
+     "title": "Time",
+     "detail": "event time vs processing time, watermarks, windows",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "change-data-capture",
+     "title": "Change data capture",
+     "detail": "Debezium from Postgres to Kafka",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "schemas",
+     "title": "Schemas",
+     "detail": "Avro/Protobuf, schema registry, compatibility",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "real-time-pipeline",
+     "title": "Real-time pipeline",
+     "detail": "CDC to Kafka to lakehouse, with late-data tests",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "database-internals",
+   "title": "Database internals",
+   "level": "Advanced",
+   "weeks": 5,
+   "benchmark": "CMU 15-445 / 15-721",
+   "goal": "Understand how storage and query engines work - so you can make them fast.",
+   "doneWhen": "You build a small columnar query engine and explain the trade-offs of your design.",
+   "resources": "CMU 15-445 and 15-721 lectures (Andy Pavlo, free)  |  Database Internals (Petrov)",
+   "items": [
+    {
+     "key": "storage",
+     "title": "Storage",
+     "detail": "pages, buffer pools, heap files",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "indexes",
+     "title": "Indexes",
+     "detail": "B+ trees, LSM trees, hash indexes",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "query-execution",
+     "title": "Query execution",
+     "detail": "iterator vs vectorised execution",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "joins",
+     "title": "Joins",
+     "detail": "nested-loop, hash and sort-merge joins",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "query-optimisation",
+     "title": "Query optimisation",
+     "detail": "cost models, cardinality estimation",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "transactions",
+     "title": "Transactions",
+     "detail": "concurrency control, MVCC, write-ahead logging",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "column-stores",
+     "title": "Column stores",
+     "detail": "compression, late materialisation",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "mini-columnar-query-engine",
+     "title": "Mini columnar query engine",
+     "detail": "scan, filter, aggregate, join in Python",
+     "kind": "PROJECT",
+     "optional": false
+    },
+    {
+     "key": "cmu-15-445-bustub-project",
+     "title": "CMU 15-445 BusTub project",
+     "detail": "buffer pool manager (C++)",
+     "kind": "PROJECT",
+     "optional": true
+    }
+   ]
+  },
+  {
+   "key": "distributed-systems",
+   "title": "Distributed systems",
+   "level": "Advanced",
+   "weeks": 4,
+   "benchmark": "MIT 6.5840",
+   "goal": "Understand how distributed data systems fail and stay consistent.",
+   "doneWhen": "Your implementation passes the MIT 6.5840 MapReduce lab tests.",
+   "resources": "MIT 6.5840 lectures and labs (free; labs in Go)  |  Designing Data-Intensive Applications",
+   "items": [
+    {
+     "key": "replication",
+     "title": "Replication",
+     "detail": "leaders, followers, lag",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "partitioning",
+     "title": "Partitioning",
+     "detail": "hashing, ranges, rebalancing",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "consistency",
+     "title": "Consistency",
+     "detail": "linearisability vs eventual consistency",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "consensus",
+     "title": "Consensus",
+     "detail": "Raft and why systems like Kafka and etcd need it",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "failure",
+     "title": "Failure",
+     "detail": "partitions, retries, idempotency",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "mit-6-5840-mapreduce-lab",
+     "title": "MIT 6.5840 MapReduce lab",
+     "detail": "passes the tests",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "data-for-ai-and-ml",
+   "title": "Data for AI and ML",
+   "level": "Advanced",
+   "weeks": 4,
+   "benchmark": "Stanford CS329S (data)  |  Designing Machine Learning Systems",
+   "goal": "Feed AI systems with the right data - fresh, clean and traceable.",
+   "doneWhen": "Your document pipeline turns messy PDFs into a searchable vector index that refreshes automatically.",
+   "resources": "Designing Machine Learning Systems (Chip Huyen)  |  Feast, pgvector and Unstructured docs",
+   "items": [
+    {
+     "key": "training-data-pipelines",
+     "title": "Training data pipelines",
+     "detail": "versioning, splits, reproducibility",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "feature-stores",
+     "title": "Feature stores",
+     "detail": "offline and online features, point-in-time correctness",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "unstructured-data",
+     "title": "Unstructured data",
+     "detail": "PDF, DOCX, OCR, tables, Urdu/English text",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "embedding-pipelines",
+     "title": "Embedding pipelines",
+     "detail": "chunking, embedding, incremental re-indexing",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "vector-databases",
+     "title": "Vector databases",
+     "detail": "pgvector, Qdrant - operating them",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "llm-assisted-extraction",
+     "title": "LLM-assisted extraction",
+     "detail": "structured output from documents, with validation",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "data-for-evaluation",
+     "title": "Data for evaluation",
+     "detail": "golden sets, labelling workflows",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "document-to-vector-pipeline",
+     "title": "Document-to-vector pipeline",
+     "detail": "messy PDFs, refreshed automatically",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "governance-security-and-privacy",
+   "title": "Governance, security and privacy",
+   "level": "Advanced",
+   "weeks": 3,
+   "benchmark": "Industry standard",
+   "goal": "Make data easy to find, safe to use, and compliant.",
+   "doneWhen": "Your platform masks personal data by role, records lineage, and passes an access review.",
+   "resources": "Unity Catalog, DataHub and OpenLineage docs  |  GDPR principles",
+   "items": [
+    {
+     "key": "access-control",
+     "title": "Access control",
+     "detail": "roles, row- and column-level security",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "personal-data",
+     "title": "Personal data",
+     "detail": "classification, masking, retention, deletion",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "catalogs",
+     "title": "Catalogs",
+     "detail": "Unity Catalog, DataHub - discovery and ownership",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "lineage",
+     "title": "Lineage",
+     "detail": "OpenLineage, column-level lineage",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "regulation-basics",
+     "title": "Regulation basics",
+     "detail": "GDPR principles and local data-protection rules",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "governed-dataset",
+     "title": "Governed dataset",
+     "detail": "masked PII, lineage and access review",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "performance-and-cost-engineering",
+   "title": "Performance and cost engineering",
+   "level": "Advanced",
+   "weeks": 3,
+   "benchmark": "Industry standard (FinOps)",
+   "goal": "Make pipelines fast and cheap - and prove it.",
+   "doneWhen": "You cut a real pipeline's run time or cost by 50% or more, with before-and-after numbers.",
+   "resources": "Cloud provider cost docs  |  Spark and warehouse tuning guides",
+   "items": [
+    {
+     "key": "query-tuning",
+     "title": "Query tuning",
+     "detail": "pruning, clustering, materialised views",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "spark-tuning",
+     "title": "Spark tuning",
+     "detail": "partition sizing, skew fixes, memory",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "storage-cost",
+     "title": "Storage cost",
+     "detail": "file sizes, compaction, tiers",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "compute-cost",
+     "title": "Compute cost",
+     "detail": "autoscaling, spot instances, scheduling",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "cost-attribution",
+     "title": "Cost attribution",
+     "detail": "tagging, per-team reporting",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "optimisation-report",
+     "title": "Optimisation report",
+     "detail": "50%+ improvement, before and after",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "data-platform-architecture",
+   "title": "Data platform architecture",
+   "level": "Expert",
+   "weeks": 6,
+   "benchmark": "Senior / staff data engineering practice",
+   "goal": "Design whole data platforms and defend the trade-offs.",
+   "doneWhen": "You write and defend an architecture document for a real organisation's data platform.",
+   "resources": "Fundamentals of Data Engineering (Reis & Housley)  |  Designing Data-Intensive Applications  |  Data Mesh (Dehghani)",
+   "items": [
+    {
+     "key": "architecture-patterns",
+     "title": "Architecture patterns",
+     "detail": "warehouse, lake, lakehouse, data mesh",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "build-vs-buy",
+     "title": "Build vs buy",
+     "detail": "managed services vs open source",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "batch-and-streaming-together",
+     "title": "Batch and streaming together",
+     "detail": "lambda and kappa patterns",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "multi-tenant-platforms",
+     "title": "Multi-tenant platforms",
+     "detail": "self-service, golden paths for data",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "reliability-for-data",
+     "title": "Reliability for data",
+     "detail": "SLAs, SLOs and on-call for pipelines",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "leadership",
+     "title": "Leadership",
+     "detail": "design reviews, mentoring, writing decisions",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "architecture-document",
+     "title": "Architecture document",
+     "detail": "defended in review",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "interviews-and-career",
+   "title": "Interviews and career",
+   "level": "Expert",
+   "weeks": 3,
+   "benchmark": "Industry interview standard",
+   "goal": "Turn your skills into offers.",
+   "doneWhen": "You pass three mock interviews: SQL, data modelling, and pipeline system design.",
+   "resources": "Ace the Data Engineering Interview resources  |  your own project write-ups",
+   "items": [
+    {
+     "key": "sql-interviews",
+     "title": "SQL interviews",
+     "detail": "live problems, thinking out loud",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "data-modelling-interviews",
+     "title": "Data modelling interviews",
+     "detail": "designing a schema from a business description",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "pipeline-system-design",
+     "title": "Pipeline system design",
+     "detail": "batch and streaming designs with numbers",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "take-home-assignments",
+     "title": "Take-home assignments",
+     "detail": "scope, test, document",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "three-mock-interviews",
+     "title": "Three mock interviews",
+     "detail": "recorded and reviewed",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "data-engineering-capstone",
+   "title": "Data engineering capstone",
+   "level": "Expert",
+   "weeks": 8,
+   "benchmark": "Graduate capstone standard",
+   "goal": "Run a complete data platform end to end - and defend it.",
+   "doneWhen": "Your platform runs 30+ days with quality gates, alerting and a dashboard people use, and you defend it for 30 minutes.",
+   "resources": "Everything above",
+   "items": [
+    {
+     "key": "ingestion",
+     "title": "Ingestion",
+     "detail": "batch and streaming sources",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "storage-and-modelling",
+     "title": "Storage and modelling",
+     "detail": "lakehouse plus dbt warehouse",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "operations",
+     "title": "Operations",
+     "detail": "orchestration, quality gates, CI/CD, alerting, cost report",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "data-engineering-capstone",
+     "title": "Data engineering capstone",
+     "detail": "operated 30+ days, defended for 30 minutes",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  }
+ ]
+}

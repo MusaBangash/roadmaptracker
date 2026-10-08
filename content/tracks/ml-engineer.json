@@ -1,0 +1,1589 @@
+{
+ "slug": "ml-engineer",
+ "title": "ML Engineer",
+ "kind": "ROLE",
+ "edition": "Edition 2  -  University-grade",
+ "subtitle": "The ML curriculum of Stanford, MIT and CMU - plus the production skills jobs demand",
+ "summary": "Design, train, evaluate and deploy machine-learning models - and understand the maths underneath.",
+ "expert": "Derives and implements models from the maths up, trains them across many GPUs, writes the kernels that make them fast, reproduces published research, and runs ML systems in production - at the level of a Stanford, MIT or IIT ML graduate.",
+ "benchmarks": [
+  {
+   "title": "Kaggle",
+   "detail": "Competitions Expert (two bronze medals) by the end of Intermediate; a silver medal by the end of Advanced."
+  },
+  {
+   "title": "University assignments passed",
+   "detail": "CS229 problem sets; CS231n assignments 1-3; CS224n assignments; CS336 assignment 1 test suite; CMU 10-714 homework tests."
+  },
+  {
+   "title": "Research reproduction",
+   "detail": "Reproduce a published paper's main result within its reported margin, with a written report."
+  },
+  {
+   "title": "Production proof",
+   "detail": "A deployed model with monitoring and automated retraining; a multi-GPU training run with a profiling report."
+  },
+  {
+   "title": "Defended out loud",
+   "detail": "Defend any model for 30 minutes: why this architecture, this loss, this metric, and what breaks it."
+  }
+ ],
+ "stages": [
+  {
+   "key": "scientific-python-and-data",
+   "title": "Scientific Python and data",
+   "level": "Foundation",
+   "weeks": 4,
+   "benchmark": "UC Berkeley Data 100",
+   "goal": "Load, clean, explore and visualise real data fluently.",
+   "doneWhen": "Given a messy dataset you clean it, explore it, and present five evidence-backed findings in one sitting.",
+   "resources": "Berkeley Data 100 materials  |  Python Data Science Handbook (free online)  |  NumPy and pandas docs",
+   "items": [
+    {
+     "key": "numpy-lesson-1-arrays",
+     "title": "NumPy lesson 1 - arrays",
+     "detail": "ndarray, dtype, shape, creation",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "numpy-lesson-2-indexing-and-reshaping",
+     "title": "NumPy lesson 2 - indexing and reshaping",
+     "detail": "slicing, boolean masks, fancy indexing, stacking",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "numpy-lesson-3-vectorised-maths",
+     "title": "NumPy lesson 3 - vectorised maths",
+     "detail": "broadcasting, aggregations along axes",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "numpy-lesson-4-linear-algebra-and-random",
+     "title": "NumPy lesson 4 - linear algebra and random",
+     "detail": "matmul, solve, random generators and seeds",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "four-numpy-projects",
+     "title": "Four NumPy projects",
+     "detail": "one per lesson",
+     "kind": "PROJECT",
+     "optional": false
+    },
+    {
+     "key": "pandas",
+     "title": "pandas",
+     "detail": "DataFrames, loading, selecting, cleaning, groupby, merge, pivot",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "visualisation",
+     "title": "Visualisation",
+     "detail": "Matplotlib, Seaborn; choosing the right chart",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "sql-for-analysis",
+     "title": "SQL for analysis",
+     "detail": "joins, aggregates, window functions",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "exploratory-data-analysis",
+     "title": "Exploratory data analysis",
+     "detail": "distributions, outliers, missing data, correlations",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "eda-report",
+     "title": "EDA report",
+     "detail": "on a real Pakistani dataset, published on GitHub",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "linear-algebra",
+   "title": "Linear algebra",
+   "level": "Foundation",
+   "weeks": 5,
+   "benchmark": "MIT 18.06 (Strang)",
+   "goal": "Think in vectors and matrices - the language of every ML model.",
+   "doneWhen": "You solve the MIT 18.06 problem sets and implement PCA from scratch via the SVD.",
+   "resources": "MIT 18.06 lectures on OCW (Gilbert Strang)  |  Introduction to Linear Algebra (Strang)  |  3Blue1Brown: Essence of Linear Algebra",
+   "items": [
+    {
+     "key": "vectors-and-matrices",
+     "title": "Vectors and matrices",
+     "detail": "linear combinations, dot products, norms",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "solving-ax-b",
+     "title": "Solving Ax = b",
+     "detail": "elimination, LU factorisation, inverses",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "vector-spaces",
+     "title": "Vector spaces",
+     "detail": "column space, null space, rank, basis, dimension",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "orthogonality",
+     "title": "Orthogonality",
+     "detail": "projections, least squares, Gram-Schmidt, QR",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "determinants",
+     "title": "Determinants",
+     "detail": "properties and geometric meaning",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "eigenvalues-and-eigenvectors",
+     "title": "Eigenvalues and eigenvectors",
+     "detail": "diagonalisation, powers of matrices",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "symmetric-and-positive-definite-matrices",
+     "title": "Symmetric and positive-definite matrices",
+     "detail": "why they appear in ML",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "singular-value-decomposition",
+     "title": "Singular value decomposition",
+     "detail": "geometry, low-rank approximation",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "image-compression-with-svd",
+     "title": "Image compression with SVD",
+     "detail": "",
+     "kind": "PROJECT",
+     "optional": false
+    },
+    {
+     "key": "pca-from-scratch",
+     "title": "PCA from scratch",
+     "detail": "compared against scikit-learn",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "calculus-and-optimisation",
+   "title": "Calculus and optimisation",
+   "level": "Foundation",
+   "weeks": 5,
+   "benchmark": "MIT 18.02  |  MIT 18.S096 (Matrix Calculus for ML)  |  Stanford EE364A (selected)",
+   "goal": "Understand how models learn: gradients, and how to follow them.",
+   "doneWhen": "You derive the gradients of linear and logistic regression by hand and build a working autodiff engine.",
+   "resources": "MIT 18.S096 Matrix Calculus notes (free)  |  Convex Optimization (Boyd & Vandenberghe, free PDF)  |  3Blue1Brown: Essence of Calculus",
+   "items": [
+    {
+     "key": "derivatives-and-the-chain-rule",
+     "title": "Derivatives and the chain rule",
+     "detail": "single and multivariable",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "gradients-jacobians-and-hessians",
+     "title": "Gradients, Jacobians and Hessians",
+     "detail": "geometric meaning",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "matrix-calculus",
+     "title": "Matrix calculus",
+     "detail": "gradients with respect to vectors and matrices",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "taylor-approximation",
+     "title": "Taylor approximation",
+     "detail": "first and second order",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "convexity",
+     "title": "Convexity",
+     "detail": "convex sets and functions, why convex problems are easy",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "gradient-descent",
+     "title": "Gradient descent",
+     "detail": "step size, convergence, conditioning",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "stochastic-optimisation",
+     "title": "Stochastic optimisation",
+     "detail": "SGD, mini-batches, momentum, Adam",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "constrained-optimisation",
+     "title": "Constrained optimisation",
+     "detail": "Lagrange multipliers, KKT (intuition)",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "automatic-differentiation",
+     "title": "Automatic differentiation",
+     "detail": "forward vs reverse mode, computational graphs",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "autodiff-engine",
+     "title": "Autodiff engine",
+     "detail": "scalar reverse-mode autodiff from scratch, with a small neural net",
+     "kind": "PROJECT",
+     "optional": false
+    },
+    {
+     "key": "optimiser-comparison",
+     "title": "Optimiser comparison",
+     "detail": "SGD, momentum, Adam on the same problem, plotted",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "probability-and-statistics",
+   "title": "Probability and statistics",
+   "level": "Foundation",
+   "weeks": 6,
+   "benchmark": "Stanford CS109  |  Harvard Stat 110  |  MIT 18.650",
+   "goal": "Reason about uncertainty - the foundation of every ML model and metric.",
+   "doneWhen": "You derive the MLE for common distributions and run a correct A/B test analysis with confidence intervals.",
+   "resources": "Harvard Stat 110 (Blitzstein, free lectures and book)  |  Stanford CS109 materials  |  MIT 18.650 on OCW",
+   "items": [
+    {
+     "key": "probability-foundations",
+     "title": "Probability foundations",
+     "detail": "axioms, conditional probability, Bayes' theorem, independence",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "random-variables",
+     "title": "Random variables",
+     "detail": "discrete and continuous, PMF, PDF, CDF",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "key-distributions",
+     "title": "Key distributions",
+     "detail": "Bernoulli, binomial, Poisson, uniform, normal, exponential",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "expectation-and-variance",
+     "title": "Expectation and variance",
+     "detail": "linearity, covariance, correlation",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "joint-distributions",
+     "title": "Joint distributions",
+     "detail": "marginal and conditional, multivariate normal",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "limit-theorems",
+     "title": "Limit theorems",
+     "detail": "law of large numbers, central limit theorem",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "estimation",
+     "title": "Estimation",
+     "detail": "maximum likelihood, MAP, bias and variance of estimators",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "bayesian-inference",
+     "title": "Bayesian inference",
+     "detail": "priors, posteriors, conjugacy",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "hypothesis-testing",
+     "title": "Hypothesis testing",
+     "detail": "p-values, confidence intervals, bootstrap",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "experiment-design",
+     "title": "Experiment design",
+     "detail": "A/B testing, sample size, common mistakes",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "information-theory",
+     "title": "Information theory",
+     "detail": "entropy, cross-entropy, KL divergence",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "mle-and-bayes-notebook",
+     "title": "MLE and Bayes notebook",
+     "detail": "derivations plus simulations that confirm them",
+     "kind": "PROJECT",
+     "optional": false
+    },
+    {
+     "key": "a-b-test-analysis",
+     "title": "A/B test analysis",
+     "detail": "real or simulated data, written conclusion",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "machine-learning-foundations",
+   "title": "Machine learning foundations",
+   "level": "Intermediate",
+   "weeks": 10,
+   "benchmark": "Stanford CS229  |  MIT 6.3900  |  CMU 10-601  |  NPTEL: Introduction to Machine Learning (IIT Madras)",
+   "goal": "Understand classical ML deeply enough to derive it, implement it and apply it.",
+   "doneWhen": "You complete the CS229 problem sets, implement five algorithms from scratch, and earn your first Kaggle medal.",
+   "resources": "Stanford CS229 lecture notes and videos (free)  |  An Introduction to Statistical Learning (free)  |  Hands-On Machine Learning (Geron)  |  scikit-learn User Guide",
+   "items": [
+    {
+     "key": "the-ml-framework",
+     "title": "The ML framework",
+     "detail": "hypothesis, loss, risk, generalisation, train/val/test",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "linear-regression",
+     "title": "Linear regression",
+     "detail": "normal equations, gradient descent, probabilistic view",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "logistic-regression-and-glms",
+     "title": "Logistic regression and GLMs",
+     "detail": "sigmoid, softmax, exponential family",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "generative-models",
+     "title": "Generative models",
+     "detail": "Gaussian discriminant analysis, Naive Bayes",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "regularisation",
+     "title": "Regularisation",
+     "detail": "L1, L2, bias-variance trade-off",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "learning-theory",
+     "title": "Learning theory",
+     "detail": "generalisation bounds, VC dimension (intuition)",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "support-vector-machines",
+     "title": "Support vector machines",
+     "detail": "margins, duality, kernels",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "trees-and-ensembles",
+     "title": "Trees and ensembles",
+     "detail": "decision trees, random forests, gradient boosting, XGBoost/LightGBM",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "nearest-neighbours",
+     "title": "Nearest neighbours",
+     "detail": "k-NN, distance metrics, the curse of dimensionality",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "clustering",
+     "title": "Clustering",
+     "detail": "k-means, Gaussian mixtures, the EM algorithm",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "dimensionality-reduction",
+     "title": "Dimensionality reduction",
+     "detail": "PCA, t-SNE/UMAP for visualisation",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "model-selection",
+     "title": "Model selection",
+     "detail": "cross-validation, hyperparameter search, data leakage",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "metrics",
+     "title": "Metrics",
+     "detail": "precision, recall, F1, ROC-AUC, PR-AUC, calibration; regression metrics",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "practical-ml",
+     "title": "Practical ML",
+     "detail": "feature engineering, pipelines, imbalanced data",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "interpretability",
+     "title": "Interpretability",
+     "detail": "permutation importance, SHAP",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "five-algorithms-from-scratch",
+     "title": "Five algorithms from scratch",
+     "detail": "linear, logistic, k-means, GMM-EM, decision tree",
+     "kind": "PROJECT",
+     "optional": false
+    },
+    {
+     "key": "cs229-problem-sets",
+     "title": "CS229 problem sets",
+     "detail": "completed",
+     "kind": "PROJECT",
+     "optional": false
+    },
+    {
+     "key": "kaggle-tabular-competition",
+     "title": "Kaggle tabular competition",
+     "detail": "first medal",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "deep-learning-foundations",
+   "title": "Deep learning foundations",
+   "level": "Intermediate",
+   "weeks": 8,
+   "benchmark": "CMU 11-785  |  MIT 6.S191  |  NPTEL: Deep Learning (IIT Madras)",
+   "goal": "Build, train and debug neural networks with full understanding.",
+   "doneWhen": "You build a neural network from scratch in NumPy, then train and debug models in PyTorch until they converge reliably.",
+   "resources": "CMU 11-785 lectures (free)  |  Karpathy: Neural Networks - Zero to Hero  |  Dive into Deep Learning (d2l.ai)  |  Understanding Deep Learning (Prince, free PDF)",
+   "items": [
+    {
+     "key": "neural-networks",
+     "title": "Neural networks",
+     "detail": "perceptron, MLP, universal approximation (intuition)",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "backpropagation",
+     "title": "Backpropagation",
+     "detail": "full derivation for an MLP",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "activations-and-initialisation",
+     "title": "Activations and initialisation",
+     "detail": "ReLU family, softmax; Xavier/He initialisation",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "optimisation-for-deep-nets",
+     "title": "Optimisation for deep nets",
+     "detail": "SGD, momentum, Adam/AdamW, learning-rate schedules",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "regularisation",
+     "title": "Regularisation",
+     "detail": "dropout, weight decay, batch and layer norm, data augmentation",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "pytorch",
+     "title": "PyTorch",
+     "detail": "tensors, autograd, nn.Module, DataLoader, GPUs, mixed precision",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "tensorflow-and-keras",
+     "title": "TensorFlow and Keras",
+     "detail": "enough to read and maintain existing code",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "training-practice",
+     "title": "Training practice",
+     "detail": "overfit one batch, loss curves, gradient checks, debugging",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "hyperparameter-tuning-and-tracking",
+     "title": "Hyperparameter tuning and tracking",
+     "detail": "Optuna, Weights & Biases or MLflow",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "mlp-from-scratch-in-numpy",
+     "title": "MLP from scratch in NumPy",
+     "detail": "forward, backward, training loop",
+     "kind": "PROJECT",
+     "optional": false
+    },
+    {
+     "key": "zero-to-hero-builds",
+     "title": "Zero to Hero builds",
+     "detail": "micrograd and makemore",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "computer-vision",
+   "title": "Computer vision",
+   "level": "Intermediate",
+   "weeks": 6,
+   "benchmark": "Stanford CS231n",
+   "goal": "Build vision systems from classification to detection and segmentation.",
+   "doneWhen": "You complete CS231n assignments 1-3 and ship a detection or segmentation model on your own dataset.",
+   "resources": "Stanford CS231n notes, lectures and assignments (free)",
+   "items": [
+    {
+     "key": "image-classification-pipeline",
+     "title": "Image classification pipeline",
+     "detail": "data, loss, linear classifiers",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "convolutional-networks",
+     "title": "Convolutional networks",
+     "detail": "convolution, pooling, receptive fields",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "architectures",
+     "title": "Architectures",
+     "detail": "VGG, ResNet, EfficientNet - why each worked",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "transfer-learning",
+     "title": "Transfer learning",
+     "detail": "fine-tuning pretrained models",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "object-detection",
+     "title": "Object detection",
+     "detail": "two-stage vs one-stage, YOLO family, DETR",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "segmentation",
+     "title": "Segmentation",
+     "detail": "semantic and instance segmentation, U-Net",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "vision-transformers",
+     "title": "Vision transformers",
+     "detail": "patches, attention for images",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "self-supervised-learning",
+     "title": "Self-supervised learning",
+     "detail": "contrastive learning, CLIP",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "cs231n-assignments-1-3",
+     "title": "CS231n assignments 1-3",
+     "detail": "completed",
+     "kind": "PROJECT",
+     "optional": false
+    },
+    {
+     "key": "detection-or-segmentation-project",
+     "title": "Detection or segmentation project",
+     "detail": "your own dataset, deployed demo",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "nlp-and-transformers",
+   "title": "NLP and transformers",
+   "level": "Intermediate",
+   "weeks": 6,
+   "benchmark": "Stanford CS224n",
+   "goal": "Understand language models from word vectors to transformers.",
+   "doneWhen": "You complete the CS224n assignments and train a small GPT from scratch.",
+   "resources": "Stanford CS224n lectures and assignments (free)  |  Speech and Language Processing (Jurafsky & Martin, free draft)  |  Hugging Face course",
+   "items": [
+    {
+     "key": "word-vectors",
+     "title": "Word vectors",
+     "detail": "word2vec, GloVe, embedding spaces",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "neural-language-models",
+     "title": "Neural language models",
+     "detail": "RNNs, LSTMs, why they struggle",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "sequence-to-sequence-and-attention",
+     "title": "Sequence-to-sequence and attention",
+     "detail": "encoder-decoder models",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "transformers-in-detail",
+     "title": "Transformers in detail",
+     "detail": "self-attention, multi-head attention, positional encoding",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "tokenisation",
+     "title": "Tokenisation",
+     "detail": "BPE, WordPiece, SentencePiece",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "pretraining",
+     "title": "Pretraining",
+     "detail": "BERT-style and GPT-style objectives",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "fine-tuning",
+     "title": "Fine-tuning",
+     "detail": "classification, generation, Hugging Face Transformers",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "urdu-and-low-resource-nlp",
+     "title": "Urdu and low-resource NLP",
+     "detail": "data, tokenisation, evaluation",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "cs224n-assignments",
+     "title": "CS224n assignments",
+     "detail": "completed",
+     "kind": "PROJECT",
+     "optional": false
+    },
+    {
+     "key": "gpt-from-scratch",
+     "title": "GPT from scratch",
+     "detail": "trained on English or Urdu text",
+     "kind": "PROJECT",
+     "optional": false
+    },
+    {
+     "key": "urdu-text-classifier",
+     "title": "Urdu text classifier",
+     "detail": "fine-tuned and evaluated",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "ml-in-production-mlops",
+   "title": "ML in production (MLOps)",
+   "level": "Intermediate",
+   "weeks": 6,
+   "benchmark": "Stanford CS329S  |  Full Stack Deep Learning",
+   "goal": "Turn models into reliable, monitored services.",
+   "doneWhen": "Your model runs as a service with monitoring and automated retraining, and you can roll back a bad model in minutes.",
+   "resources": "Designing Machine Learning Systems (Chip Huyen)  |  Made With ML (free)  |  Full Stack Deep Learning lectures (free)",
+   "items": [
+    {
+     "key": "ml-system-design",
+     "title": "ML system design",
+     "detail": "requirements, offline vs online, feedback loops",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "data-pipelines",
+     "title": "Data pipelines",
+     "detail": "batch and streaming, Spark basics, Airflow",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "feature-engineering-at-scale",
+     "title": "Feature engineering at scale",
+     "detail": "feature stores, training-serving skew",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "experiment-tracking-and-versioning",
+     "title": "Experiment tracking and versioning",
+     "detail": "MLflow, DVC, model registry",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "serving",
+     "title": "Serving",
+     "detail": "FastAPI, batch vs online, ONNX, TorchServe or Triton",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "containers-and-cloud",
+     "title": "Containers and cloud",
+     "detail": "Docker, Kubernetes basics, one cloud ML platform",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "ci-cd-for-ml",
+     "title": "CI/CD for ML",
+     "detail": "testing data and models, automated pipelines",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "monitoring",
+     "title": "Monitoring",
+     "detail": "data drift, concept drift, performance decay, alerts",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "deployment-patterns",
+     "title": "Deployment patterns",
+     "detail": "shadow, canary, A/B, rollback",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "end-to-end-ml-system",
+     "title": "End-to-end ML system",
+     "detail": "deployed, monitored, retrained automatically",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "data-centric-ml-and-responsible-ai",
+   "title": "Data-centric ML and responsible AI",
+   "level": "Intermediate",
+   "weeks": 3,
+   "benchmark": "MIT Introduction to Data-Centric AI",
+   "goal": "Improve models by improving data - and make them fair and explainable.",
+   "doneWhen": "You improve a model's accuracy by fixing its data alone, and write a model card with a bias audit.",
+   "resources": "MIT Data-Centric AI lectures and labs (dcai.csail.mit.edu, free)  |  Fairness and Machine Learning (Barocas, Hardt, Narayanan, free)",
+   "items": [
+    {
+     "key": "label-quality",
+     "title": "Label quality",
+     "detail": "finding and fixing label errors",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "data-quality",
+     "title": "Data quality",
+     "detail": "duplicates, leakage, outliers",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "distribution-shift",
+     "title": "Distribution shift",
+     "detail": "covariate and label shift, detection",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "robust-evaluation",
+     "title": "Robust evaluation",
+     "detail": "slices, stress tests, held-out populations",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "fairness",
+     "title": "Fairness",
+     "detail": "definitions, measuring bias, mitigation",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "explainability",
+     "title": "Explainability",
+     "detail": "SHAP, LIME, saliency - and their limits",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "documentation",
+     "title": "Documentation",
+     "detail": "model cards, datasheets for datasets",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "data-fix-project",
+     "title": "Data-fix project",
+     "detail": "accuracy improved by data changes only",
+     "kind": "PROJECT",
+     "optional": false
+    },
+    {
+     "key": "model-card-and-bias-audit",
+     "title": "Model card and bias audit",
+     "detail": "",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "applied-ml-ranking-and-forecasting",
+   "title": "Applied ML: ranking and forecasting",
+   "level": "Advanced",
+   "weeks": 5,
+   "benchmark": "Stanford CS246 (selected)",
+   "goal": "Master the ML systems that run most real products.",
+   "doneWhen": "You build a recommender evaluated offline with ranking metrics and a forecaster that beats a seasonal baseline.",
+   "resources": "Mining of Massive Datasets (Leskovec, Rajaraman, Ullman, free)  |  Forecasting: Principles and Practice (Hyndman, free)",
+   "items": [
+    {
+     "key": "recommender-systems",
+     "title": "Recommender systems",
+     "detail": "collaborative filtering, matrix factorisation, two-tower models",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "search-and-ranking",
+     "title": "Search and ranking",
+     "detail": "learning to rank, NDCG, MRR",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "similarity-at-scale",
+     "title": "Similarity at scale",
+     "detail": "locality-sensitive hashing, approximate nearest neighbours",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "time-series-forecasting",
+     "title": "Time-series forecasting",
+     "detail": "baselines, ARIMA, gradient boosting, deep models",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "anomaly-detection",
+     "title": "Anomaly detection",
+     "detail": "statistical and ML methods",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "recommender-system",
+     "title": "Recommender system",
+     "detail": "offline evaluation with ranking metrics",
+     "kind": "PROJECT",
+     "optional": false
+    },
+    {
+     "key": "forecasting-project",
+     "title": "Forecasting project",
+     "detail": "beats a seasonal baseline",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "generative-models",
+   "title": "Generative models",
+   "level": "Advanced",
+   "weeks": 6,
+   "benchmark": "Stanford CS236",
+   "goal": "Understand and build the models that generate images, audio and text.",
+   "doneWhen": "You derive the training objective of each model family and train a small diffusion model.",
+   "resources": "Stanford CS236 notes and lectures (free)  |  Understanding Deep Learning (Prince, free PDF)",
+   "items": [
+    {
+     "key": "autoregressive-models",
+     "title": "Autoregressive models",
+     "detail": "likelihood, PixelCNN-style models",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "variational-autoencoders",
+     "title": "Variational autoencoders",
+     "detail": "ELBO, reparameterisation trick",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "normalising-flows",
+     "title": "Normalising flows",
+     "detail": "change of variables",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "gans",
+     "title": "GANs",
+     "detail": "adversarial training, failure modes",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "diffusion-models",
+     "title": "Diffusion models",
+     "detail": "forward and reverse processes, score matching",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "evaluating-generative-models",
+     "title": "Evaluating generative models",
+     "detail": "likelihood, FID, human evaluation",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "vae-from-scratch",
+     "title": "VAE from scratch",
+     "detail": "",
+     "kind": "PROJECT",
+     "optional": false
+    },
+    {
+     "key": "small-diffusion-model",
+     "title": "Small diffusion model",
+     "detail": "trained and sampled",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "large-language-models-from-scratch",
+   "title": "Large language models from scratch",
+   "level": "Advanced",
+   "weeks": 8,
+   "benchmark": "Stanford CS336",
+   "goal": "Build a language model end to end - tokenizer, model, training, alignment.",
+   "doneWhen": "Your CS336 assignment 1 implementation passes its test suite, and you train and fine-tune your own small LM.",
+   "resources": "Stanford CS336 lectures and assignments (free, with tests)  |  Build a Large Language Model (From Scratch) (Raschka)",
+   "items": [
+    {
+     "key": "bpe-tokenizer-from-scratch",
+     "title": "BPE tokenizer from scratch",
+     "detail": "",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "transformer-language-model",
+     "title": "Transformer language model",
+     "detail": "implemented from scratch",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "training",
+     "title": "Training",
+     "detail": "optimisers, schedules, stability, checkpointing",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "scaling-laws",
+     "title": "Scaling laws",
+     "detail": "compute, data and model size",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "data",
+     "title": "Data",
+     "detail": "collection, filtering, deduplication",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "inference",
+     "title": "Inference",
+     "detail": "KV cache, sampling strategies, batching",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "alignment",
+     "title": "Alignment",
+     "detail": "supervised fine-tuning, RLHF, DPO",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "parameter-efficient-fine-tuning",
+     "title": "Parameter-efficient fine-tuning",
+     "detail": "LoRA, QLoRA",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "evaluating-llms",
+     "title": "Evaluating LLMs",
+     "detail": "benchmarks, contamination, human and model judges",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "cs336-assignment-1",
+     "title": "CS336 assignment 1",
+     "detail": "passes the test suite",
+     "kind": "PROJECT",
+     "optional": false
+    },
+    {
+     "key": "small-lm",
+     "title": "Small LM",
+     "detail": "trained, then fine-tuned with LoRA and evaluated",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "reinforcement-learning",
+   "title": "Reinforcement learning",
+   "level": "Advanced",
+   "weeks": 6,
+   "benchmark": "Stanford CS234  |  UC Berkeley CS285",
+   "goal": "Train agents that learn from reward.",
+   "doneWhen": "You implement DQN and PPO from scratch and solve standard Gymnasium environments.",
+   "resources": "Reinforcement Learning: An Introduction (Sutton & Barto, free)  |  Stanford CS234 and Berkeley CS285 lectures (free)",
+   "items": [
+    {
+     "key": "markov-decision-processes",
+     "title": "Markov decision processes",
+     "detail": "states, actions, rewards, returns",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "dynamic-programming",
+     "title": "Dynamic programming",
+     "detail": "policy and value iteration",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "monte-carlo-and-temporal-difference-learning",
+     "title": "Monte Carlo and temporal-difference learning",
+     "detail": "",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "q-learning-and-dqn",
+     "title": "Q-learning and DQN",
+     "detail": "function approximation, replay buffers",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "policy-gradients",
+     "title": "Policy gradients",
+     "detail": "REINFORCE, baselines",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "actor-critic-and-ppo",
+     "title": "Actor-critic and PPO",
+     "detail": "",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "rl-for-language-models",
+     "title": "RL for language models",
+     "detail": "how RLHF uses these ideas",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "dqn-and-ppo-from-scratch",
+     "title": "DQN and PPO from scratch",
+     "detail": "solving Gymnasium environments",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "probabilistic-machine-learning",
+   "title": "Probabilistic machine learning",
+   "level": "Advanced",
+   "weeks": 5,
+   "benchmark": "Stanford CS228  |  CMU 10-708",
+   "goal": "Model uncertainty explicitly and reason with it.",
+   "doneWhen": "You implement variational inference and MCMC on a real model and report calibrated uncertainty.",
+   "resources": "Probabilistic Machine Learning (Murphy, books 1-2, free)  |  Stanford CS228 notes (free)",
+   "items": [
+    {
+     "key": "graphical-models",
+     "title": "Graphical models",
+     "detail": "Bayesian networks, Markov random fields",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "exact-inference",
+     "title": "Exact inference",
+     "detail": "variable elimination, belief propagation",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "sampling",
+     "title": "Sampling",
+     "detail": "MCMC, Gibbs sampling, Hamiltonian Monte Carlo (intuition)",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "variational-inference",
+     "title": "Variational inference",
+     "detail": "ELBO, mean-field",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "gaussian-processes",
+     "title": "Gaussian processes",
+     "detail": "kernels, regression with uncertainty",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "uncertainty-in-deep-learning",
+     "title": "Uncertainty in deep learning",
+     "detail": "ensembles, calibration",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "bayesian-modelling-project",
+     "title": "Bayesian modelling project",
+     "detail": "VI and MCMC compared",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "ml-systems-and-efficient-dl",
+   "title": "ML systems and efficient DL",
+   "level": "Advanced",
+   "weeks": 8,
+   "benchmark": "CMU 10-714 (Deep Learning Systems)  |  MIT 6.5940 (Efficient Deep Learning)",
+   "goal": "Understand and build the systems that train and serve models at scale.",
+   "doneWhen": "Your deep-learning framework passes the CMU 10-714 homework tests, and you run and profile a multi-GPU training job.",
+   "resources": "CMU 10-714 lectures and homework (free)  |  MIT 6.5940 lectures (free)  |  PyTorch distributed docs",
+   "items": [
+    {
+     "key": "building-a-framework",
+     "title": "Building a framework",
+     "detail": "tensors, autodiff, operators, a GPU backend",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "distributed-training",
+     "title": "Distributed training",
+     "detail": "data parallel (DDP), FSDP/ZeRO, tensor and pipeline parallelism",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "communication",
+     "title": "Communication",
+     "detail": "NCCL collectives: all-reduce, all-gather",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "memory-and-speed",
+     "title": "Memory and speed",
+     "detail": "mixed precision, gradient checkpointing, profiling",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "model-compression",
+     "title": "Model compression",
+     "detail": "quantisation, pruning, distillation",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "edge-ai",
+     "title": "Edge AI",
+     "detail": "ONNX, TFLite, on-device inference",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "inference-serving-at-scale",
+     "title": "Inference serving at scale",
+     "detail": "vLLM, continuous batching, KV-cache management",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "your-own-dl-framework",
+     "title": "Your own DL framework",
+     "detail": "passes the 10-714 homework tests",
+     "kind": "PROJECT",
+     "optional": false
+    },
+    {
+     "key": "multi-gpu-training-run",
+     "title": "Multi-GPU training run",
+     "detail": "with a profiling report",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "gpu-programming-and-performance",
+   "title": "GPU programming and performance",
+   "level": "Expert",
+   "weeks": 6,
+   "benchmark": "Stanford CS149  |  CMU 15-418",
+   "goal": "Write the code that makes models fast.",
+   "doneWhen": "Your Triton or CUDA matmul and fused softmax kernels are benchmarked against PyTorch with a written analysis.",
+   "resources": "Programming Massively Parallel Processors (Hwu, Kirk, El Hajj)  |  Stanford CS149 materials  |  GPU MODE lectures (free)  |  Triton tutorials",
+   "items": [
+    {
+     "key": "parallel-architectures",
+     "title": "Parallel architectures",
+     "detail": "SIMD, multicore, GPUs",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "cuda-programming-model",
+     "title": "CUDA programming model",
+     "detail": "threads, blocks, warps",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "gpu-memory-hierarchy",
+     "title": "GPU memory hierarchy",
+     "detail": "global, shared, registers, coalescing",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "core-kernels",
+     "title": "Core kernels",
+     "detail": "reduction, matmul, softmax",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "triton",
+     "title": "Triton",
+     "detail": "writing kernels in Python",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "attention-kernels",
+     "title": "Attention kernels",
+     "detail": "the FlashAttention idea",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "performance-analysis",
+     "title": "Performance analysis",
+     "detail": "roofline model, profilers (Nsight)",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "optimised-kernels",
+     "title": "Optimised kernels",
+     "detail": "matmul and fused softmax, benchmarked",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "research-skills",
+   "title": "Research skills",
+   "level": "Expert",
+   "weeks": 8,
+   "benchmark": "Graduate research practice",
+   "goal": "Read, reproduce and extend research.",
+   "doneWhen": "You reproduce a published result within its reported margin and write it up as a short paper.",
+   "resources": "ML Reproducibility Challenge reports  |  How to Read a Paper (Keshav, free)  |  arXiv",
+   "items": [
+    {
+     "key": "reading-papers",
+     "title": "Reading papers",
+     "detail": "the three-pass method, building a reading list",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "experiment-design",
+     "title": "Experiment design",
+     "detail": "baselines, ablations, controls",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "statistical-rigour",
+     "title": "Statistical rigour",
+     "detail": "seeds, confidence intervals, significance",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "reproducibility",
+     "title": "Reproducibility",
+     "detail": "configs, code release, reporting",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "scientific-writing",
+     "title": "Scientific writing",
+     "detail": "structure of an ML paper, figures",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "presenting",
+     "title": "Presenting",
+     "detail": "talks and posters",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "paper-reproduction",
+     "title": "Paper reproduction",
+     "detail": "report submitted publicly",
+     "kind": "PROJECT",
+     "optional": false
+    },
+    {
+     "key": "short-paper",
+     "title": "Short paper",
+     "detail": "an extension or analysis, written to workshop standard",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "ml-interviews-and-career",
+   "title": "ML interviews and career",
+   "level": "Expert",
+   "weeks": 3,
+   "benchmark": "Industry standard",
+   "goal": "Turn your skills into offers.",
+   "doneWhen": "You pass three mock interviews: ML theory, ML coding, ML system design.",
+   "resources": "Introduction to Machine Learning Interviews (Chip Huyen, free)  |  Machine Learning System Design Interview (Aminian & Xu)",
+   "items": [
+    {
+     "key": "ml-theory-interviews",
+     "title": "ML theory interviews",
+     "detail": "fundamentals asked out loud",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "ml-coding-interviews",
+     "title": "ML coding interviews",
+     "detail": "implement models and metrics live",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "ml-system-design",
+     "title": "ML system design",
+     "detail": "feeds, search ranking, fraud, ads",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "portfolio",
+     "title": "Portfolio",
+     "detail": "case studies with numbers, clear READMEs",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "three-mock-interviews",
+     "title": "Three mock interviews",
+     "detail": "recorded and reviewed",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "ml-capstone-and-leadership",
+   "title": "ML capstone and leadership",
+   "level": "Expert",
+   "weeks": 8,
+   "benchmark": "Graduate capstone / thesis standard",
+   "goal": "Lead an ML project from problem to production - and defend it.",
+   "doneWhen": "You ship a production ML system on a real problem and defend it for 30 minutes.",
+   "resources": "Everything above",
+   "items": [
+    {
+     "key": "problem-selection",
+     "title": "Problem selection",
+     "detail": "real users, measurable impact",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "end-to-end-delivery",
+     "title": "End-to-end delivery",
+     "detail": "data, model, evaluation, deployment, monitoring",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "technical-leadership",
+     "title": "Technical leadership",
+     "detail": "design docs, reviews, mentoring",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "ml-capstone",
+     "title": "ML capstone",
+     "detail": "production system, defended for 30 minutes",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  }
+ ]
+}

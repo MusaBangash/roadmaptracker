@@ -1,0 +1,1295 @@
+{
+ "slug": "security-engineer",
+ "title": "Security Engineer",
+ "kind": "ROLE",
+ "edition": "Edition 1  -  University-grade",
+ "subtitle": "Cybersecurity from the SOC to the cloud - with a specialisation in securing AI systems",
+ "summary": "Defend systems, detect and respond to attacks, secure cloud and applications - including AI.",
+ "expert": "Thinks like an attacker and builds like a defender: detects and contains real intrusions, secures cloud, identity and applications by design, red-teams AI systems, and leads a security programme that holds up to auditors and attackers alike.",
+ "benchmarks": [
+  {
+   "title": "Certifications",
+   "detail": "Security+ by the end of Foundation; CySA+ or BTL1 by the end of Intermediate; a cloud security certification (AZ-500 or AWS Security Specialty) and OSCP/PNPT/eJPT by the end of Advanced."
+  },
+  {
+   "title": "Public challenges",
+   "detail": "picoCTF: 60+ challenges; Cryptopals sets 1-3; PortSwigger: all Apprentice plus 50 Practitioner labs; pwn.college: two belts."
+  },
+  {
+   "title": "Blue team",
+   "detail": "Splunk Boss of the SOC: a full dataset investigated with a written report; 10 CyberDefenders or LetsDefend investigations."
+  },
+  {
+   "title": "AI security",
+   "detail": "PortSwigger 'Web LLM attacks' labs completed; a red-team report on a real AI application with every finding fixed."
+  },
+  {
+   "title": "Defended out loud",
+   "detail": "A purple-team capstone - attack, detect, respond - defended for 30 minutes."
+  }
+ ],
+ "stages": [
+  {
+   "key": "security-foundations-and-ethics",
+   "title": "Security foundations and ethics",
+   "level": "Foundation",
+   "weeks": 3,
+   "benchmark": "Stanford CS155 (intro)  |  Berkeley CS161 (intro)  |  CompTIA Security+ objectives",
+   "goal": "Understand how attacks work, who does them, and the rules you work under.",
+   "doneWhen": "You can explain the main attack types and defences to a non-technical manager, and map a real breach to its causes.",
+   "resources": "Stanford CS155 and Berkeley CS161 notes (free)  |  CompTIA Security+ exam objectives",
+   "items": [
+    {
+     "key": "core-ideas",
+     "title": "Core ideas",
+     "detail": "confidentiality, integrity, availability; threat, vulnerability, risk",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "the-threat-landscape",
+     "title": "The threat landscape",
+     "detail": "criminals, insiders, nation states; ransomware, phishing, fraud",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "security-roles",
+     "title": "Security roles",
+     "detail": "SOC, incident response, AppSec, cloud security, GRC, red team",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "law-and-ethics",
+     "title": "Law and ethics",
+     "detail": "authorised testing only; Pakistan's PECA; responsible disclosure",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "security-principles",
+     "title": "Security principles",
+     "detail": "least privilege, defence in depth, secure defaults",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "breach-case-study",
+     "title": "Breach case study",
+     "detail": "a real public breach mapped to causes and fixes",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "linux-and-windows-for-security",
+   "title": "Linux and Windows for security",
+   "level": "Foundation",
+   "weeks": 4,
+   "benchmark": "MIT Missing Semester  |  Security+ objectives",
+   "goal": "Know both operating systems well enough to secure and investigate them.",
+   "doneWhen": "You complete OverTheWire Bandit and investigate a Windows event log to find a simulated intrusion.",
+   "resources": "OverTheWire: Bandit (free)  |  Microsoft Learn: Windows security  |  SRE & Platform stage 1",
+   "items": [
+    {
+     "key": "linux-security",
+     "title": "Linux security",
+     "detail": "users, permissions, sudo, SSH hardening, auditd",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "windows-internals",
+     "title": "Windows internals",
+     "detail": "processes, services, registry, permissions",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "active-directory",
+     "title": "Active Directory",
+     "detail": "domains, users, groups, Group Policy",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "powershell",
+     "title": "PowerShell",
+     "detail": "administration and investigation",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "logs",
+     "title": "Logs",
+     "detail": "Windows Event Logs, Sysmon, Linux journald and auth logs",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "hardening",
+     "title": "Hardening",
+     "detail": "CIS Benchmarks, patching",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "overthewire-bandit",
+     "title": "OverTheWire Bandit",
+     "detail": "all levels",
+     "kind": "PROJECT",
+     "optional": false
+    },
+    {
+     "key": "windows-intrusion-hunt",
+     "title": "Windows intrusion hunt",
+     "detail": "found from event logs",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "networking-for-security",
+   "title": "Networking for security",
+   "level": "Foundation",
+   "weeks": 4,
+   "benchmark": "Stanford CS144  |  CCNA objectives (selected)",
+   "goal": "See and control what moves across a network.",
+   "doneWhen": "You analyse 10 packet captures and identify the attack or fault in each.",
+   "resources": "Computer Networking: A Top-Down Approach (Kurose & Ross)  |  Wireshark docs  |  malware-traffic-analysis.net exercises",
+   "items": [
+    {
+     "key": "tcp-ip",
+     "title": "TCP/IP",
+     "detail": "addressing, subnetting, routing, ports",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "core-protocols",
+     "title": "Core protocols",
+     "detail": "DNS, HTTP, TLS, SMTP - and how each is abused",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "packet-analysis",
+     "title": "Packet analysis",
+     "detail": "Wireshark, tcpdump",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "firewalls",
+     "title": "Firewalls",
+     "detail": "stateful filtering, rules, next-generation firewalls",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "network-design",
+     "title": "Network design",
+     "detail": "segmentation, VLANs, DMZs, VPNs",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "network-attacks",
+     "title": "Network attacks",
+     "detail": "scanning, spoofing, man-in-the-middle, DDoS",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "10-packet-capture-investigations",
+     "title": "10 packet-capture investigations",
+     "detail": "written up",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "programming-and-scripting-for-security",
+   "title": "Programming and scripting for security",
+   "level": "Foundation",
+   "weeks": 3,
+   "benchmark": "MIT 6.100A (applied)",
+   "goal": "Automate security work instead of doing it by hand.",
+   "doneWhen": "Your tool parses logs, enriches indicators from a threat-intel API and outputs a triage report.",
+   "resources": "Black Hat Python (Seitz & Arnold)  |  Python docs  |  regex101",
+   "items": [
+    {
+     "key": "python-for-security",
+     "title": "Python for security",
+     "detail": "parsing, requests, APIs, sockets",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "regular-expressions",
+     "title": "Regular expressions",
+     "detail": "for logs and indicators",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "bash-and-powershell-scripting",
+     "title": "Bash and PowerShell scripting",
+     "detail": "automation on both systems",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "working-with-security-apis",
+     "title": "Working with security APIs",
+     "detail": "VirusTotal, AbuseIPDB, threat feeds",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "log-triage-tool",
+     "title": "Log triage tool",
+     "detail": "parse, enrich, report",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "cryptography",
+   "title": "Cryptography",
+   "level": "Foundation",
+   "weeks": 4,
+   "benchmark": "Stanford CS255  |  Dan Boneh's Cryptography I (Coursera)  |  NPTEL Cryptography and Network Security (IIT)",
+   "goal": "Use cryptography correctly - and recognise when it is used wrongly.",
+   "doneWhen": "You complete Cryptopals sets 1-3 and explain each break.",
+   "resources": "Cryptography I (Boneh, free to audit)  |  Cryptopals challenges  |  Serious Cryptography (Aumasson)",
+   "items": [
+    {
+     "key": "encoding-vs-hashing-vs-encryption",
+     "title": "Encoding vs hashing vs encryption",
+     "detail": "",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "symmetric-encryption",
+     "title": "Symmetric encryption",
+     "detail": "AES, modes, why ECB is broken",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "hashing-and-macs",
+     "title": "Hashing and MACs",
+     "detail": "SHA-2, HMAC, password hashing (bcrypt, Argon2)",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "public-key-cryptography",
+     "title": "Public-key cryptography",
+     "detail": "RSA, Diffie-Hellman, elliptic curves (intuition)",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "pki-and-tls",
+     "title": "PKI and TLS",
+     "detail": "certificates, chains, the TLS handshake",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "common-mistakes",
+     "title": "Common mistakes",
+     "detail": "reused nonces, weak randomness, homemade crypto",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "cryptopals-sets-1-3",
+     "title": "Cryptopals sets 1-3",
+     "detail": "solved with explanations",
+     "kind": "PROJECT",
+     "optional": false
+    },
+    {
+     "key": "security",
+     "title": "Security+",
+     "detail": "passed (or 85%+ on full practice exams)",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "security-operations-and-monitoring",
+   "title": "Security operations and monitoring",
+   "level": "Intermediate",
+   "weeks": 6,
+   "benchmark": "CompTIA CySA+ / Blue Team Level 1 objectives",
+   "goal": "Detect attacks in real logs and triage alerts like a SOC analyst.",
+   "doneWhen": "You investigate a full Splunk Boss of the SOC dataset and write a report, and your detection rules catch a simulated attack in your lab.",
+   "resources": "Splunk Boss of the SOC datasets (free)  |  Elastic and Wazuh docs  |  MITRE ATT&CK  |  LetsDefend and Blue Team Labs Online",
+   "items": [
+    {
+     "key": "the-soc",
+     "title": "The SOC",
+     "detail": "tiers, workflows, shifts, metrics (MTTD, MTTR)",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "siem",
+     "title": "SIEM",
+     "detail": "Splunk, Elastic or Microsoft Sentinel; Wazuh as free option",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "log-onboarding",
+     "title": "Log onboarding",
+     "detail": "sources, parsers, normalisation",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "detection-rules",
+     "title": "Detection rules",
+     "detail": "correlation searches, Sigma rules, tuning false positives",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "edr",
+     "title": "EDR",
+     "detail": "endpoint telemetry, isolating hosts",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "mitre-att-ck",
+     "title": "MITRE ATT&CK",
+     "detail": "mapping detections, coverage gaps",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "soar-basics",
+     "title": "SOAR basics",
+     "detail": "playbooks, automated enrichment and containment",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "phishing-analysis",
+     "title": "Phishing analysis",
+     "detail": "headers, links, attachments in a sandbox",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "home-soc-lab",
+     "title": "Home SOC lab",
+     "detail": "Wazuh or Elastic, Windows and Linux hosts, 10 detections",
+     "kind": "PROJECT",
+     "optional": false
+    },
+    {
+     "key": "boss-of-the-soc-investigation",
+     "title": "Boss of the SOC investigation",
+     "detail": "written report",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "incident-response-and-digital-forensics",
+   "title": "Incident response and digital forensics",
+   "level": "Intermediate",
+   "weeks": 4,
+   "benchmark": "NIST SP 800-61  |  SANS incident-response methodology",
+   "goal": "Contain an attack, find out what happened, and recover.",
+   "doneWhen": "You run a ransomware tabletop exercise and complete 10 forensic investigations on CyberDefenders.",
+   "resources": "NIST SP 800-61 (free)  |  CyberDefenders labs  |  Volatility and Autopsy docs",
+   "items": [
+    {
+     "key": "the-ir-lifecycle",
+     "title": "The IR lifecycle",
+     "detail": "preparation, detection, containment, eradication, recovery, lessons learned",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "evidence-handling",
+     "title": "Evidence handling",
+     "detail": "chain of custody, imaging, hashing",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "memory-forensics",
+     "title": "Memory forensics",
+     "detail": "Volatility",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "disk-forensics",
+     "title": "Disk forensics",
+     "detail": "Autopsy, timelines, artefacts",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "ransomware-response",
+     "title": "Ransomware response",
+     "detail": "isolation, backups, decision-making",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "reporting",
+     "title": "Reporting",
+     "detail": "technical and executive incident reports",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "10-cyberdefenders-investigations",
+     "title": "10 CyberDefenders investigations",
+     "detail": "",
+     "kind": "PROJECT",
+     "optional": false
+    },
+    {
+     "key": "ransomware-tabletop",
+     "title": "Ransomware tabletop",
+     "detail": "run and written up",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "vulnerability-management",
+   "title": "Vulnerability management",
+   "level": "Intermediate",
+   "weeks": 3,
+   "benchmark": "Industry standard  |  CySA+ objectives",
+   "goal": "Find weaknesses at scale and fix the ones that matter first.",
+   "doneWhen": "You scan a lab network, prioritise findings using CVSS, EPSS and the CISA KEV list, and track them to closure.",
+   "resources": "OpenVAS / Greenbone docs  |  FIRST CVSS and EPSS docs  |  CISA Known Exploited Vulnerabilities catalogue",
+   "items": [
+    {
+     "key": "scanning",
+     "title": "Scanning",
+     "detail": "Nessus, OpenVAS; authenticated vs unauthenticated",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "scoring",
+     "title": "Scoring",
+     "detail": "CVSS, EPSS, known-exploited lists",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "prioritisation",
+     "title": "Prioritisation",
+     "detail": "risk-based, by asset and exposure",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "patch-management",
+     "title": "Patch management",
+     "detail": "testing, rollout, exceptions",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "reporting-and-tracking",
+     "title": "Reporting and tracking",
+     "detail": "SLAs, dashboards",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "vulnerability-programme",
+     "title": "Vulnerability programme",
+     "detail": "scan, prioritise, fix, report",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "web-application-security",
+   "title": "Web application security",
+   "level": "Intermediate",
+   "weeks": 6,
+   "benchmark": "Stanford CS253 (Web Security)",
+   "goal": "Find and fix the vulnerabilities that break real web applications.",
+   "doneWhen": "You complete all PortSwigger Apprentice labs and 30 Practitioner labs.",
+   "resources": "Stanford CS253 lectures (free)  |  PortSwigger Web Security Academy (free)  |  OWASP Top 10 and Cheat Sheets",
+   "items": [
+    {
+     "key": "how-the-web-works-for-attackers",
+     "title": "How the web works for attackers",
+     "detail": "HTTP, cookies, same-origin policy",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "injection",
+     "title": "Injection",
+     "detail": "SQL injection, command injection",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "cross-site-scripting",
+     "title": "Cross-site scripting",
+     "detail": "reflected, stored, DOM",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "authentication-and-sessions",
+     "title": "Authentication and sessions",
+     "detail": "weaknesses and fixes",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "access-control",
+     "title": "Access control",
+     "detail": "IDOR, privilege escalation",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "server-side-attacks",
+     "title": "Server-side attacks",
+     "detail": "SSRF, path traversal, file upload",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "client-side-defences",
+     "title": "Client-side defences",
+     "detail": "CSP, CSRF tokens, CORS",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "burp-suite",
+     "title": "Burp Suite",
+     "detail": "proxy, repeater, intruder",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "portswigger-labs",
+     "title": "PortSwigger labs",
+     "detail": "all Apprentice + 30 Practitioner",
+     "kind": "PROJECT",
+     "optional": false
+    },
+    {
+     "key": "secure-code-fix",
+     "title": "Secure-code fix",
+     "detail": "a deliberately vulnerable app fixed and retested",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "identity-and-access-management",
+   "title": "Identity and access management",
+   "level": "Intermediate",
+   "weeks": 3,
+   "benchmark": "Industry standard  |  Microsoft SC-300 objectives (selected)",
+   "goal": "Control who can access what - the front line of modern security.",
+   "doneWhen": "You harden an Active Directory / Entra ID lab and detect a simulated credential attack.",
+   "resources": "Microsoft Learn: Entra ID  |  OAuth 2.0 Simplified (Parecki)",
+   "items": [
+    {
+     "key": "authentication",
+     "title": "Authentication",
+     "detail": "passwords, MFA, phishing-resistant methods",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "directories",
+     "title": "Directories",
+     "detail": "Active Directory, Microsoft Entra ID",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "federation",
+     "title": "Federation",
+     "detail": "SAML, OAuth 2.0, OpenID Connect",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "privileged-access",
+     "title": "Privileged access",
+     "detail": "admin tiers, just-in-time access",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "identity-attacks",
+     "title": "Identity attacks",
+     "detail": "password spraying, Kerberoasting (awareness), token theft",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "hardened-identity-lab",
+     "title": "Hardened identity lab",
+     "detail": "with a detected credential attack",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "cloud-security",
+   "title": "Cloud security",
+   "level": "Intermediate",
+   "weeks": 6,
+   "benchmark": "AZ-500 / AWS Security Specialty objectives  |  CIS cloud benchmarks",
+   "goal": "Secure workloads on Azure and AWS - where most breaches now start.",
+   "doneWhen": "You complete flAWS.cloud levels 1-6 and pass a cloud security certification (or 80%+ on a timed mock).",
+   "resources": "flAWS.cloud and flAWS2 (free)  |  CloudGoat  |  Microsoft Learn and AWS Skill Builder",
+   "items": [
+    {
+     "key": "shared-responsibility",
+     "title": "Shared responsibility",
+     "detail": "what the provider secures and what you secure",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "cloud-iam",
+     "title": "Cloud IAM",
+     "detail": "roles, policies, least privilege, keys",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "network-security-in-the-cloud",
+     "title": "Network security in the cloud",
+     "detail": "VPCs, security groups, private endpoints",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "logging-and-detection",
+     "title": "Logging and detection",
+     "detail": "CloudTrail, Azure Monitor, GuardDuty, Defender for Cloud",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "misconfigurations",
+     "title": "Misconfigurations",
+     "detail": "public buckets, exposed keys, over-permissive roles",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "posture-management",
+     "title": "Posture management",
+     "detail": "CSPM, CIS benchmarks",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "containers-and-kubernetes-security",
+     "title": "Containers and Kubernetes security",
+     "detail": "images, RBAC, network policies",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "flaws-cloud-levels-1-6-and-cloudgoat-scenarios",
+     "title": "flAWS.cloud levels 1-6 and CloudGoat scenarios",
+     "detail": "",
+     "kind": "PROJECT",
+     "optional": false
+    },
+    {
+     "key": "cloud-certification",
+     "title": "Cloud certification",
+     "detail": "AZ-500 or AWS Security Specialty",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "penetration-testing",
+   "title": "Penetration testing",
+   "level": "Advanced",
+   "weeks": 8,
+   "benchmark": "OSCP / PNPT / eJPT objectives  |  picoCTF (CMU)",
+   "goal": "Test systems the way real attackers would - legally, and with a professional report.",
+   "doneWhen": "You pass OSCP, PNPT or eJPT, and solve 60+ picoCTF challenges.",
+   "resources": "picoCTF (free)  |  Hack The Box and TryHackMe (authorised labs)  |  The Hacker Playbook  |  PTES methodology",
+   "items": [
+    {
+     "key": "rules-of-engagement",
+     "title": "Rules of engagement",
+     "detail": "scope, authorisation, reporting",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "reconnaissance",
+     "title": "Reconnaissance",
+     "detail": "passive and active, OSINT",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "scanning-and-enumeration",
+     "title": "Scanning and enumeration",
+     "detail": "Nmap, service enumeration",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "exploitation-of-known-vulnerabilities",
+     "title": "Exploitation of known vulnerabilities",
+     "detail": "Metasploit and manual methods, in labs",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "privilege-escalation",
+     "title": "Privilege escalation",
+     "detail": "Linux and Windows",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "active-directory-attacks",
+     "title": "Active Directory attacks",
+     "detail": "in authorised labs",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "post-exploitation-and-pivoting-lab-only",
+     "title": "Post-exploitation and pivoting (lab only)",
+     "detail": "",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "professional-reporting",
+     "title": "Professional reporting",
+     "detail": "findings, risk, remediation",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "picoctf",
+     "title": "picoCTF",
+     "detail": "60+ challenges",
+     "kind": "PROJECT",
+     "optional": false
+    },
+    {
+     "key": "practical-exam",
+     "title": "Practical exam",
+     "detail": "OSCP, PNPT or eJPT passed",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "systems-and-software-security",
+   "title": "Systems and software security",
+   "level": "Advanced",
+   "weeks": 5,
+   "benchmark": "MIT 6.5660  |  Berkeley CS161  |  pwn.college (Arizona State)",
+   "goal": "Understand memory-level attacks and how secure systems are designed against them.",
+   "doneWhen": "You earn two pwn.college belts and complete the MIT 6.5660 lab environment exercises you can access.",
+   "resources": "MIT 6.5660 lectures and papers (free)  |  pwn.college (free)  |  Ghidra docs",
+   "items": [
+    {
+     "key": "memory-safety",
+     "title": "Memory safety",
+     "detail": "buffer overflows, use-after-free - why they happen",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "mitigations",
+     "title": "Mitigations",
+     "detail": "ASLR, stack canaries, DEP, sandboxing",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "privilege-separation-and-isolation",
+     "title": "Privilege separation and isolation",
+     "detail": "secure system design",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "reverse-engineering-basics",
+     "title": "Reverse engineering basics",
+     "detail": "Ghidra, reading assembly",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "malware-analysis-basics",
+     "title": "Malware analysis basics",
+     "detail": "static and dynamic, in an isolated sandbox only",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "memory-safe-languages",
+     "title": "Memory-safe languages",
+     "detail": "why Rust and others reduce whole bug classes",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "pwn-college",
+     "title": "pwn.college",
+     "detail": "two belts",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "application-security-and-devsecops",
+   "title": "Application security and DevSecOps",
+   "level": "Advanced",
+   "weeks": 4,
+   "benchmark": "Stanford CS253 (secure design)  |  OWASP SAMM",
+   "goal": "Build security into the software lifecycle so fewer bugs ship.",
+   "doneWhen": "Your CI pipeline blocks a planted vulnerable dependency, a leaked secret and an injection bug.",
+   "resources": "OWASP SAMM and ASVS  |  Semgrep, Trivy and gitleaks docs  |  SLSA framework",
+   "items": [
+    {
+     "key": "threat-modelling",
+     "title": "Threat modelling",
+     "detail": "STRIDE, data-flow diagrams",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "secure-code-review",
+     "title": "Secure code review",
+     "detail": "what to look for",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "automated-testing",
+     "title": "Automated testing",
+     "detail": "SAST, DAST, SCA",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "secrets-management",
+     "title": "Secrets management",
+     "detail": "scanning, vaults, rotation",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "supply-chain-security",
+     "title": "Supply-chain security",
+     "detail": "SBOMs, signing, SLSA",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "security-in-ci-cd",
+     "title": "Security in CI/CD",
+     "detail": "gates without slowing teams down",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "secure-pipeline",
+     "title": "Secure pipeline",
+     "detail": "three planted issues caught and blocked",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "ai-security",
+   "title": "AI security",
+   "level": "Advanced",
+   "weeks": 5,
+   "benchmark": "OWASP Top 10 for LLM Applications  |  MITRE ATLAS  |  NIST AI RMF",
+   "goal": "Secure AI systems - and use AI to make security teams faster.",
+   "doneWhen": "You red-team a real AI application, document every successful attack, fix each one, and complete the PortSwigger LLM attack labs.",
+   "resources": "OWASP Top 10 for LLM Applications  |  MITRE ATLAS  |  NIST AI Risk Management Framework  |  PortSwigger 'Web LLM attacks' labs",
+   "items": [
+    {
+     "key": "how-llm-applications-are-built",
+     "title": "How LLM applications are built",
+     "detail": "prompts, RAG, tools, agents (see AI Engineer track)",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "prompt-injection",
+     "title": "Prompt injection",
+     "detail": "direct and indirect, through documents, web pages and tools",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "data-leakage-and-exfiltration",
+     "title": "Data leakage and exfiltration",
+     "detail": "through outputs, links and tools",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "agent-and-mcp-security",
+     "title": "Agent and MCP security",
+     "detail": "tool permissions, approvals, trust boundaries",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "model-and-data-supply-chain",
+     "title": "Model and data supply chain",
+     "detail": "poisoned data, untrusted models",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "adversarial-ml-basics",
+     "title": "Adversarial ML basics",
+     "detail": "evasion and poisoning (intuition)",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "ai-governance",
+     "title": "AI governance",
+     "detail": "NIST AI RMF, EU AI Act basics, policies",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "ai-for-defenders",
+     "title": "AI for defenders",
+     "detail": "AI-assisted triage, detection writing, and its limits",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "ai-red-team-report",
+     "title": "AI red-team report",
+     "detail": "real app, findings fixed",
+     "kind": "PROJECT",
+     "optional": false
+    },
+    {
+     "key": "portswigger-llm-attack-labs",
+     "title": "PortSwigger LLM attack labs",
+     "detail": "",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "governance-risk-and-compliance",
+   "title": "Governance, risk and compliance",
+   "level": "Advanced",
+   "weeks": 3,
+   "benchmark": "ISO/IEC 27001  |  NIST Cybersecurity Framework 2.0",
+   "goal": "Run security as a managed programme that passes audits.",
+   "doneWhen": "You write a risk register and an ISO 27001 gap assessment for a real organisation.",
+   "resources": "NIST CSF 2.0 (free)  |  ISO/IEC 27001 overview  |  CIS Controls (free)",
+   "items": [
+    {
+     "key": "risk-management",
+     "title": "Risk management",
+     "detail": "identify, assess, treat, accept",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "frameworks",
+     "title": "Frameworks",
+     "detail": "ISO 27001, NIST CSF 2.0, CIS Controls, SOC 2",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "policies-and-procedures",
+     "title": "Policies and procedures",
+     "detail": "writing ones people follow",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "audits-and-evidence",
+     "title": "Audits and evidence",
+     "detail": "",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "third-party-risk",
+     "title": "Third-party risk",
+     "detail": "vendors and suppliers",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "regulators",
+     "title": "Regulators",
+     "detail": "requirements for Pakistani banks, telecoms and health providers",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "risk-register-and-iso-27001-gap-assessment",
+     "title": "Risk register and ISO 27001 gap assessment",
+     "detail": "",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "detection-engineering-and-threat-intelligence",
+   "title": "Detection engineering and threat intelligence",
+   "level": "Expert",
+   "weeks": 5,
+   "benchmark": "Industry expert practice  |  MITRE ATT&CK",
+   "goal": "Turn knowledge of attackers into detections that work.",
+   "doneWhen": "You raise your lab's ATT&CK detection coverage measurably, proven by a purple-team exercise.",
+   "resources": "MITRE ATT&CK and D3FEND  |  Sigma rules repository  |  Atomic Red Team",
+   "items": [
+    {
+     "key": "threat-intelligence",
+     "title": "Threat intelligence",
+     "detail": "sources, indicators vs behaviours, reporting",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "threat-hunting",
+     "title": "Threat hunting",
+     "detail": "hypotheses, queries, findings",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "detection-as-code",
+     "title": "Detection as code",
+     "detail": "Sigma, version control, testing detections",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "purple-teaming",
+     "title": "Purple teaming",
+     "detail": "Atomic Red Team, measuring coverage",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "yara",
+     "title": "YARA",
+     "detail": "rules for files and malware families",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "coverage-improvement",
+     "title": "Coverage improvement",
+     "detail": "before and after, proven by purple team",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "security-architecture-and-leadership",
+   "title": "Security architecture and leadership",
+   "level": "Expert",
+   "weeks": 5,
+   "benchmark": "Senior / staff security practice",
+   "goal": "Design secure systems and lead security across an organisation.",
+   "doneWhen": "You write and defend a zero-trust architecture and a 12-month security roadmap for a real organisation.",
+   "resources": "NIST SP 800-207 (Zero Trust, free)  |  Security Engineering (Ross Anderson, free online)",
+   "items": [
+    {
+     "key": "zero-trust",
+     "title": "Zero trust",
+     "detail": "identity-centric design, segmentation",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "architecture-reviews",
+     "title": "Architecture reviews",
+     "detail": "secure design patterns",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "security-programmes",
+     "title": "Security programmes",
+     "detail": "priorities, budgets, metrics",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "incident-command",
+     "title": "Incident command",
+     "detail": "major incidents, executive and public communication",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "building-teams",
+     "title": "Building teams",
+     "detail": "hiring, training, retaining",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "zero-trust-architecture-and-12-month-roadmap",
+     "title": "Zero-trust architecture and 12-month roadmap",
+     "detail": "defended",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "interviews-and-career",
+   "title": "Interviews and career",
+   "level": "Expert",
+   "weeks": 3,
+   "benchmark": "Industry interview standard",
+   "goal": "Turn your skills into offers.",
+   "doneWhen": "You pass three mock interviews: SOC scenario, technical deep-dive, and a cloud or AppSec design review.",
+   "resources": "Your write-ups, reports and certifications",
+   "items": [
+    {
+     "key": "soc-and-ir-interviews",
+     "title": "SOC and IR interviews",
+     "detail": "live alert triage, thinking out loud",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "technical-deep-dives",
+     "title": "Technical deep-dives",
+     "detail": "networking, Windows, web, cloud",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "portfolio",
+     "title": "Portfolio",
+     "detail": "CTF write-ups, lab reports, a public blog",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "certification-path",
+     "title": "Certification path",
+     "detail": "choosing the next certification for your target role",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "three-mock-interviews",
+     "title": "Three mock interviews",
+     "detail": "recorded and reviewed",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "security-capstone-purple-team",
+   "title": "Security capstone: purple team",
+   "level": "Expert",
+   "weeks": 8,
+   "benchmark": "Graduate capstone standard",
+   "goal": "Attack, detect and defend a realistic environment - and prove it.",
+   "doneWhen": "Your purple-team capstone shows the attack, the detections that fired, the response, and the fixes - defended for 30 minutes.",
+   "resources": "Everything above",
+   "items": [
+    {
+     "key": "environment",
+     "title": "Environment",
+     "detail": "AD, Windows and Linux hosts, a web app, an AI app, a cloud account",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "defence",
+     "title": "Defence",
+     "detail": "SIEM, EDR, detections, hardening",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "exercise",
+     "title": "Exercise",
+     "detail": "authorised attack chain, detection, incident response",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "reporting",
+     "title": "Reporting",
+     "detail": "technical report, executive summary, fixes verified",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "security-capstone",
+     "title": "Security capstone",
+     "detail": "defended for 30 minutes",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  }
+ ]
+}

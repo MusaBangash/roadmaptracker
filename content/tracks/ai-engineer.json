@@ -1,0 +1,1294 @@
+{
+ "slug": "ai-engineer",
+ "title": "AI Engineer",
+ "kind": "ROLE",
+ "edition": "Edition 2  -  University-grade",
+ "subtitle": "Build reliable, measurable, secure products on top of foundation models",
+ "summary": "Turn foundation models into products: retrieval, agents, evals, security, cost - in production.",
+ "expert": "Designs AI systems that are measured by rigorous evals, grounded by strong retrieval, safe against injection, fast and cheap to run, and self-hosted or fine-tuned when that is the right call - and can defend every one of those decisions with data.",
+ "benchmarks": [
+  {
+   "title": "Retrieval",
+   "detail": "Your hybrid search beats BM25 on NDCG@10 on a public BEIR dataset, with the evaluation code published."
+  },
+  {
+   "title": "Agents",
+   "detail": "Your agent is evaluated on a public benchmark subset (for example SWE-bench Lite or tau-bench), score and failure analysis published."
+  },
+  {
+   "title": "Evals in CI",
+   "detail": "Every change to your AI app runs an eval suite that can block a release, with LLM-judge agreement against human labels reported."
+  },
+  {
+   "title": "Open source",
+   "detail": "At least one merged pull request in a widely used AI library or MCP SDK."
+  },
+  {
+   "title": "Defended out loud",
+   "detail": "Defend any AI system for 30 minutes: retrieval choices, eval design, cost at 10x users, and how an attacker would break it."
+  }
+ ],
+ "stages": [
+  {
+   "key": "how-llms-work-for-builders",
+   "title": "How LLMs work, for builders",
+   "level": "Foundation",
+   "weeks": 3,
+   "benchmark": "Stanford CS324 / CS336 (selected lectures)",
+   "goal": "Know exactly what a foundation model does, where it fails, and what it costs.",
+   "doneWhen": "You compare three models (closed and open) on your own 50-example task set and report quality, latency and cost.",
+   "resources": "Stanford CS324 and CS336 lecture notes (free)  |  AI Engineering (Chip Huyen)  |  Karpathy: Intro to Large Language Models",
+   "items": [
+    {
+     "key": "tokens-and-embeddings",
+     "title": "Tokens and embeddings",
+     "detail": "tokenisers, token counts, why they matter for cost",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "the-transformer-recapped",
+     "title": "The transformer, recapped",
+     "detail": "attention and next-token prediction",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "training-pipeline",
+     "title": "Training pipeline",
+     "detail": "pretraining, supervised fine-tuning, RLHF/DPO",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "context-windows",
+     "title": "Context windows",
+     "detail": "limits, long-context behaviour, lost-in-the-middle",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "sampling",
+     "title": "Sampling",
+     "detail": "temperature, top-k, top-p, determinism",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "failure-modes",
+     "title": "Failure modes",
+     "detail": "hallucination, sycophancy, brittleness to prompts",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "reasoning-models",
+     "title": "Reasoning models",
+     "detail": "test-time compute, when they are worth the cost",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "the-model-landscape",
+     "title": "The model landscape",
+     "detail": "closed vs open weights, sizes, licences, benchmarks and their limits",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "local-models",
+     "title": "Local models",
+     "detail": "Ollama, llama.cpp, quantised GGUF models on a CPU",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "model-comparison-report",
+     "title": "Model comparison report",
+     "detail": "three models, your task set, quality/latency/cost",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "model-apis-and-structured-generation",
+   "title": "Model APIs and structured generation",
+   "level": "Foundation",
+   "weeks": 3,
+   "benchmark": "Industry standard - provider documentation",
+   "goal": "Call models from code reliably, cheaply and safely.",
+   "doneWhen": "Your LLM client library handles streaming, tools, structured output, retries and caching, with tests and per-call cost logging.",
+   "resources": "Anthropic and OpenAI API docs and cookbooks  |  Pydantic docs",
+   "items": [
+    {
+     "key": "messages-api",
+     "title": "Messages API",
+     "detail": "system prompts, roles, multi-turn state",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "streaming",
+     "title": "Streaming",
+     "detail": "server-sent events, partial output handling",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "tool-use",
+     "title": "Tool use",
+     "detail": "schemas, the tool loop, tool errors",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "structured-output",
+     "title": "Structured output",
+     "detail": "JSON schema, Pydantic validation, constrained decoding",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "reliability",
+     "title": "Reliability",
+     "detail": "timeouts, retries with backoff, rate limits, idempotency",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "cost-control",
+     "title": "Cost control",
+     "detail": "token accounting, prompt caching, batch APIs",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "multimodal-input",
+     "title": "Multimodal input",
+     "detail": "images, PDFs and audio into models",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "robust-llm-client-library",
+     "title": "Robust LLM client library",
+     "detail": "streaming, tools, validation, retries, caching, cost logs, tests",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "prompt-and-context-engineering",
+   "title": "Prompt and context engineering",
+   "level": "Foundation",
+   "weeks": 3,
+   "benchmark": "UC Berkeley LLM Agents (prompting lectures)  |  provider guides",
+   "goal": "Control model behaviour precisely through what goes into the context.",
+   "doneWhen": "You show measured improvement on a fixed test set for five prompting techniques.",
+   "resources": "Anthropic prompt engineering guide  |  OpenAI prompting guide  |  Berkeley LLM Agents MOOC lectures (free)",
+   "items": [
+    {
+     "key": "prompt-patterns",
+     "title": "Prompt patterns",
+     "detail": "instructions, examples, roles, constraints, output formats",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "few-shot-selection",
+     "title": "Few-shot selection",
+     "detail": "choosing and ordering examples",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "reasoning-prompts",
+     "title": "Reasoning prompts",
+     "detail": "chain of thought, self-consistency, decomposition",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "context-engineering",
+     "title": "Context engineering",
+     "detail": "what goes in, ordering, compaction, memory, isolation",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "long-context-strategies",
+     "title": "Long-context strategies",
+     "detail": "summarisation, retrieval vs stuffing",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "prompt-management",
+     "title": "Prompt management",
+     "detail": "versioning, templates, change review",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "prompt-evaluation",
+     "title": "Prompt evaluation",
+     "detail": "test sets, scoring, avoiding overfitting to examples",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "prompt-library",
+     "title": "Prompt library",
+     "detail": "five techniques with before/after scores",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "information-retrieval",
+   "title": "Information retrieval",
+   "level": "Intermediate",
+   "weeks": 5,
+   "benchmark": "Stanford CS276  |  CMU 11-642",
+   "goal": "Find the right information - the foundation of every RAG system.",
+   "doneWhen": "Your BM25 from scratch matches a reference implementation, and your hybrid search beats BM25 on a public BEIR dataset.",
+   "resources": "Introduction to Information Retrieval (Manning, Raghavan, Schutze, free)  |  Stanford CS276 materials  |  BEIR benchmark",
+   "items": [
+    {
+     "key": "inverted-indexes",
+     "title": "Inverted indexes",
+     "detail": "tokenisation, posting lists, index construction",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "ranked-retrieval",
+     "title": "Ranked retrieval",
+     "detail": "TF-IDF, vector space model, BM25",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "retrieval-evaluation",
+     "title": "Retrieval evaluation",
+     "detail": "precision@k, recall@k, MAP, MRR, NDCG",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "dense-retrieval",
+     "title": "Dense retrieval",
+     "detail": "bi-encoders, contrastive training, embedding models",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "approximate-nearest-neighbours",
+     "title": "Approximate nearest neighbours",
+     "detail": "HNSW, IVF, product quantisation",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "vector-databases",
+     "title": "Vector databases",
+     "detail": "pgvector, Qdrant, Chroma - trade-offs",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "hybrid-search",
+     "title": "Hybrid search",
+     "detail": "combining BM25 and dense, reciprocal rank fusion",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "reranking",
+     "title": "Reranking",
+     "detail": "cross-encoders, cost vs gain",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "query-understanding",
+     "title": "Query understanding",
+     "detail": "rewriting, expansion, multilingual queries",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "urdu-and-english-retrieval",
+     "title": "Urdu and English retrieval",
+     "detail": "mixed-script text, multilingual embeddings",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "search-engine-from-scratch",
+     "title": "Search engine from scratch",
+     "detail": "BM25 with your own inverted index",
+     "kind": "PROJECT",
+     "optional": false
+    },
+    {
+     "key": "hybrid-search-on-beir",
+     "title": "Hybrid search on BEIR",
+     "detail": "beats BM25 on NDCG@10, code published",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "rag-systems",
+   "title": "RAG systems",
+   "level": "Intermediate",
+   "weeks": 5,
+   "benchmark": "Stanford CS276 + research literature (Lewis et al., RAG)",
+   "goal": "Answer questions over real, messy documents - grounded and cited.",
+   "doneWhen": "Your RAG system passes an eval suite on messy Urdu/English documents, and you can explain every remaining failure.",
+   "resources": "Original RAG paper (Lewis et al., 2020)  |  LlamaIndex and LangChain docs  |  Ragas docs",
+   "items": [
+    {
+     "key": "document-ingestion",
+     "title": "Document ingestion",
+     "detail": "PDF, DOCX, HTML, OCR for scans, tables, images",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "chunking",
+     "title": "Chunking",
+     "detail": "fixed, recursive, semantic; overlap; parent-child chunks",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "metadata-and-filtering",
+     "title": "Metadata and filtering",
+     "detail": "permissions, dates, sources",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "rag-from-scratch",
+     "title": "RAG from scratch",
+     "detail": "ingest, chunk, embed, store, retrieve, generate",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "frameworks",
+     "title": "Frameworks",
+     "detail": "LlamaIndex and LangChain - when they help and when they hide problems",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "advanced-retrieval-for-rag",
+     "title": "Advanced retrieval for RAG",
+     "detail": "query rewriting, HyDE, multi-hop, GraphRAG",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "agentic-rag",
+     "title": "Agentic RAG",
+     "detail": "the model decides when and what to retrieve",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "grounding",
+     "title": "Grounding",
+     "detail": "citations, refusing when the answer is not in the sources",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "rag-evaluation",
+     "title": "RAG evaluation",
+     "detail": "retrieval vs generation metrics, faithfulness, answer relevance",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "freshness-and-caching",
+     "title": "Freshness and caching",
+     "detail": "re-indexing, invalidation, semantic caches",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "production-rag",
+     "title": "Production RAG",
+     "detail": "messy Urdu/English documents, citations, eval suite",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "evaluation-and-observability",
+   "title": "Evaluation and observability",
+   "level": "Intermediate",
+   "weeks": 4,
+   "benchmark": "Stanford HELM methodology  |  industry practice",
+   "goal": "Know whether your AI system works - with evidence, not demos.",
+   "doneWhen": "Your eval suite gates releases in CI, and your LLM judge's agreement with human labels is measured and reported.",
+   "resources": "Stanford HELM papers (CRFM)  |  Hamel Husain's writing on evals (hamel.dev)  |  Langfuse and OpenTelemetry docs",
+   "items": [
+    {
+     "key": "error-analysis",
+     "title": "Error analysis",
+     "detail": "reading real outputs, building a failure taxonomy",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "golden-datasets",
+     "title": "Golden datasets",
+     "detail": "collection, labelling guidelines, inter-annotator agreement",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "code-based-checks",
+     "title": "Code-based checks",
+     "detail": "assertions, schema checks, exact and fuzzy matching",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "llm-as-judge",
+     "title": "LLM-as-judge",
+     "detail": "rubrics, calibration, agreement with humans, bias",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "human-review",
+     "title": "Human review",
+     "detail": "workflows and sampling",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "regression-testing",
+     "title": "Regression testing",
+     "detail": "eval suites in CI, release gates",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "online-evaluation",
+     "title": "Online evaluation",
+     "detail": "user feedback, A/B tests, guardrail metrics",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "statistics-for-evals",
+     "title": "Statistics for evals",
+     "detail": "sample size, confidence intervals, comparing systems fairly",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "tracing",
+     "title": "Tracing",
+     "detail": "spans, OpenTelemetry, Langfuse or LangSmith",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "cost-and-latency-monitoring",
+     "title": "Cost and latency monitoring",
+     "detail": "per-request dashboards, alerts",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "eval-harness",
+     "title": "Eval harness",
+     "detail": "golden set, judges, CI gate, dashboard",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "agents",
+   "title": "Agents",
+   "level": "Intermediate",
+   "weeks": 6,
+   "benchmark": "UC Berkeley CS294/194-196 (LLM Agents)",
+   "goal": "Build systems that plan, act with tools, recover from errors, and know when to stop.",
+   "doneWhen": "Your from-scratch agent completes multi-step tasks, and you evaluate it on a public agent benchmark subset.",
+   "resources": "Berkeley LLM Agents and Advanced LLM Agents MOOCs (free)  |  Building Effective Agents (Anthropic)  |  LangGraph docs",
+   "items": [
+    {
+     "key": "the-agent-loop-from-scratch",
+     "title": "The agent loop from scratch",
+     "detail": "ReAct, observe-think-act, stopping conditions",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "tool-design",
+     "title": "Tool design",
+     "detail": "clear schemas, useful errors, idempotent actions",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "planning-and-reflection",
+     "title": "Planning and reflection",
+     "detail": "decomposition, self-critique, replanning",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "memory",
+     "title": "Memory",
+     "detail": "short-term state, long-term memory, retrieval-based memory",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "workflows-vs-agents",
+     "title": "Workflows vs agents",
+     "detail": "when a fixed workflow beats an autonomous agent",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "graphs-and-state",
+     "title": "Graphs and state",
+     "detail": "LangGraph, checkpoints, resumable runs",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "agent-sdks",
+     "title": "Agent SDKs",
+     "detail": "Claude Agent SDK, OpenAI Agents SDK",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "human-in-the-loop",
+     "title": "Human in the loop",
+     "detail": "approvals for risky actions, interrupts",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "multi-agent-patterns",
+     "title": "Multi-agent patterns",
+     "detail": "orchestrator-worker, debate - and their costs",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "computer-use-and-browser-agents",
+     "title": "Computer-use and browser agents",
+     "detail": "capabilities and risks",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "coding-agents",
+     "title": "Coding agents",
+     "detail": "how they work; using them well",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "agent-evaluation",
+     "title": "Agent evaluation",
+     "detail": "task success, trajectory analysis, public benchmarks",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "cost-and-loop-control",
+     "title": "Cost and loop control",
+     "detail": "budgets, step limits, timeouts",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "agent-from-scratch",
+     "title": "Agent from scratch",
+     "detail": "no framework, with tools and memory",
+     "kind": "PROJECT",
+     "optional": false
+    },
+    {
+     "key": "multi-step-agent-with-approvals",
+     "title": "Multi-step agent with approvals",
+     "detail": "evaluated on a benchmark subset",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "mcp-and-tool-ecosystems",
+   "title": "MCP and tool ecosystems",
+   "level": "Intermediate",
+   "weeks": 2,
+   "benchmark": "Industry standard - modelcontextprotocol.io",
+   "goal": "Connect models to real systems through a standard protocol.",
+   "doneWhen": "You build an MCP server for a real system, connect it to a client, and pass a security review of its tools.",
+   "resources": "MCP specification and SDK docs (modelcontextprotocol.io)",
+   "items": [
+    {
+     "key": "mcp-architecture",
+     "title": "MCP architecture",
+     "detail": "hosts, clients, servers",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "primitives",
+     "title": "Primitives",
+     "detail": "tools, resources, prompts",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "transports",
+     "title": "Transports",
+     "detail": "stdio and streamable HTTP",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "authentication",
+     "title": "Authentication",
+     "detail": "OAuth for remote servers",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "building-servers-and-clients",
+     "title": "Building servers and clients",
+     "detail": "Python SDK",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "mcp-security",
+     "title": "MCP security",
+     "detail": "tool poisoning, over-broad permissions, trust boundaries",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "mcp-server-for-a-real-system",
+     "title": "MCP server for a real system",
+     "detail": "e.g. a school database, with a client",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "ai-application-engineering",
+   "title": "AI application engineering",
+   "level": "Intermediate",
+   "weeks": 5,
+   "benchmark": "Stanford CS147 (HCI) for AI UX  |  industry practice",
+   "goal": "Ship complete AI products people actually use.",
+   "doneWhen": "Your full-stack AI app is deployed with auth, streaming, feedback capture and per-user rate limits.",
+   "resources": "People + AI Guidebook (Google PAIR, free)  |  FastAPI docs  |  Next.js or Streamlit docs",
+   "items": [
+    {
+     "key": "backend-for-ai-apps",
+     "title": "Backend for AI apps",
+     "detail": "FastAPI, async, queues for long jobs, WebSocket/SSE streaming",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "state",
+     "title": "State",
+     "detail": "conversation persistence in Postgres, Redis for sessions and caches",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "ai-ux",
+     "title": "AI UX",
+     "detail": "streaming, showing uncertainty, error states, editing outputs",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "feedback-capture",
+     "title": "Feedback capture",
+     "detail": "thumbs, edits, implicit signals feeding evals",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "frontend-for-ai-apps",
+     "title": "Frontend for AI apps",
+     "detail": "React/Next.js, or Streamlit/Gradio for prototypes",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "multi-tenancy",
+     "title": "Multi-tenancy",
+     "detail": "auth, per-user data isolation, quotas",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "resilience",
+     "title": "Resilience",
+     "detail": "fallbacks, model routing, provider outages",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "semantic-caching",
+     "title": "Semantic caching",
+     "detail": "when it saves money and when it breaks answers",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "cloud-ai-platforms",
+     "title": "Cloud AI platforms",
+     "detail": "AWS Bedrock/SageMaker, Azure AI, Vertex AI",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "full-stack-ai-app",
+     "title": "Full-stack AI app",
+     "detail": "deployed, with auth, streaming and feedback",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "security-and-safety-of-ai-systems",
+   "title": "Security and safety of AI systems",
+   "level": "Advanced",
+   "weeks": 4,
+   "benchmark": "OWASP Top 10 for LLM Applications  |  Berkeley LLM Agents (safety lectures)",
+   "goal": "Build AI systems that resist attack and protect users' data.",
+   "doneWhen": "You red-team your own app, document every successful attack, and fix or mitigate each one.",
+   "resources": "OWASP Top 10 for LLM Applications  |  Berkeley LLM Agents safety lectures  |  provider safety docs",
+   "items": [
+    {
+     "key": "threat-modelling-ai-apps",
+     "title": "Threat modelling AI apps",
+     "detail": "assets, attackers, trust boundaries",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "prompt-injection",
+     "title": "Prompt injection",
+     "detail": "direct and indirect (via documents, web pages, tools)",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "data-exfiltration",
+     "title": "Data exfiltration",
+     "detail": "through tools, links and outputs",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "jailbreaks",
+     "title": "Jailbreaks",
+     "detail": "how they work and why filters are not enough",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "tool-permissions",
+     "title": "Tool permissions",
+     "detail": "least privilege, sandboxing, approvals",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "privacy",
+     "title": "Privacy",
+     "detail": "PII detection, data retention, logging policies",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "content-moderation",
+     "title": "Content moderation",
+     "detail": "input and output checks",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "red-teaming",
+     "title": "Red-teaming",
+     "detail": "planning and running attacks on your own system",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "compliance-basics",
+     "title": "Compliance basics",
+     "detail": "data-protection obligations, especially for health and education data",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "red-team-report",
+     "title": "Red-team report",
+     "detail": "attacks, results, fixes",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "fine-tuning-and-adaptation",
+   "title": "Fine-tuning and adaptation",
+   "level": "Advanced",
+   "weeks": 5,
+   "benchmark": "Stanford CS336 (alignment)  |  Hugging Face course",
+   "goal": "Adapt models when prompting and retrieval are not enough - and prove it helped.",
+   "doneWhen": "Your fine-tuned small model beats a strong prompting baseline on a held-out test set, with cost compared.",
+   "resources": "Stanford CS336 alignment lectures  |  Hugging Face PEFT and TRL docs  |  Raschka: Build a Large Language Model (From Scratch), fine-tuning chapters",
+   "items": [
+    {
+     "key": "when-to-fine-tune",
+     "title": "When to fine-tune",
+     "detail": "vs prompting vs RAG - a decision framework",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "datasets",
+     "title": "Datasets",
+     "detail": "collection, synthetic data, filtering, decontamination",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "supervised-fine-tuning",
+     "title": "Supervised fine-tuning",
+     "detail": "full fine-tuning vs LoRA/QLoRA",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "preference-tuning",
+     "title": "Preference tuning",
+     "detail": "DPO and its relatives",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "distillation",
+     "title": "Distillation",
+     "detail": "large teacher to small student",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "embedding-fine-tuning",
+     "title": "Embedding fine-tuning",
+     "detail": "improving retrieval for your domain and language",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "evaluation",
+     "title": "Evaluation",
+     "detail": "before/after on held-out data, regression checks",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "task-fine-tune",
+     "title": "Task fine-tune",
+     "detail": "small open model vs prompting baseline, with cost",
+     "kind": "PROJECT",
+     "optional": false
+    },
+    {
+     "key": "urdu-embedding-fine-tune",
+     "title": "Urdu embedding fine-tune",
+     "detail": "measured retrieval gain",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "inference-and-self-hosting",
+   "title": "Inference and self-hosting",
+   "level": "Advanced",
+   "weeks": 4,
+   "benchmark": "CMU 10-714 / MIT 6.5940 (selected)",
+   "goal": "Run models yourself - fast, cheap, and offline when needed.",
+   "doneWhen": "Your self-hosted model is load-tested, and you produce a cost comparison against API pricing.",
+   "resources": "vLLM and SGLang docs  |  MIT 6.5940 lectures (free)  |  Hugging Face quantisation docs",
+   "items": [
+    {
+     "key": "gpu-memory-maths",
+     "title": "GPU memory maths",
+     "detail": "weights, activations, KV cache - what fits where",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "quantisation",
+     "title": "Quantisation",
+     "detail": "GPTQ, AWQ, GGUF; quality vs speed",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "serving-engines",
+     "title": "Serving engines",
+     "detail": "vLLM, SGLang, TGI",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "throughput-techniques",
+     "title": "Throughput techniques",
+     "detail": "continuous batching, prefix caching, speculative decoding",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "latency-vs-throughput",
+     "title": "Latency vs throughput",
+     "detail": "measuring and trading off",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "cost-modelling",
+     "title": "Cost modelling",
+     "detail": "self-hosting vs API at different volumes",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "on-prem-and-offline",
+     "title": "On-prem and offline",
+     "detail": "air-gapped and low-connectivity deployments",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "self-hosted-model",
+     "title": "Self-hosted model",
+     "detail": "load test plus cost report",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "multimodal-and-voice-ai",
+   "title": "Multimodal and voice AI",
+   "level": "Advanced",
+   "weeks": 4,
+   "benchmark": "CMU 11-777 (Multimodal ML)",
+   "goal": "Build with images, documents, speech and voice.",
+   "doneWhen": "Your voice or document AI app works end to end in Urdu or English with measured accuracy and latency.",
+   "resources": "CMU 11-777 lectures (free)  |  Whisper and provider multimodal docs",
+   "items": [
+    {
+     "key": "vision-language-models",
+     "title": "Vision-language models",
+     "detail": "capabilities and limits",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "document-understanding",
+     "title": "Document understanding",
+     "detail": "OCR with VLMs, forms, tables, handwriting",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "speech-to-text",
+     "title": "Speech-to-text",
+     "detail": "Whisper, accents, Urdu",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "text-to-speech",
+     "title": "Text-to-speech",
+     "detail": "voices, latency",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "real-time-voice-agents",
+     "title": "Real-time voice agents",
+     "detail": "latency budgets, turn-taking, interruptions",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "image-generation",
+     "title": "Image generation",
+     "detail": "APIs and responsible use",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "voice-or-document-ai-app",
+     "title": "Voice or document AI app",
+     "detail": "Urdu/English, accuracy and latency measured",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "ai-system-design",
+   "title": "AI system design",
+   "level": "Advanced",
+   "weeks": 3,
+   "benchmark": "Industry interview standard",
+   "goal": "Design complete AI systems and defend the trade-offs.",
+   "doneWhen": "You design eight AI systems out loud in 45 minutes each, with cost, latency and an eval plan.",
+   "resources": "AI Engineering (Chip Huyen)  |  Designing Machine Learning Systems (Chip Huyen)",
+   "items": [
+    {
+     "key": "requirements",
+     "title": "Requirements",
+     "detail": "users, quality bar, latency and cost budgets",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "architecture-choices",
+     "title": "Architecture choices",
+     "detail": "prompt-only, RAG, agent, fine-tune, hybrid",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "evaluation-plan",
+     "title": "Evaluation plan",
+     "detail": "offline and online, before launch",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "scaling",
+     "title": "Scaling",
+     "detail": "caching, routing, batching, 10x traffic",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "reliability",
+     "title": "Reliability",
+     "detail": "fallbacks, degradation, human escalation",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "case-studies",
+     "title": "Case studies",
+     "detail": "support copilot, document Q&A, coding assistant, voice agent",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "eight-designs",
+     "title": "Eight designs",
+     "detail": "each written up with diagram, numbers and trade-offs",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "frontier-practice-and-research",
+   "title": "Frontier practice and research",
+   "level": "Expert",
+   "weeks": 6,
+   "benchmark": "Stanford CS25  |  Berkeley Advanced LLM Agents",
+   "goal": "Stay at the frontier and contribute to it.",
+   "doneWhen": "You reproduce a published RAG or agent result and merge a pull request into a widely used AI library.",
+   "resources": "Stanford CS25 talks (free)  |  Berkeley Advanced LLM Agents MOOC (free)  |  arXiv",
+   "items": [
+    {
+     "key": "reading-papers-weekly",
+     "title": "Reading papers weekly",
+     "detail": "a system for keeping current without chasing hype",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "reasoning-and-test-time-compute",
+     "title": "Reasoning and test-time compute",
+     "detail": "what changes for system design",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "long-horizon-agents",
+     "title": "Long-horizon agents",
+     "detail": "reliability over many steps",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "evaluation-research",
+     "title": "Evaluation research",
+     "detail": "benchmarks, contamination, what scores really mean",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "open-source-contribution",
+     "title": "Open-source contribution",
+     "detail": "AI libraries, MCP SDKs, eval tools",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "technical-writing",
+     "title": "Technical writing",
+     "detail": "publishing what you learn",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "paper-reproduction",
+     "title": "Paper reproduction",
+     "detail": "RAG or agent result, report published",
+     "kind": "PROJECT",
+     "optional": false
+    },
+    {
+     "key": "open-source-pull-request",
+     "title": "Open-source pull request",
+     "detail": "merged into a widely used AI project",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "interviews-and-career",
+   "title": "Interviews and career",
+   "level": "Expert",
+   "weeks": 3,
+   "benchmark": "Industry standard",
+   "goal": "Turn your skills into offers.",
+   "doneWhen": "You pass three mock interviews: AI system design, LLM coding, and a project deep-dive.",
+   "resources": "AI Engineering (Chip Huyen)  |  your own project write-ups",
+   "items": [
+    {
+     "key": "ai-system-design-interviews",
+     "title": "AI system design interviews",
+     "detail": "structure and time management",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "llm-coding-interviews",
+     "title": "LLM coding interviews",
+     "detail": "building a RAG or agent component live",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "project-deep-dives",
+     "title": "Project deep-dives",
+     "detail": "explaining decisions, numbers and failures",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "portfolio",
+     "title": "Portfolio",
+     "detail": "case studies with eval results and costs",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "three-mock-interviews",
+     "title": "Three mock interviews",
+     "detail": "recorded and reviewed",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "key": "ai-capstone-and-leadership",
+   "title": "AI capstone and leadership",
+   "level": "Expert",
+   "weeks": 8,
+   "benchmark": "Graduate capstone standard",
+   "goal": "Lead an AI product from problem to production - and defend it.",
+   "doneWhen": "You ship a production AI system with evals, a security review and a cost model, and defend it for 30 minutes.",
+   "resources": "Everything above",
+   "items": [
+    {
+     "key": "problem-selection",
+     "title": "Problem selection",
+     "detail": "real users, measurable outcome",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "design-document",
+     "title": "Design document",
+     "detail": "architecture, eval plan, risks, costs",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "delivery",
+     "title": "Delivery",
+     "detail": "build, evaluate, secure, deploy, monitor",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "leadership",
+     "title": "Leadership",
+     "detail": "reviews, mentoring, communicating with non-engineers",
+     "kind": "LESSON",
+     "optional": false
+    },
+    {
+     "key": "ai-capstone",
+     "title": "AI capstone",
+     "detail": "production system, defended for 30 minutes",
+     "kind": "PROJECT",
+     "optional": false
+    }
+   ]
+  }
+ ]
+}
