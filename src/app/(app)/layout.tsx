@@ -21,7 +21,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   return (
     <div className="min-h-dvh">
-      <header className="sticky top-0 z-20 border-b border-border bg-surface/90 backdrop-blur">
+      <header className="sticky top-0 z-20 border-b print:hidden border-border bg-surface/90 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center gap-4 px-4 py-3">
           <Link href="/dashboard" className="shrink-0"><Logo size={32} product="Tracks" /></Link>
           <nav className="-mx-1 flex flex-1 gap-1 overflow-x-auto" aria-label="Main">
@@ -54,7 +54,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           </details>
         </div>
       </header>
-      <main className="mx-auto max-w-6xl px-4 py-6 sm:py-8">{children}</main>
+      <main className="mx-auto max-w-6xl px-4 py-6 sm:py-8 print:max-w-none print:p-0">{children}</main>
     </div>
   );
 }

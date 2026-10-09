@@ -1,4 +1,5 @@
 // NoorAI Tracks — multi-school progress tracking for roadmaps and courses.
+import { sql } from "drizzle-orm";
 import { pgTable, pgEnum, text, timestamp, integer, boolean, jsonb, real, date, primaryKey, uniqueIndex, index } from "drizzle-orm/pg-core";
 import type { AdapterAccountType } from "next-auth/adapters";
 import type { TrackDoc } from "@/lib/roadmap-core";
@@ -274,3 +275,31 @@ export const passwordResets = pgTable("password_reset", {
   createdById: text("created_by_id").references(() => users.id, { onDelete: "set null" }),
   createdAt: created(),
 });
+
+// ---------- Certificates (Step 5, feature 2) ----------
+
+/** A certificate for finishing a roadmap. The printed details are copied in when it is issued, so it
+ *  reads the same forever even if the roadmap, the school or the account name changes later.
+ *  Deleting the student (or their enrollment) deletes it too. At most one valid one per enrollment. */
+export const certificates = pgTable("certificate", {
+  id: id(),
+  /** The public check code, e.g. "7K3MQ-9TXWA" (unguessable; shown on the certificate and in its QR code). */
+  code: text("code").notNull().unique(),
+  enrollmentId: text("enrollment_id").notNull().references(() => enrollments.id, { onDelete: "cascade" }),
+  orgId: text("org_id").notNull().references(() => organizations.id, { onDelete: "cascade" }),
+  nameOnCertificate: text("name_on_certificate").notNull(),
+  trackTitle: text("track_title").notNull(),
+  trackEdition: text("track_edition").notNull().default(""),
+  schoolName: text("school_name").notNull(),
+  cohortName: text("cohort_name").notNull(),
+  completedOn: date("completed_on", { mode: "string" }).notNull(),
+  issuedById: text("issued_by_id").references(() => users.id, { onDelete: "set null" }),
+  issuedByName: text("issued_by_name").notNull(),
+  issuedAt: created(),
+  revokedAt: timestamp("revoked_at", { mode: "date" }),
+  revokedById: text("revoked_by_id").references(() => users.id, { onDelete: "set null" }),
+  revokeReason: text("revoke_reason"),
+}, (t) => [
+  index("certificate_enrollment").on(t.enrollmentId),
+  uniqueIndex("certificate_one_valid").on(t.enrollmentId).where(sql`"revoked_at" is null`),
+]);

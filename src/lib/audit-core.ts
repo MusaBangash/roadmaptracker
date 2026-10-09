@@ -26,6 +26,8 @@ export const AUDIT_ACTIONS = {
   "signoff.clear": { group: "work", label: "Cleared a stage sign-off" },
   "assessment.save": { group: "work", label: "Saved an assessment" },
   "enrollment.status": { group: "work", label: "Changed a student's status" },
+  "certificate.issue": { group: "work", label: "Issued a certificate" },
+  "certificate.revoke": { group: "work", label: "Revoked a certificate" },
   "attendance.save": { group: "class", label: "Took attendance" },
   "teach.mark": { group: "class", label: "Marked lessons taught" },
   "teach.unmark": { group: "class", label: "Marked lessons not taught" },

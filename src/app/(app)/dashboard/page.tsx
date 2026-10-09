@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { validCertificate } from "@/lib/certificates";
 import { and, eq, sql } from "drizzle-orm";
 import { db, schema } from "@/db";
 import { getContext } from "@/lib/access";
@@ -39,7 +40,8 @@ export default async function Dashboard() {
     const { progress, signoffs } = await loadProgress([e.id]);
     const sum = summarize(tree, progress, signoffs);
     const here = currentStageIndex(tree, sum);
-    return { e, c, t, sum, expected: expectedPct(tree, c.startDate), stages: tree.length, now: here >= 0 ? `Stage ${here + 1} · ${tree[here].title}` : null };
+    const cert = await validCertificate(e.id);
+    return { e, c, t, sum, cert, expected: expectedPct(tree, c.startDate), stages: tree.length, now: here >= 0 ? `Stage ${here + 1} · ${tree[here].title}` : null };
   }));
 
   // ---------- instructor / admin ----------
@@ -130,7 +132,8 @@ export default async function Dashboard() {
                 <Link key={x.e.id} href={`/learn/${x.e.id}`} className="card block p-5 hover:border-primary">
                   <div className="text-sm font-semibold text-highlight-text">{x.c.name}</div>
                   <div className="mt-1 font-bold text-xl">{x.t.title}</div>
-                  {x.now && <div className="mt-1 text-sm text-ink-muted">Now on {x.now}</div>}
+                  {x.cert ? <div className="mt-2"><Badge tone="success" icon="star">Certificate earned · open to download</Badge></div>
+                    : x.now && <div className="mt-1 text-sm text-ink-muted">Now on {x.now}</div>}
                   <div className="mt-4"><ProgressBar value={x.sum.pct} expected={x.expected} /></div>
                   <div className="mt-2 flex flex-wrap gap-x-4 text-xs text-ink-muted">
                     <span className="font-semibold text-ink">{pct(x.sum.pct)} done</span>

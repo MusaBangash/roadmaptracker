@@ -7,6 +7,8 @@ import { PageHeader } from "@/components/ui";
 import { RoadmapView } from "@/components/roadmap-view";
 import { loadCoverage } from "@/lib/coverage";
 import { fmtDate } from "@/lib/utils";
+import { validCertificate } from "@/lib/certificates";
+import { Icon } from "@/components/icon";
 
 export const metadata = { title: "My track" };
 
@@ -14,11 +16,12 @@ export default async function LearnPage({ params }: { params: Promise<{ enrollme
   const { enrollmentId } = await params;
   const { enrollment } = await requireOwnEnrollment(enrollmentId);
   const cohort = (await db.query.cohorts.findFirst({ where: eq(schema.cohorts.id, enrollment.cohortId) }))!;
-  const [track, tree, { progress, signoffs }, taught] = await Promise.all([
+  const [track, tree, { progress, signoffs }, taught, cert] = await Promise.all([
     db.query.tracks.findFirst({ where: eq(schema.tracks.id, cohort.trackId) }).then((t) => t!),
     loadTrackTree(cohort.trackId),
     loadProgress([enrollment.id]),
     loadCoverage(cohort.id),
+    validCertificate(enrollment.id),
   ]);
 
   return (
@@ -27,8 +30,17 @@ export default async function LearnPage({ params }: { params: Promise<{ enrollme
         title={track.title}
         sub={<>{cohort.name}{track.edition ? ` · ${track.edition}` : ""}</>}
         back={{ href: "/dashboard", label: "Dashboard" }}
-        actions={<Link href={`/learn/${enrollment.id}/log`} className="btn-ghost">Weekly log</Link>}
+        actions={<>
+          {cert && <Link href={`/certificates/${cert.code}`} className="btn-primary"><Icon name="star" size={18} />Download certificate</Link>}
+          <Link href={`/learn/${enrollment.id}/log`} className="btn-ghost">Weekly log</Link>
+        </>}
       />
+      {cert && (
+        <p role="status" className="mb-6 flex items-start gap-2 rounded-md bg-success-soft px-4 py-3 text-sm text-success">
+          <Icon name="star" size={20} />
+          <span><b>Congratulations! You completed this roadmap</b> on {fmtDate(cert.completedOn)}. <Link href={`/certificates/${cert.code}`} className="font-semibold underline">Open your certificate</Link> to download it or share its check link.</span>
+        </p>
+      )}
       <RoadmapView
         tree={tree}
         sum={summarize(tree, progress, signoffs)}
