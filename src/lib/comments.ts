@@ -2,7 +2,7 @@ import "server-only";
 import { and, asc, eq, gt, inArray, isNotNull, isNull, or, sql } from "drizzle-orm";
 import { db, schema } from "@/db";
 import { canChangeComment, type CommentKind, type Side } from "@/lib/comment-core";
-import { fmtDateTime } from "@/lib/utils";
+import { translator, type T } from "@/i18n/core";
 
 export * from "@/lib/comment-core";
 
@@ -51,16 +51,17 @@ export function byThread(rows: CommentRow[]) {
   return m;
 }
 
-export function toViews(rows: CommentRow[], viewer: { id: string; admin: boolean }): CommentView[] {
+/** `t` gives the viewer's language for dates and "Deleted person" (English when left out). */
+export function toViews(rows: CommentRow[], viewer: { id: string; admin: boolean }, t: T = translator("en")): CommentView[] {
   return rows.map((r) => ({
     id: r.id,
-    author: r.authorId ? (r.authorName ?? r.authorEmail ?? "Someone") : "Deleted person",
+    author: r.authorId ? (r.authorName ?? r.authorEmail ?? t("cmt.someone")) : t("cmt.deletedPerson"),
     side: r.authorRole,
     kind: r.kind,
     body: r.hiddenAt ? null : r.body,
     hiddenText: r.hiddenAt && viewer.admin ? r.body : null,
     hidden: !!r.hiddenAt,
-    when: fmtDateTime(r.createdAt),
+    when: t.dateTime(r.createdAt),
     edited: !!r.editedAt,
     canChange: canChangeComment(r, viewer.id),
   }));

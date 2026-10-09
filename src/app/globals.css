@@ -80,7 +80,7 @@ body { background: var(--surface); color: var(--ink); font: var(--text-body); }
 }
 /* Status badge, same as Lab Studio StatusBadge: icon + word on a -soft background. */
 @utility badge {
-  @apply inline-flex items-center gap-1 rounded-full py-0.5 pr-2.5 pl-2 whitespace-nowrap;
+  @apply inline-flex items-center gap-1 rounded-full py-0.5 pe-2.5 ps-2 whitespace-nowrap;
   font: var(--text-small-strong);
 }
 @utility h1 {

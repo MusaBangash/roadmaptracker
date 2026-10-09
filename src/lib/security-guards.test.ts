@@ -10,7 +10,7 @@ const GUARD = /\b(requireUser|requireRole|requireTeachableCohort|requireTeachabl
 const DATA = /\b(db|tx)\s*[.]/;
 
 /** Actions anyone may call: they sign in or out, or check a one-time secret themselves. */
-const PUBLIC_ACTIONS = new Set(["loginAction", "googleAction", "registerAction", "logoutAction", "switchOrgAction", "resetPasswordAction"]);
+const PUBLIC_ACTIONS = new Set(["loginAction", "googleAction", "registerAction", "logoutAction", "switchOrgAction", "resetPasswordAction", "setLocaleAction"]);
 /** Routes open to everyone, with no school data in them. */
 const PUBLIC_ROUTES = new Set(["src/app/api/health/route.ts"]);
 

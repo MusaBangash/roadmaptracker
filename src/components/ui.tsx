@@ -1,19 +1,9 @@
 import Link from "next/link";
-import { pct } from "@/lib/utils";
-import { Icon, type IconName } from "@/components/icon";
 
-export function ProgressBar({ value, expected, tone = "forest", label }: { value: number; expected?: number; tone?: "forest" | "saffron"; label?: string }) {
-  const text = expected !== undefined && expected > 0 ? `${pct(value)}, plan expects ${pct(expected)}` : pct(value);
-  return (
-    <div className="relative h-2 w-full overflow-hidden rounded-full bg-border" role="progressbar" aria-label={label} aria-valuetext={text}
-      aria-valuenow={Math.round(value * 100)} aria-valuemin={0} aria-valuemax={100}>
-      <div className={`h-full rounded-full ${tone === "forest" ? "bg-primary" : "bg-highlight"}`} style={{ width: pct(value) }} />
-      {expected !== undefined && expected > 0 && (
-        <div className="absolute top-0 h-full w-0.5 bg-ink/50" style={{ left: pct(expected) }} title={`Expected by now: ${pct(expected)}`} />
-      )}
-    </div>
-  );
-}
+// Labels that change with the language live in ui-labels.tsx (client components using useT).
+export { Badge, Tag } from "@/components/badge";
+import { Tag } from "@/components/badge";
+export { ProgressBar, KindPill, StatusPill, SignoffBadge, RiskPill, EnrollmentBadge } from "@/components/ui-labels";
 
 /** "needs_work" → "Needs work": sentence case for words stored in capitals. */
 export function sentence(s: string) {
@@ -21,67 +11,9 @@ export function sentence(s: string) {
   return t.charAt(0).toUpperCase() + t.slice(1);
 }
 
-type Tone = "success" | "warning" | "danger" | "info" | "neutral";
-const TONE: Record<Tone, string> = {
-  success: "bg-success-soft text-success",
-  warning: "bg-warning-soft text-warning",
-  danger: "bg-danger-soft text-danger",
-  info: "bg-info-soft text-info",
-  neutral: "bg-surface-sunken text-ink-muted",
-};
-
-/** A status: always an icon and a word, never colour alone (like Lab Studio's StatusBadge). */
-/** `wrap`: long text may break onto a second line (phones) instead of running off the screen. */
-export function Badge({ tone, icon, children, wrap = false }: { tone: Tone; icon: IconName; children: React.ReactNode; wrap?: boolean }) {
-  return (
-    <span className={`badge ${TONE[tone]}${wrap ? " whitespace-normal" : ""}`}>
-      <Icon name={icon} size={14} />
-      {children}
-    </span>
-  );
-}
-
-/** A label that is not a status (level, kind, role, "optional"). */
-export function Tag({ children, strong = false }: { children: React.ReactNode; strong?: boolean }) {
-  return <span className={`pill ${strong ? "bg-primary text-on-primary" : "bg-surface-sunken text-ink-muted"}`}>{children}</span>;
-}
-
 export function LevelPill({ level }: { level: string }) {
   if (!level) return null;
   return <Tag strong={level === "Expert"}>{level}</Tag>;
-}
-
-export function KindPill({ kind }: { kind: string }) {
-  if (kind === "LESSON") return null;
-  return <Tag strong={kind === "MILESTONE"}>{sentence(kind)}</Tag>;
-}
-
-export function StatusPill({ status }: { status: string | null | undefined }) {
-  if (status === "VERIFIED") return <Badge tone="success" icon="online">Verified</Badge>;
-  if (status === "NEEDS_WORK") return <Badge tone="danger" icon="error">Needs work</Badge>;
-  if (status === "DONE") return <Badge tone="neutral" icon="check">Done</Badge>;
-  return null;
-}
-
-/** A stage sign-off: passed, not passed yet, or nothing. */
-export function SignoffBadge({ passed, notYet = "Not passed yet" }: { passed: boolean | null | undefined; notYet?: string }) {
-  if (passed === true) return <Badge tone="success" icon="online">Signed off</Badge>;
-  if (passed === false) return <Badge tone="danger" icon="x">{notYet}</Badge>;
-  return null;
-}
-
-export function RiskPill({ risk }: { risk: "inactive" | "behind" | null }) {
-  if (risk === "inactive") return <Badge tone="danger" icon="error">Inactive 14+ days</Badge>;
-  if (risk === "behind") return <Badge tone="warning" icon="offline">Behind pace</Badge>;
-  return <Badge tone="success" icon="check">On track</Badge>;
-}
-
-/** Paused, completed or withdrawn (active students show their RiskPill instead). */
-export function EnrollmentBadge({ status }: { status: string }) {
-  if (status === "COMPLETED") return <Badge tone="success" icon="star">Completed</Badge>;
-  if (status === "PAUSED") return <Badge tone="neutral" icon="clock">Paused</Badge>;
-  if (status === "WITHDRAWN") return <Badge tone="neutral" icon="minus">Withdrawn</Badge>;
-  return <Badge tone="success" icon="check">Active</Badge>;
 }
 
 export function Stat({ label, value, sub }: { label: string; value: React.ReactNode; sub?: string }) {
@@ -97,7 +29,7 @@ export function Stat({ label, value, sub }: { label: string; value: React.ReactN
 export function PageHeader({ title, sub, back, actions }: { title: string; sub?: React.ReactNode; back?: { href: string; label: string }; actions?: React.ReactNode }) {
   return (
     <div className="mb-6">
-      {back && <Link href={back.href} className="mb-2 inline-block text-sm text-ink-muted hover:text-ink">← {back.label}</Link>}
+      {back && <Link href={back.href} className="mb-2 inline-block text-sm text-ink-muted hover:text-ink"><span aria-hidden className="inline-block rtl:-scale-x-100">←</span> {back.label}</Link>}
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="h1">{title}</h1>

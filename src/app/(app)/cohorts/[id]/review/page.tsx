@@ -7,6 +7,7 @@ import { reviewItemAction } from "@/app/actions/teach";
 import { PageHeader, Empty, KindPill, Badge, StatusPill } from "@/components/ui";
 import { byThread, loadComments, toViews, unreadFor, waitingSql } from "@/lib/comments";
 import { CommentThread } from "@/components/comment-thread";
+import { getT } from "@/i18n/server";
 import { Icon } from "@/components/icon";
 import { daysAgo, plural } from "@/lib/utils";
 
@@ -27,10 +28,11 @@ export default async function ReviewPage({ params }: { params: Promise<{ id: str
   // Comments (feature 3): each card's thread; the student's words since a teacher last opened it count as new.
   const threads = byThread(await loadComments([...new Set(rows.map((r) => r.p.enrollmentId))]));
   const viewer = { id: user.id, admin: role === "ADMIN" };
+  const t = await getT();
   const cards = rows.map((r) => {
     const all = threads.get(`${r.p.enrollmentId}:${r.p.itemId}`) ?? [];
     const last = all.filter((c) => !c.hiddenAt).at(-1);
-    return { ...r, comments: toViews(all, viewer), unread: unreadFor(all, "TEACHER", r.p.staffSeenAt), replied: last?.authorRole === "STUDENT" && last.kind === "COMMENT" };
+    return { ...r, comments: toViews(all, viewer, t), unread: unreadFor(all, "TEACHER", r.p.staffSeenAt), replied: last?.authorRole === "STUDENT" && last.kind === "COMMENT" };
   });
   const newReplies = cards.reduce((a, c) => a + c.unread, 0);
 

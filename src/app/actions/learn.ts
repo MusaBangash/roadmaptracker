@@ -7,6 +7,7 @@ import { db, schema } from "@/db";
 import { requireOwnEnrollment } from "@/lib/access";
 import { safeUrl } from "@/lib/utils";
 import type { FormState } from "./auth";
+import { getT, issueText } from "@/i18n/server";
 
 /** Confirms the item belongs to the track of the enrollment's cohort. */
 async function itemInEnrollment(enrollmentId: string, itemId: string) {
@@ -48,12 +49,13 @@ const evidenceSchema = z.object({
 });
 
 export async function saveEvidenceAction(_: FormState, form: FormData): Promise<FormState> {
+  const t = await getT();
   const p = evidenceSchema.safeParse(Object.fromEntries(form));
-  if (!p.success) return { error: "Please check the link and note." };
+  if (!p.success) return { error: t("item.err.check") };
   const { enrollment } = await requireOwnEnrollment(p.data.enrollmentId);
-  if (!(await itemInEnrollment(enrollment.id, p.data.itemId))) return { error: "This item isn't part of your track." };
+  if (!(await itemInEnrollment(enrollment.id, p.data.itemId))) return { error: t("item.err.notInTrack") };
   const url = p.data.evidenceUrl ? safeUrl(p.data.evidenceUrl) : null;
-  if (p.data.evidenceUrl && !url) return { error: "The link must start with http:// or https://" };
+  if (p.data.evidenceUrl && !url) return { error: t("item.err.http") };
   const existing = await db.query.itemProgress.findFirst({
     where: and(eq(schema.itemProgress.enrollmentId, enrollment.id), eq(schema.itemProgress.itemId, p.data.itemId)),
   });
@@ -70,20 +72,21 @@ export async function saveEvidenceAction(_: FormState, form: FormData): Promise<
       set: { status, evidenceUrl: url, note: p.data.note || null, updatedAt: now, markedById: null }, // now the student's own work
     });
   revalidatePath(`/learn/${enrollment.id}`);
-  return { ok: status === "VERIFIED" ? "Saved." : "Saved — your instructor will review it." };
+  return { ok: status === "VERIFIED" ? t("item.saved") : t("item.savedReview") };
 }
 
 const logSchema = z.object({
   enrollmentId: z.string(),
-  weekStart: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Choose the week's start date."),
-  hours: z.coerce.number().min(0, "Hours can't be negative.").max(100, "That's more hours than a week allows."),
+  weekStart: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "log.err.week"),
+  hours: z.coerce.number().min(0, "log.err.negative").max(100, "log.err.tooMany"),
   finished: z.string().trim().max(2000),
   stuck: z.string().trim().max(2000),
 });
 
 export async function saveWeeklyLogAction(_: FormState, form: FormData): Promise<FormState> {
+  const t = await getT();
   const p = logSchema.safeParse(Object.fromEntries(form));
-  if (!p.success) return { error: p.error.issues[0].message };
+  if (!p.success) return { error: issueText(t, p.error.issues[0].message) };
   const { enrollment } = await requireOwnEnrollment(p.data.enrollmentId);
   const { weekStart, hours, finished, stuck } = p.data;
   await db.insert(schema.weeklyLogs)
@@ -93,5 +96,5 @@ export async function saveWeeklyLogAction(_: FormState, form: FormData): Promise
       set: { hours, finished, stuck, updatedAt: new Date() },
     });
   revalidatePath(`/learn/${enrollment.id}/log`);
-  return { ok: "Week saved." };
+  return { ok: t("log.saved") };
 }

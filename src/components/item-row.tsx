@@ -5,6 +5,7 @@ import { toggleItemAction, saveEvidenceAction } from "@/app/actions/learn";
 import { Badge, KindPill, StatusPill, Tag } from "@/components/ui";
 import { CommentThread } from "@/components/comment-thread";
 import type { CommentView } from "@/lib/comments";
+import { useT } from "@/i18n/client";
 
 type Props = {
   /** null = "Preview as student": ticks stay on this screen only and nothing is saved. */
@@ -18,6 +19,7 @@ type Props = {
 };
 
 export function ItemRow({ enrollmentId, item, progress, taughtOn, thread }: Props) {
+  const t = useT();
   const [pending, start] = useTransition();
   const [saved, setSaved] = useOptimistic(!!progress && progress.status !== "NEEDS_WORK");
   const [previewDone, setPreviewDone] = useState(false);
@@ -36,7 +38,7 @@ export function ItemRow({ enrollmentId, item, progress, taughtOn, thread }: Prop
           className="mt-0.5 h-5 w-5 shrink-0 accent-primary"
           checked={done}
           disabled={locked || pending}
-          aria-label={`Mark "${item.title}" as done`}
+          aria-label={t("item.markDone", { title: item.title })}
           onChange={(e) => {
             const next = e.target.checked;
             if (preview) return setPreviewDone(next);
@@ -48,35 +50,35 @@ export function ItemRow({ enrollmentId, item, progress, taughtOn, thread }: Prop
         />
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-sm font-semibold text-ink">{item.title}</span>
+            <span className="text-sm font-semibold text-ink" lang="en" dir="auto">{item.title}</span>
             <KindPill kind={item.kind} />
-            {item.optional && <Tag>Optional</Tag>}
+            {item.optional && <Tag>{t("common.optional")}</Tag>}
             <StatusPill status={progress?.status} />
             {taughtOn && (done
-              ? <Badge tone="info" icon="info" wrap>Taught in class · {taughtOn}</Badge>
-              : <Badge tone="warning" icon="offline" wrap>Taught in class · {taughtOn} — not done yet</Badge>)}
-            {progress?.byTeacher && done && <Tag>Marked by teacher</Tag>}
+              ? <Badge tone="info" icon="info" wrap>{t("item.taughtOn", { date: taughtOn })}</Badge>
+              : <Badge tone="warning" icon="offline" wrap>{t("item.taughtNotDone", { date: taughtOn })}</Badge>)}
+            {progress?.byTeacher && done && <Tag>{t("item.markedByTeacher")}</Tag>}
           </div>
-          {item.detail && <p className="mt-0.5 text-sm text-ink-muted">{item.detail}</p>}
+          {item.detail && <p className="mt-0.5 text-sm text-ink-muted" lang="en" dir="auto">{item.detail}</p>}
           {progress?.status === "NEEDS_WORK" && progress.reviewNote && (
-            <p dir="auto" className="mt-2 whitespace-pre-wrap rounded-md bg-danger-soft px-2 py-1 text-sm text-danger">Teacher: {progress.reviewNote}</p>
+            <p className="mt-2 whitespace-pre-wrap rounded-md bg-danger-soft px-2 py-1 text-sm text-danger">{t("item.teacherSays", { note: "" })}<span dir="auto">{progress.reviewNote}</span></p>
           )}
           {progress?.evidenceUrl && (
-            <a href={progress.evidenceUrl} target="_blank" rel="noreferrer" className="mt-1 inline-block break-all text-sm text-secondary underline">
+            <a href={progress.evidenceUrl} target="_blank" rel="noreferrer" className="mt-1 inline-block break-all text-sm text-secondary underline" dir="ltr">
               {progress.evidenceUrl}
             </a>
           )}
-          {preview ? (reviewable && <p className="mt-1 text-xs text-ink-muted">Students add a link to their work here for review.</p>) : (<>
+          {preview ? (reviewable && <p className="mt-1 text-xs text-ink-muted">{t("item.previewHint")}</p>) : (<>
           <button type="button" onClick={() => setOpen(!open)} className="mt-1 block text-xs font-semibold text-primary">
-            {open ? "Close" : reviewable ? (progress?.evidenceUrl ? "Edit evidence" : "Add evidence for review") : "Add a note or link"}
+            {open ? t("common.close") : reviewable ? (progress?.evidenceUrl ? t("item.editEvidence") : t("item.addEvidence")) : t("item.addNote")}
           </button>
           {open && (
             <form action={action} className="mt-2 grid gap-2 sm:grid-cols-[1fr_1fr_auto]">
               <input type="hidden" name="enrollmentId" value={enrollmentId} />
               <input type="hidden" name="itemId" value={item.id} />
-              <input name="evidenceUrl" defaultValue={progress?.evidenceUrl ?? ""} placeholder="GitHub or document link (https://…)" className="input" />
-              <input name="note" defaultValue={progress?.note ?? ""} placeholder="Short note (optional)" className="input" />
-              <button className="btn-primary" disabled={saving}>{saving ? "Saving…" : "Save"}</button>
+              <input name="evidenceUrl" defaultValue={progress?.evidenceUrl ?? ""} placeholder={t("item.linkPlaceholder")} dir="ltr" className="input" />
+              <input name="note" defaultValue={progress?.note ?? ""} placeholder={t("item.notePlaceholder")} dir="auto" className="input" />
+              <button className="btn-primary" disabled={saving}>{saving ? t("common.saving") : t("common.save")}</button>
               {state?.error && <p className="text-sm text-danger sm:col-span-3">{state.error}</p>}
               {state?.ok && <p className="text-sm text-primary sm:col-span-3">{state.ok}</p>}
             </form>

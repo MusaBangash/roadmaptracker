@@ -32,6 +32,3 @@ export async function recordLogin(email: string, ip: string | null, ok: boolean)
   await db.delete(schema.loginAttempts).where(lt(schema.loginAttempts.createdAt, sql`now() - interval '1 day'`));
 }
 
-export function lockMessage(minutesLeft: number) {
-  return `Too many wrong passwords. For your safety, sign-in is paused. Try again in ${minutesLeft} minute${minutesLeft === 1 ? "" : "s"}, or ask your school admin for a password reset link.`;
-}

@@ -1,6 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import { themeScript } from "@/lib/theme";
 import { savedTheme } from "@/lib/theme-server";
+import { getLocale } from "@/i18n/server";
+import { dirOf } from "@/i18n/core";
+import { I18nProvider } from "@/i18n/client";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -19,15 +22,16 @@ export const viewport: Viewport = {
 };
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  const theme = await savedTheme();
+  const [theme, locale] = await Promise.all([savedTheme(), getLocale()]);
   return (
     // For "system", the inline script sets data-theme before paint, so the server's
     // <html> differs from the browser's; suppressHydrationWarning covers that one element.
-    <html lang="en" data-theme={theme === "system" ? undefined : theme} suppressHydrationWarning>
+    // lang="ur" switches the brand type to Nastaliq (src/brand/type.css); dir="rtl" flips the layout.
+    <html lang={locale} dir={dirOf(locale)} data-theme={theme === "system" ? undefined : theme} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
-      <body className="min-h-dvh antialiased">{children}</body>
+      <body className="min-h-dvh antialiased"><I18nProvider locale={locale}>{children}</I18nProvider></body>
     </html>
   );
 }

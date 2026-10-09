@@ -9,19 +9,20 @@ import { PageHeader, ProgressBar, Stat, Empty, Badge } from "@/components/ui";
 import { JoinForm } from "@/components/auth-forms";
 import { pct, fmtDate, plural } from "@/lib/utils";
 import { unreadForStudents } from "@/lib/comments";
+import { getT } from "@/i18n/server";
 
 export const metadata = { title: "Dashboard" };
 
 export default async function Dashboard() {
-  const ctx = await getContext();
-  const first = ctx.user.name?.split(" ")[0] ?? "there";
+  const [ctx, tr] = await Promise.all([getContext(), getT()]);
+  const first = ctx.user.name?.split(" ")[0] ?? tr("dash.there");
 
   if (!ctx.org) {
     return (
       <>
-        <PageHeader title={`Welcome, ${first}`} sub="You're not part of a school yet." />
+        <PageHeader title={tr("dash.welcome", { name: first })} sub={tr("dash.noSchool")} />
         <div className="card max-w-md p-6">
-          <p className="mb-4 text-sm text-ink-muted">Ask your instructor or school admin for an invite link or code, then enter it here.</p>
+          <p className="mb-4 text-sm text-ink-muted">{tr("dash.askInvite")}</p>
           <JoinForm />
         </div>
       </>
@@ -43,7 +44,7 @@ export default async function Dashboard() {
     const sum = summarize(tree, progress, signoffs);
     const here = currentStageIndex(tree, sum);
     const cert = await validCertificate(e.id);
-    return { e, c, t, sum, cert, unread: unread.get(e.id) ?? 0, expected: expectedPct(tree, c.startDate), stages: tree.length, now: here >= 0 ? `Stage ${here + 1} · ${tree[here].title}` : null };
+    return { e, c, t, sum, cert, unread: unread.get(e.id) ?? 0, expected: expectedPct(tree, c.startDate), stages: tree.length, now: here >= 0 ? tr("dash.stage", { n: here + 1, title: tree[here].title }) : null };
   }));
 
   // ---------- instructor / admin ----------
@@ -77,7 +78,7 @@ export default async function Dashboard() {
 
   return (
     <>
-      <PageHeader title={`Assalam-o-Alaikum, ${first}`} sub={`${ctx.org.name} · ${ctx.role?.toLowerCase()}`} />
+      <PageHeader title={tr("dash.hello", { name: first })} sub={`${ctx.org.name}${ctx.role ? ` · ${tr(`role.${ctx.role}`)}` : ""}`} />
 
       {ctx.role === "ADMIN" && (
         <div className="mb-8 grid gap-3 sm:grid-cols-4">
@@ -125,24 +126,24 @@ export default async function Dashboard() {
 
       {(ctx.role === "STUDENT" || studentCards.length > 0) && (
         <section>
-          <h2 className="h2 mb-3">My tracks</h2>
+          <h2 className="h2 mb-3">{tr("dash.myTracks")}</h2>
           {studentCards.length === 0 ? (
-            <Empty title="You're not in a cohort yet">Ask your instructor for a cohort invite link.</Empty>
+            <Empty title={tr("dash.noCohort")}>{tr("dash.noCohortSub")}</Empty>
           ) : (
             <div className="grid gap-3 md:grid-cols-2">
               {studentCards.map((x) => (
                 <Link key={x.e.id} href={`/learn/${x.e.id}`} className="card block p-5 hover:border-primary">
                   <div className="text-sm font-semibold text-highlight-text">{x.c.name}</div>
-                  <div className="mt-1 font-bold text-xl">{x.t.title}</div>
-                  {x.unread > 0 && <div className="mt-2"><Badge tone="info" icon="comment" wrap>New comment from your teacher{x.unread > 1 ? ` · on ${x.unread} pieces of work` : ""}</Badge></div>}
-                  {x.cert ? <div className="mt-2"><Badge tone="success" icon="star">Certificate earned · open to download</Badge></div>
-                    : x.now && <div className="mt-1 text-sm text-ink-muted">Now on {x.now}</div>}
+                  <div className="mt-1 font-bold text-xl" lang="en" dir="auto">{x.t.title}</div>
+                  {x.unread > 0 && <div className="mt-2"><Badge tone="info" icon="comment" wrap>{x.unread > 1 ? tr("dash.newCommentMany", { n: x.unread }) : tr("dash.newComment")}</Badge></div>}
+                  {x.cert ? <div className="mt-2"><Badge tone="success" icon="star" wrap>{tr("dash.certEarned")}</Badge></div>
+                    : x.now && <div className="mt-1 text-sm text-ink-muted" dir="auto">{tr("dash.nowOn", { stage: x.now })}</div>}
                   <div className="mt-4"><ProgressBar value={x.sum.pct} expected={x.expected} /></div>
                   <div className="mt-2 flex flex-wrap gap-x-4 text-xs text-ink-muted">
-                    <span className="font-semibold text-ink">{pct(x.sum.pct)} done</span>
-                    <span>{x.sum.stagesPassed}/{x.stages} stages passed</span>
-                    <span>{x.sum.verified} verified</span>
-                    {x.sum.pct + 0.15 < x.expected && <span className="font-semibold text-danger">behind the plan — keep going</span>}
+                    <span className="font-semibold text-ink">{tr("dash.pctDone", { pct: pct(x.sum.pct) })}</span>
+                    <span>{tr("dash.stagesPassed", { passed: x.sum.stagesPassed, total: x.stages })}</span>
+                    <span>{tr("dash.verified", { n: x.sum.verified })}</span>
+                    {x.sum.pct + 0.15 < x.expected && <span className="font-semibold text-danger">{tr("dash.behind")}</span>}
                   </div>
                 </Link>
               ))}

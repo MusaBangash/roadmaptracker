@@ -4,12 +4,14 @@ import { useActionState } from "react";
 import { issueCertificateAction, revokeCertificateAction } from "@/app/actions/certificate";
 import { FormError } from "@/components/ui";
 import { Icon } from "@/components/icon";
+import { useT } from "@/i18n/client";
 
 /** "Download PDF": the browser's own Save as PDF, which draws Urdu names correctly. */
 export function PrintButton() {
+  const t = useT();
   return (
     <button type="button" className="btn-primary" onClick={() => window.print()}>
-      <Icon name="download" size={18} />Download PDF
+      <Icon name="download" size={18} />{t("cert.download")}
     </button>
   );
 }

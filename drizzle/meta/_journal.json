@@ -43,6 +43,13 @@
       "when": 1791564347350,
       "tag": "0005_bright_sleeper",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1791575669214,
+      "tag": "0006_freezing_gateway",
+      "breakpoints": true
     }
   ]
 }

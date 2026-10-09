@@ -1,22 +1,30 @@
+"use client";
+
 import { Badge, LevelPill, ProgressBar, SignoffBadge, Tag } from "@/components/ui";
+import { useT } from "@/i18n/client";
+import type { T } from "@/i18n/core";
 import { BEHIND_BY, REVIEW_KINDS, expectedGroupPct, type ClassPart, type ClassStage, type Part, type StageSummary } from "@/lib/progress-core";
 import { fmtDate, pct, plural } from "@/lib/utils";
 import { taughtNotLearned, type Segment, type StageCoverage, type TeachStatus } from "@/lib/coverage-core";
 
 // Progress bars for every level of a roadmap: the whole track, each stage, and each week
 // (or lessons and projects) inside a stage. Used by students, instructors and admins alike.
+// Client components so the student-facing words follow the language (feature 5); the class and
+// teaching-plan parts (teachers only) stay in English for now.
 
 type StageMeta = { title: string; level: string; optional: boolean; weeks: number };
 const isReviewKind = (kind: string) => (REVIEW_KINDS as readonly string[]).includes(kind);
 
 /** A labelled bar: the name on the left, the numbers on the right. */
-export function SegmentBar({ label, value, expected, detail, strong = false }: {
+export function SegmentBar({ label, value, expected, detail, strong = false, content = false }: {
   label: React.ReactNode; value: number; expected?: number; detail?: React.ReactNode; strong?: boolean;
+  /** The label is roadmap content (a week's name), which stays English on an Urdu page. */
+  content?: boolean;
 }) {
   return (
     <div>
       <div className="flex items-baseline justify-between gap-3 text-sm">
-        <span className={`min-w-0 ${strong ? "font-semibold" : ""}`}>{label}</span>
+        <span className={`min-w-0 ${strong ? "font-semibold" : ""}`} {...(content ? { lang: "en", dir: "auto" } : {})}>{label}</span>
         <span className="shrink-0 tabular-nums text-ink-muted">{detail ?? pct(value)}</span>
       </div>
       <div className="mt-1"><ProgressBar value={value} expected={expected} label={typeof label === "string" ? label : undefined} /></div>
@@ -24,7 +32,7 @@ export function SegmentBar({ label, value, expected, detail, strong = false }: {
   );
 }
 
-const count = (p: Part) => `${p.done} of ${p.required} · ${pct(p.pct)}`;
+const count = (p: Part, t?: T) => t ? t("progress.count", { done: p.done, required: p.required, pct: pct(p.pct) }) : `${p.done} of ${p.required} · ${pct(p.pct)}`;
 
 /** True when a stage is more than BEHIND_BY behind where the plan expects it today. */
 export const isBehind = (value: number, expected: number | undefined, signedOff?: boolean | null) =>
@@ -34,24 +42,25 @@ export const isBehind = (value: number, expected: number | undefined, signedOff?
 export function StageLine({ index, stage, s, expected, here = false }: {
   index: number; stage: StageMeta; s: StageSummary; expected?: number; here?: boolean;
 }) {
+  const t = useT();
   return (
     <span className="flex min-w-0 flex-1 items-start gap-3">
       <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-primary text-xs font-bold text-on-primary">{index + 1}</span>
       <span className="min-w-0 flex-1">
         <span className="flex flex-wrap items-center gap-2">
-          <span className="font-semibold">{stage.title}</span>
+          <span className="font-semibold" lang="en" dir="auto">{stage.title}</span>
           <LevelPill level={stage.level} />
-          {stage.optional && <Tag>Choose one</Tag>}
-          {here && <Badge tone="info" icon="home">You are here</Badge>}
+          {stage.optional && <Tag>{t("progress.chooseOne")}</Tag>}
+          {here && <Badge tone="info" icon="home">{t("progress.youAreHere")}</Badge>}
           <SignoffBadge passed={s.signedOff} />
-          {isBehind(s.pct, expected, s.signedOff) && <Badge tone="warning" icon="offline">Behind plan</Badge>}
+          {isBehind(s.pct, expected, s.signedOff) && <Badge tone="warning" icon="offline">{t("progress.behindPlan")}</Badge>}
         </span>
         <span className="mt-2 block">
           <SegmentBar
-            label={stage.weeks ? `About ${plural(stage.weeks, "week")}` : "Progress"}
+            label={stage.weeks ? t("progress.about", { weeks: t.plural("common.week", stage.weeks) }) : t("progress.progress")}
             value={s.pct}
             expected={expected}
-            detail={s.required ? count(s) : "Nothing required"}
+            detail={s.required ? count(s, t) : t("progress.nothingRequired")}
           />
         </span>
       </span>
@@ -61,29 +70,34 @@ export function StageLine({ index, stage, s, expected, here = false }: {
 
 /** Inside a stage without weeks: separate bars for lessons and for projects. */
 export function KindBars({ s }: { s: StageSummary }) {
+  const t = useT();
   if (!s.lessons.required || !s.projects.required) return null;
   return (
     <div className="mb-4 grid gap-3 rounded-md bg-surface-sunken p-3 sm:grid-cols-2">
-      <SegmentBar label="Lessons" value={s.lessons.pct} detail={count(s.lessons)} />
-      <SegmentBar label="Projects" value={s.projects.pct} detail={count(s.projects)} />
+      <SegmentBar label={t("progress.lessons")} value={s.lessons.pct} detail={count(s.lessons, t)} />
+      <SegmentBar label={t("progress.projects")} value={s.projects.pct} detail={count(s.projects, t)} />
     </div>
   );
 }
 
 /** The bar shown at the top of one week (group) inside a stage. */
 export function GroupBar({ s, groupIndex, stageExpected }: { s: StageSummary; groupIndex: number; stageExpected?: number }) {
+  const t = useT();
   const g = s.groups[groupIndex];
   if (!g) return null;
   const expected = stageExpected === undefined ? undefined : expectedGroupPct(stageExpected, groupIndex, s.groups.length);
-  return <SegmentBar label={g.name} value={g.pct} expected={expected} detail={count(g)} strong />;
+  return <SegmentBar label={g.name} value={g.pct} expected={expected} detail={count(g, t)} strong content />;
 }
 
 /** Explains the line on the bars, in words (nothing needs hover to be understood). */
 export function PlanLineNote({ who = "you" }: { who?: string }) {
+  const t = useT();
+  const text = who === "you" ? t("progress.planLine") : who === "this student" ? t("progress.planLineStudent") : who === "the class" ? t("progress.planLineClass")
+    : `The line on a bar marks where the cohort plan expects ${who} to be today.`;
   return (
     <p className="flex items-center gap-2 text-xs text-ink-muted">
-      <span className="inline-block h-3 w-0.5 bg-ink/50" aria-hidden />
-      The line on a bar marks where the cohort plan expects {who} to be today.
+      <span className="inline-block h-3 w-0.5 shrink-0 bg-ink/50" aria-hidden />
+      {text}
     </p>
   );
 }

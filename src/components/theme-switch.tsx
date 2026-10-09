@@ -3,14 +3,14 @@
 import { useEffect, useState } from "react";
 import { type Theme, THEME_COOKIE } from "@/lib/theme";
 import { Icon, type IconName } from "./icon";
+import { useT } from "@/i18n/client";
 import styles from "./switch.module.css";
 
-// Same as NoorAI Lab Studio's ThemeSwitch (apps/web/src/components/shell/ThemeSwitch.tsx),
-// with the English labels written in (the tracker has no translations yet).
-const OPTIONS: { value: Theme; icon: IconName; label: string }[] = [
-  { value: "light", icon: "sun", label: "Light" },
-  { value: "dark", icon: "moon", label: "Dark" },
-  { value: "system", icon: "computer", label: "System" },
+// Same as NoorAI Lab Studio's ThemeSwitch (apps/web/src/components/shell/ThemeSwitch.tsx).
+const OPTIONS: { value: Theme; icon: IconName; label: "theme.light" | "theme.dark" | "theme.system" }[] = [
+  { value: "light", icon: "sun", label: "theme.light" },
+  { value: "dark", icon: "moon", label: "theme.dark" },
+  { value: "system", icon: "computer", label: "theme.system" },
 ];
 
 const ONE_YEAR = 60 * 60 * 24 * 365;
@@ -27,6 +27,7 @@ function remember(theme: Theme) {
 
 /** Light, dark or the same as this computer. Changes at once; remembered in a cookie. */
 export function ThemeSwitch({ initial }: { initial: Theme }) {
+  const t = useT();
   const [theme, setTheme] = useState<Theme>(initial);
 
   // Follow the computer's setting while "system" is chosen.
@@ -45,7 +46,7 @@ export function ThemeSwitch({ initial }: { initial: Theme }) {
   }
 
   return (
-    <div className={styles.group} role="group" aria-label="Theme">
+    <div className={styles.group} role="group" aria-label={t("theme.label")}>
       {OPTIONS.map((option) => (
         <button
           key={option.value}
@@ -55,7 +56,7 @@ export function ThemeSwitch({ initial }: { initial: Theme }) {
           onClick={() => choose(option.value)}
         >
           <Icon name={option.icon} size={18} />
-          {option.label}
+          {t(option.label)}
         </button>
       ))}
     </div>

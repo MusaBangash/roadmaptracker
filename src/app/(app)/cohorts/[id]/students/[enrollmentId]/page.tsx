@@ -15,6 +15,7 @@ import { readinessOf, validCertificate } from "@/lib/certificates";
 import { IssueCertificateForm } from "@/components/certificate-tools";
 import { byThread, loadComments, toViews, unreadFor } from "@/lib/comments";
 import { CommentThread } from "@/components/comment-thread";
+import { getT } from "@/i18n/server";
 import { REVIEW_KINDS } from "@/lib/progress-core";
 
 export const metadata = { title: "Student" };
@@ -41,6 +42,7 @@ export default async function StudentPage({ params }: { params: Promise<{ id: st
   const [cert, readiness, comments] = await Promise.all([validCertificate(enrollment.id), readinessOf(enrollment.id, cohort.trackId), loadComments([enrollment.id])]);
   const threads = byThread(comments);
   const viewer = { id: user.id, admin: role === "ADMIN" };
+  const t = await getT();
 
   return (
     <>
@@ -136,7 +138,7 @@ export default async function StudentPage({ params }: { params: Promise<{ id: st
                           {p?.note && <span className="block text-xs text-ink-muted">“{p.note}”</span>}
                           {p && (REVIEW_KINDS as readonly string[]).includes(it.kind) && (() => {
                             const rows = threads.get(`${enrollment.id}:${it.id}`) ?? [];
-                            return <CommentThread enrollmentId={enrollment.id} itemId={it.id} comments={toViews(rows, viewer)} side={own ? "STUDENT" : "TEACHER"}
+                            return <CommentThread enrollmentId={enrollment.id} itemId={it.id} comments={toViews(rows, viewer, t)} side={own ? "STUDENT" : "TEACHER"}
                               admin={viewer.admin} unread={own ? 0 : unreadFor(rows, "TEACHER", p.staffSeenAt)} canWrite />;
                           })()}
                         </span>

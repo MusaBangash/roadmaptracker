@@ -1,7 +1,11 @@
+"use client";
+
 import { ItemRow } from "@/components/item-row";
 import { GroupBar, KindBars, PlanLineNote, StageLine } from "@/components/progress";
 import { ProgressBar, Stat } from "@/components/ui";
-import { currentStageIndex, type StageNode, type Summary } from "@/lib/progress";
+import { useT } from "@/i18n/client";
+import { currentStageIndex, type Summary } from "@/lib/progress-core";
+import type { StageNode } from "@/lib/progress";
 import { pct } from "@/lib/utils";
 import type { CommentView } from "@/lib/comments";
 import { Fold } from "@/components/fold";
@@ -26,25 +30,27 @@ export function RoadmapView({ tree, sum, expected, expectedStages, progress, enr
   /** Comments per itemId, with the count the student hasn't read. */
   threads?: Map<string, { comments: CommentView[]; unread: number }>;
 }) {
+  const t = useT();
   const here = currentStageIndex(tree, sum);
   const hereStage = here >= 0 ? tree[here] : null;
+  const b = (s: string) => <b>{s}</b>;
 
   return (
     <>
       <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
         <div className="card col-span-2 p-4">
           <div className="flex items-baseline justify-between">
-            <span className="text-sm font-semibold text-ink-muted">Overall progress</span>
+            <span className="text-sm font-semibold text-ink-muted">{t("learn.overall")}</span>
             <span className="text-2xl font-bold">{pct(sum.pct)}</span>
           </div>
-          <div className="mt-3"><ProgressBar value={sum.pct} expected={expected} label="Overall progress" /></div>
+          <div className="mt-3"><ProgressBar value={sum.pct} expected={expected} label={t("learn.overall")} /></div>
           <p className="mt-2 text-sm">
-            {hereStage ? <>You are here: <b>Stage {here + 1} · {hereStage.title}</b></> : "Every required stage is done and signed off."}
+            {hereStage ? t.rich("learn.youAreHere", { b }, { n: here + 1, title: hereStage.title }) : t("learn.allDone")}
           </p>
           {expected !== undefined && <div className="mt-1"><PlanLineNote /></div>}
         </div>
-        <Stat label="Done" value={`${sum.done}/${sum.required}`} sub="required lessons and projects" />
-        <Stat label="Stages passed" value={`${sum.stagesPassed}/${tree.length}`} sub={`${sum.verified} ${sum.verified === 1 ? "item" : "items"} verified`} />
+        <Stat label={t("learn.done")} value={`${sum.done}/${sum.required}`} sub={t("learn.doneSub")} />
+        <Stat label={t("learn.stagesPassed")} value={`${sum.stagesPassed}/${tree.length}`} sub={t.plural("learn.itemsVerified", sum.verified)} />
       </div>
 
       <div className="space-y-3">
@@ -66,10 +72,10 @@ export function RoadmapView({ tree, sum, expected, expectedStages, progress, enr
               </summary>
               <div className="border-t border-border px-4 pb-4 pt-3">
                 <dl className="mb-3 grid gap-x-4 gap-y-1 text-sm sm:grid-cols-[120px_1fr]">
-                  {stage.benchmark && (<><dt className="font-semibold text-ink-muted">Benchmark</dt><dd>{stage.benchmark}</dd></>)}
-                  {stage.goal && (<><dt className="font-semibold text-ink-muted">Goal</dt><dd>{stage.goal}</dd></>)}
-                  {stage.doneWhen && (<><dt className="font-semibold text-highlight-text">Done when</dt><dd className="font-semibold">{stage.doneWhen}</dd></>)}
-                  {stage.resources && (<><dt className="font-semibold text-ink-muted">Resources</dt><dd className="text-ink-muted">{stage.resources}</dd></>)}
+                  {stage.benchmark && (<><dt className="font-semibold text-ink-muted">{t("learn.benchmark")}</dt><dd lang="en" dir="auto">{stage.benchmark}</dd></>)}
+                  {stage.goal && (<><dt className="font-semibold text-ink-muted">{t("learn.goal")}</dt><dd lang="en" dir="auto">{stage.goal}</dd></>)}
+                  {stage.doneWhen && (<><dt className="font-semibold text-highlight-text">{t("learn.doneWhen")}</dt><dd className="font-semibold" lang="en" dir="auto">{stage.doneWhen}</dd></>)}
+                  {stage.resources && (<><dt className="font-semibold text-ink-muted">{t("learn.resources")}</dt><dd className="text-ink-muted" lang="en" dir="auto">{stage.resources}</dd></>)}
                 </dl>
                 {s.groups.length === 0 && <KindBars s={s} />}
                 {blocks.map((b, bi) => (

@@ -20,6 +20,8 @@ export const users = pgTable("user", {
   sessionVersion: integer("session_version").notNull().default(0),
   /** When the person agreed to the Privacy notice; null = not yet (asked on next visit). */
   consentAt: timestamp("consent_at", { mode: "date" }),
+  /** "en" or "ur" (feature 5): the interface language, the same on every device. Null = not chosen yet. */
+  locale: text("locale"),
   createdAt: created(),
 });
 
