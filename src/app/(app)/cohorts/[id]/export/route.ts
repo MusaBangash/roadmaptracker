@@ -4,18 +4,11 @@ import { db, schema } from "@/db";
 import { cohortRows } from "@/lib/cohort-stats";
 import { isLesson } from "@/lib/coverage";
 import { OTHER_GROUP } from "@/lib/progress";
-
-function csv(v: unknown) {
-  const s = v === null || v === undefined ? "" : String(v);
-  // Neutralise spreadsheet formula injection, then quote.
-  const safe = /^[=+\-@\t\r]/.test(s) ? `'${s}` : s;
-  return `"${safe.replace(/"/g, '""')}"`;
-}
+import { csvFile } from "@/lib/csv";
 
 /** A UTF-8 CSV with a byte-order mark (so Excel reads Urdu names), lines ending in CRLF. */
 function download(body: unknown[][], filename: string) {
-  const csvBody = "\uFEFF" + body.map((l) => l.map(csv).join(",")).join("\r\n");
-  return new Response(csvBody, {
+  return new Response(csvFile(body), {
     headers: { "Content-Type": "text/csv; charset=utf-8", "Content-Disposition": `attachment; filename="${filename}"` },
   });
 }

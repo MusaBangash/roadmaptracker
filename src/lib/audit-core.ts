@@ -18,6 +18,7 @@ export const AUDIT_ACTIONS = {
   "person.delete": { group: "people", label: "Deleted a person's data" },
   "invite.create": { group: "people", label: "Made an invite link" },
   "invite.delete": { group: "people", label: "Deleted an invite link" },
+  "students.import": { group: "people", label: "Added students from a file" },
   "review.verify": { group: "work", label: "Verified work" },
   "review.needs_work": { group: "work", label: "Sent work back" },
   "signoff.pass": { group: "work", label: "Signed off a stage" },

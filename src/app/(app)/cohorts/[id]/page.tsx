@@ -90,9 +90,12 @@ export default async function CohortPage({ params }: { params: Promise<{ id: str
       </div>
 
       <section className="mb-8">
-        <h2 className="h2 mb-3">Students</h2>
+        <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+          <h2 className="h2">Students</h2>
+          <Link href={`/cohorts/${cohort.id}/import`} className="btn-ghost"><Icon name="addPerson" size={18} />Add students from a file</Link>
+        </div>
         {rows.length === 0 ? (
-          <Empty title="No students yet">Share the student invite link below. Students who open it join this cohort automatically.</Empty>
+          <Empty title="No students yet">Share the student invite link below, or add the whole class at once with <b>Add students from a file</b>.</Empty>
         ) : (
           <div className="card overflow-x-auto">
             <table className="w-full min-w-[760px] text-sm">

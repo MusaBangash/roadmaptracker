@@ -48,6 +48,7 @@ Owner's decisions (already made — don't re-ask):
   - Privacy: `/privacy` (public); everyone agrees once (`user.consent_at`; register checkbox, else `/consent` before the app). Admins can delete a person (`deleteScope`): whole account if this is their only school, otherwise only their part of this school; never yourself, a platform admin or the last admin; the admin types the email to confirm.
   - School backup: `/admin/backup` (admins) = one JSON file of the school's data, items named by track slug + stage key + item key; no passwords or tokens. Also the planned import format for Lab Studio.
   - Errors: `src/app/error.tsx` / `global-error.tsx` show a reference (Next's error digest, also in the server log); `not-found.tsx` never says whether something exists elsewhere. Health check: `/api/health` (200 ok / 503, database ping with 5 s timeout).
+- **Add students from a file** (`/cohorts/[id]/import`, rules in `src/lib/import-core.ts`, actions `src/app/actions/import.ts`): the cohort's teachers and admins upload a CSV (Name, Email; comma, semicolon or tab; Excel's BOM; max 500 rows / 1 MB). Preview first (new / existing account / already in cohort / problem rows with Excel row numbers); nothing saved until Add, which re-checks every row on the server. New people get an account with no password, STUDENT membership, the enrollment and a one-time "set your password" link (`password_reset`, 14 days, hash only; `/reset/[token]` says "Welcome! Set your password"); the links are shown once (copy message / download CSV, built in the browser). Existing accounts are only enrolled (name, password and role never changed); re-uploading is safe. Logged as `students.import`. CSV helpers for every export: `src/lib/csv.ts`.
 - Dates with no time ("YYYY-MM-DD") are calendar days: `fmtDate` formats them in UTC so a server in another zone never shows the day before.
 
 ### Content
@@ -103,7 +104,7 @@ src/lib/utils.ts             pct, fmtDate, daysAgo, thisMonday, initials, random
 src/app/actions/*.ts         server actions: auth, learn (student), teach (instructor), admin, roadmap (builder)
 src/app/(auth)/              login, register, join, join/[code], reset/[token], consent;  src/app/privacy (public), api/health
 src/app/(app)/               dashboard, learn/[enrollmentId](+/log), cohorts(+/new, /[id], /review,
-                             /students/[enrollmentId], /attendance, /teach, /export[?type=plan]), admin/members (+ /admin/activity, /admin/backup), tracks(+/new, /[slug], /[slug]/edit, /[slug]/preview[?draft=1], /[slug]/download), platform
+                             /students/[enrollmentId], /attendance, /teach, /import, /export[?type=plan]), admin/members (+ /admin/activity, /admin/backup), tracks(+/new, /[slug], /[slug]/edit, /[slug]/preview[?draft=1], /[slug]/download), platform
 src/components/              ui.tsx (ProgressBar, Badge, Tag, Stat, PageHeader…), logo.tsx, icon.tsx, theme-switch.tsx,
                              progress.tsx (SegmentBar, StageLine, GroupBar, KindBars, ClassStageList),
                              roadmap-view.tsx (student view, shared with /tracks/[slug]/preview), teach-controls.tsx
@@ -177,7 +178,7 @@ Next, in this order (one step at a time, confirm each):
 
 ## 8. Known gaps / feature backlog (owner may ask for these)
 
-Not built yet: password reset by email (admin reset links exist) · certificates (PDF with verification link) · bulk CSV student import · comments thread on evidence · notifications (email/WhatsApp) · cross-cohort analytics charts · Urdu interface · public student portfolio page.
+Not built yet: password reset by email (admin reset links exist) · certificates (PDF with verification link) · comments thread on evidence · notifications (email/WhatsApp) · cross-cohort analytics charts · Urdu interface · public student portfolio page.
 Owner was advised to deploy first and let one cohort use it before adding features — but follow his call.
 
 ## 9. Rules for changes
