@@ -2,12 +2,16 @@ import {
   IconAlertCircle,
   IconAlertTriangle,
   IconArchive,
+  IconArrowDown,
+  IconArrowUp,
   IconArrowsMove,
   IconCalendar,
   IconCheck,
   IconCircleCheck,
   IconClock,
+  IconCopy,
   IconDeviceDesktop,
+  IconDownload,
   IconHome,
   IconInfoCircle,
   IconKey,
@@ -25,6 +29,7 @@ import {
   IconSpeakerphone,
   IconStarFilled,
   IconSun,
+  IconTrash,
   IconUpload,
   IconUserPlus,
   IconUsers,
@@ -65,6 +70,12 @@ const icons = {
   upload: IconUpload,
   calendar: IconCalendar,
   move: IconArrowsMove,
+  // Added in Tracks for the Roadmap Builder.
+  up: IconArrowUp,
+  down: IconArrowDown,
+  download: IconDownload,
+  copy: IconCopy,
+  trash: IconTrash,
 };
 
 export type IconName = keyof typeof icons;

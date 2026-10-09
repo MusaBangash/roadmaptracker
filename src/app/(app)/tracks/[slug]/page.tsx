@@ -1,22 +1,25 @@
-import { notFound } from "next/navigation";
-import { eq } from "drizzle-orm";
-import { db, schema } from "@/db";
-import { getContext } from "@/lib/access";
+import { redirect } from "next/navigation";
+import { requireVisibleTrack } from "@/lib/access";
+import { canCopyTrack, canEditTrack } from "@/lib/access-core";
+import { copyRoadmapAction } from "@/app/actions/roadmap";
 import { loadTrackTree, stageWindows } from "@/lib/progress";
 import { schoolTrackStages, myTrackProgress } from "@/lib/cohort-stats";
 import { ClassStageList, SegmentBar } from "@/components/progress";
 import { Icon } from "@/components/icon";
 import { pct, plural } from "@/lib/utils";
 import Link from "next/link";
-import { PageHeader, LevelPill, KindPill } from "@/components/ui";
+import { PageHeader, LevelPill, KindPill, Badge } from "@/components/ui";
 
 export const metadata = { title: "Track" };
 
 export default async function TrackPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const ctx = await getContext();
-  const track = await db.query.tracks.findFirst({ where: eq(schema.tracks.slug, slug) });
-  if (!track) notFound();
+  const ctx = await requireVisibleTrack(slug);
+  const { track } = ctx;
+  const viewer = { userId: ctx.user.id, orgId: ctx.org?.id ?? null, role: ctx.role };
+  const editable = canEditTrack(viewer, track);
+  // A school roadmap never published has nothing to show yet: its admins go to the builder.
+  if (track.status === "DRAFT") redirect(`/tracks/${track.slug}/edit`);
   const tree = await loadTrackTree(track.id);
   const { total: weeks } = stageWindows(tree);
   const staff = ctx.role === "ADMIN" || ctx.role === "INSTRUCTOR";
@@ -26,11 +29,27 @@ export default async function TrackPage({ params }: { params: Promise<{ slug: st
   const me = mine.get(track.id);
   return (
     <>
-      <PageHeader title={track.title} sub={<>{track.subtitle}{weeks ? ` · about ${weeks} weeks` : ""}</>} back={{ href: "/tracks", label: "Tracks" }}
+      <PageHeader title={track.title} back={{ href: "/tracks", label: "Tracks" }}
+        sub={<span className="flex flex-wrap items-center gap-2">
+          {track.ownerOrgId && <Badge tone="info" icon="home">Your school&apos;s roadmap</Badge>}
+          {track.ownerOrgId && track.draft && editable && <Badge tone="warning" icon="edit">Unpublished changes</Badge>}
+          <span>{track.subtitle}{weeks ? ` · about ${weeks} weeks` : ""}</span>
+        </span>}
         actions={<>
           {me && <Link href={`/learn/${me.enrollmentId}`} className="btn-primary">Open my roadmap</Link>}
+          {editable && <Link href={`/tracks/${track.slug}/edit`} className="btn-primary"><Icon name="edit" size={18} />Edit roadmap</Link>}
           {staff && <Link href={`/tracks/${track.slug}/preview`} className="btn-ghost"><Icon name="computer" size={18} />Preview as student</Link>}
+          {canCopyTrack(viewer, track) && (
+            <form action={copyRoadmapAction}>
+              <input type="hidden" name="trackId" value={track.id} />
+              <button className="btn-ghost"><Icon name="copy" size={18} />Copy to my school</button>
+            </form>
+          )}
+          {(ctx.role === "ADMIN" || ctx.user.isSuperAdmin) && <a href={`/tracks/${track.slug}/download`} className="btn-ghost"><Icon name="download" size={18} />Download file</a>}
         </>} />
+      {ctx.role === "ADMIN" && !track.ownerOrgId && (
+        <p className="mb-6 text-sm text-ink-muted">This is an official NoorAI roadmap, kept the same for every school. To change it for your school, press <b>Copy to my school</b> and edit the copy.</p>
+      )}
       {me && <div className="card mb-6 p-4"><SegmentBar label="Your progress" value={me.pct} strong /></div>}
       {school && school.students > 0 && (
         <section className="mb-8">

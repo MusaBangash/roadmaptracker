@@ -6,7 +6,7 @@ import { and, eq } from "drizzle-orm";
 import { auth } from "@/auth";
 import { db, schema } from "@/db";
 import type { Role } from "@/db/schema";
-import { canTeachCohort } from "@/lib/access-core";
+import { canEditTrack, canSeeTrack, canTeachCohort, type Viewer } from "@/lib/access-core";
 
 export const ORG_COOKIE = "noor_org";
 
@@ -58,6 +58,25 @@ export async function requireTeachableCohort(cohortId: string) {
   // Not found (rather than "forbidden") so a cohort of another school or teacher is not revealed.
   if (!cohort || !canTeachCohort({ userId: ctx.user.id, orgId: ctx.org.id, role: ctx.role }, cohort, links.map((l) => l.userId))) notFound();
   return { ...ctx, cohort };
+}
+
+const viewerOf = (ctx: { user: { id: string }; org: { id: string } | null; role: Role | null }): Viewer =>
+  ({ userId: ctx.user.id, orgId: ctx.org?.id ?? null, role: ctx.role });
+
+/** A roadmap the current user may see: official ones, or their own school's (drafts only for its admins). */
+export async function requireVisibleTrack(slug: string) {
+  const ctx = await getContext();
+  const track = await db.query.tracks.findFirst({ where: eq(schema.tracks.slug, slug) });
+  if (!track || !canSeeTrack(viewerOf(ctx), track)) notFound();
+  return { ...ctx, track };
+}
+
+/** A roadmap the current user may edit: their school owns it and they are its admin. */
+export async function requireEditableTrack(trackId: string) {
+  const ctx = await requireRole(["ADMIN"]);
+  const track = await db.query.tracks.findFirst({ where: eq(schema.tracks.id, trackId) });
+  if (!track || !canEditTrack(viewerOf(ctx), track)) notFound();
+  return { ...ctx, track };
 }
 
 /** An enrollment the current user owns (student view). */

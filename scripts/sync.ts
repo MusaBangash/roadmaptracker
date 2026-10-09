@@ -1,7 +1,8 @@
 /**
  * Idempotent sync, safe to run on every deploy:
- *  1. Loads content/tracks/*.json into track / stage / item (matched by key, never deletes progress —
- *     removed stages and items are marked archived).
+ *  1. Checks and loads content/tracks/*.json (the official roadmaps) into track / stage / item via
+ *     src/lib/track-store.ts (matched by key, never deletes progress — removed stages and items are
+ *     archived). Schools' own roadmaps (Roadmap Builder) are never touched.
  *  2. Ensures the platform admin (SEED_ADMIN_EMAIL) and first school (SEED_ORG_NAME) exist,
  *     and enables every track for that school.
  */
@@ -9,57 +10,22 @@ import "dotenv/config";
 import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import bcrypt from "bcryptjs";
-import { and, eq, notInArray } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { db, schema } from "../src/db";
+import { isOfficialSlug, parseTrackDoc, type TrackDoc } from "../src/lib/roadmap-core";
+import { applyStages, trackValues } from "../src/lib/track-store";
 
-type ItemJson = { key: string; title: string; detail?: string; kind?: string; group?: string; optional?: boolean };
-type StageJson = {
-  key: string; title: string; level?: string; weeks?: number; benchmark?: string; goal?: string; doneWhen?: string;
-  resources?: string; optional?: boolean; choiceGroup?: string; items: ItemJson[];
-};
-type TrackJson = {
-  slug: string; title: string; kind?: string; edition?: string; subtitle?: string; summary?: string; expert?: string;
-  benchmarks?: { title: string; detail: string }[]; rubric?: { criterion: string; levels: string[] }[]; stages: StageJson[];
-};
-
-const KINDS = ["LESSON", "PROJECT", "DELIVERABLE", "MILESTONE"] as const;
-
-async function syncTrack(t: TrackJson) {
-  const values = {
-    slug: t.slug, title: t.title, kind: t.kind ?? "ROLE", edition: t.edition ?? "", subtitle: t.subtitle ?? "",
-    summary: t.summary ?? "", expert: t.expert ?? "", benchmarks: t.benchmarks ?? [], rubric: t.rubric ?? [], updatedAt: new Date(),
-  };
-  const [track] = await db.insert(schema.tracks).values(values)
-    .onConflictDoUpdate({ target: schema.tracks.slug, set: values }).returning();
-
-  const stageKeys: string[] = [];
-  for (const [si, s] of t.stages.entries()) {
-    stageKeys.push(s.key);
-    const sv = {
-      trackId: track.id, key: s.key, order: si, title: s.title, level: s.level ?? "", weeks: s.weeks ?? 0,
-      benchmark: s.benchmark ?? "", goal: s.goal ?? "", doneWhen: s.doneWhen ?? "", resources: s.resources ?? "",
-      optional: !!s.optional, choiceGroup: s.choiceGroup ?? null, archived: false,
-    };
-    const [stage] = await db.insert(schema.stages).values(sv)
-      .onConflictDoUpdate({ target: [schema.stages.trackId, schema.stages.key], set: sv }).returning();
-
-    const itemKeys: string[] = [];
-    for (const [ii, it] of s.items.entries()) {
-      itemKeys.push(it.key);
-      const kind = (KINDS as readonly string[]).includes(it.kind ?? "") ? (it.kind as (typeof KINDS)[number]) : "LESSON";
-      const iv = {
-        stageId: stage.id, key: it.key, order: ii, title: it.title, detail: it.detail ?? "", kind,
-        group: it.group ?? null, optional: !!it.optional, archived: false,
-      };
-      await db.insert(schema.items).values(iv)
-        .onConflictDoUpdate({ target: [schema.items.stageId, schema.items.key], set: iv });
-    }
-    await db.update(schema.items).set({ archived: true })
-      .where(and(eq(schema.items.stageId, stage.id), notInArray(schema.items.key, itemKeys)));
-  }
-  await db.update(schema.stages).set({ archived: true })
-    .where(and(eq(schema.stages.trackId, track.id), notInArray(schema.stages.key, stageKeys)));
-  return track;
+async function syncTrack(t: TrackDoc & { slug: string }) {
+  if (!isOfficialSlug(t.slug)) throw new Error(`${t.slug}: official slugs can't contain "--" (that marks a school's own roadmap)`);
+  const existing = await db.query.tracks.findFirst({ where: eq(schema.tracks.slug, t.slug) });
+  if (existing?.ownerOrgId) throw new Error(`${t.slug}: a school's own roadmap already uses this slug`);
+  const values = { slug: t.slug, ...trackValues(t) };
+  return db.transaction(async (tx) => {
+    const [track] = await tx.insert(schema.tracks).values(values)
+      .onConflictDoUpdate({ target: schema.tracks.slug, set: values }).returning();
+    await applyStages(tx, track.id, t.stages);
+    return track;
+  });
 }
 
 async function ensureAdminAndOrg(trackIds: string[]) {
@@ -97,8 +63,11 @@ async function main() {
   const ids: string[] = [];
   let nStages = 0, nItems = 0;
   for (const f of files) {
-    const t = JSON.parse(readFileSync(path.join(dir, f), "utf8")) as TrackJson;
-    const track = await syncTrack(t);
+    const parsed = parseTrackDoc(JSON.parse(readFileSync(path.join(dir, f), "utf8")));
+    if (!parsed.ok) throw new Error(`${f}: ${parsed.errors.join("; ")}`);
+    const t = parsed.doc;
+    if (!t.slug) throw new Error(`${f}: missing "slug"`);
+    const track = await syncTrack({ ...t, slug: t.slug });
     ids.push(track.id);
     nStages += t.stages.length;
     nItems += t.stages.reduce((n, s) => n + s.items.length, 0);

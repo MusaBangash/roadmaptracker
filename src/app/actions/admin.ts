@@ -2,10 +2,11 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { and, eq, ne, sql } from "drizzle-orm";
+import { and, eq, isNull, ne, sql } from "drizzle-orm";
 import { z } from "zod";
 import { db, schema } from "@/db";
 import { requireRole, requireTeachableCohort, requireUser } from "@/lib/access";
+import { canUseTrack } from "@/lib/access-core";
 import { randomCode } from "@/lib/utils";
 import type { FormState } from "./auth";
 
@@ -22,7 +23,8 @@ export async function createCohortAction(_: FormState, form: FormData): Promise<
   const enabled = await db.query.orgTracks.findFirst({
     where: and(eq(schema.orgTracks.orgId, ctx.org.id), eq(schema.orgTracks.trackId, p.data.trackId)),
   });
-  if (!enabled) return { error: "That track isn't enabled for your school." };
+  const track = await db.query.tracks.findFirst({ where: eq(schema.tracks.id, p.data.trackId) });
+  if (!enabled || !track || !canUseTrack(ctx.org.id, track)) return { error: "That track isn't enabled for your school." };
   const [cohort] = await db.insert(schema.cohorts)
     .values({ orgId: ctx.org.id, trackId: p.data.trackId, name: p.data.name, startDate: new Date(p.data.startDate) }).returning();
   const instructorIds = form.getAll("instructorIds").map(String);
@@ -118,6 +120,9 @@ export async function removeMemberAction(form: FormData) {
 export async function toggleOrgTrackAction(form: FormData) {
   const ctx = await requireRole(["ADMIN"]);
   const trackId = String(form.get("trackId"));
+  const track = await db.query.tracks.findFirst({ where: eq(schema.tracks.id, trackId) });
+  // Only official roadmaps and the school's own published ones; never another school's.
+  if (!track || !canUseTrack(ctx.org.id, track)) return;
   if (form.get("enabled") === "1") await db.insert(schema.orgTracks).values({ orgId: ctx.org.id, trackId }).onConflictDoNothing();
   else await db.delete(schema.orgTracks).where(and(eq(schema.orgTracks.orgId, ctx.org.id), eq(schema.orgTracks.trackId, trackId)));
   revalidatePath("/tracks");
@@ -138,7 +143,8 @@ export async function createOrgAction(_: FormState, form: FormData): Promise<For
   let slug = base;
   for (let i = 2; await db.query.organizations.findFirst({ where: eq(schema.organizations.slug, slug) }); i++) slug = `${base}-${i}`;
   const [org] = await db.insert(schema.organizations).values({ name: p.data.name, slug }).returning();
-  const allTracks = await db.select({ id: schema.tracks.id }).from(schema.tracks);
+  // A new school starts with every official roadmap; other schools' own roadmaps stay theirs.
+  const allTracks = await db.select({ id: schema.tracks.id }).from(schema.tracks).where(isNull(schema.tracks.ownerOrgId));
   if (allTracks.length) await db.insert(schema.orgTracks).values(allTracks.map((t) => ({ orgId: org.id, trackId: t.id }))).onConflictDoNothing();
   await db.insert(schema.memberships).values({ userId: user.id, orgId: org.id, role: "ADMIN" }).onConflictDoNothing();
   let msg = `Created ${org.name}.`;

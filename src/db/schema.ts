@@ -1,6 +1,7 @@
 // NoorAI Tracks — multi-school progress tracking for roadmaps and courses.
 import { pgTable, pgEnum, text, timestamp, integer, boolean, jsonb, real, date, primaryKey, uniqueIndex, index } from "drizzle-orm/pg-core";
 import type { AdapterAccountType } from "next-auth/adapters";
+import type { TrackDoc } from "@/lib/roadmap-core";
 
 const id = () => text("id").primaryKey().$defaultFn(() => crypto.randomUUID());
 const created = () => timestamp("created_at", { mode: "date" }).notNull().defaultNow();
@@ -62,7 +63,7 @@ export const memberships = pgTable("membership", {
   createdAt: created(),
 }, (t) => [uniqueIndex("membership_user_org").on(t.userId, t.orgId), index("membership_org_role").on(t.orgId, t.role)]);
 
-// ---------- Content (synced from content/tracks/*.json) ----------
+// ---------- Content (official roadmaps synced from content/tracks/*.json; schools' own from the Roadmap Builder) ----------
 export const itemKindEnum = pgEnum("item_kind", ["LESSON", "PROJECT", "DELIVERABLE", "MILESTONE"]);
 
 export const tracks = pgTable("track", {
@@ -77,7 +78,13 @@ export const tracks = pgTable("track", {
   benchmarks: jsonb("benchmarks").$type<{ title: string; detail: string }[]>().notNull().default([]),
   rubric: jsonb("rubric").$type<{ criterion: string; levels: string[] }[]>().notNull().default([]),
   updatedAt: timestamp("updated_at", { mode: "date" }).notNull().defaultNow(),
-});
+  // Roadmap Builder: null owner = an official NoorAI roadmap (content/tracks/*.json, file-only).
+  // A school's own roadmap has an owner; edits wait in `draft` until the school publishes them.
+  ownerOrgId: text("owner_org_id").references(() => organizations.id, { onDelete: "cascade" }),
+  status: text("status").$type<"DRAFT" | "PUBLISHED">().notNull().default("PUBLISHED"),
+  draft: jsonb("draft").$type<TrackDoc>(),
+  publishedAt: timestamp("published_at", { mode: "date" }),
+}, (t) => [index("track_owner").on(t.ownerOrgId)]);
 
 export const stages = pgTable("stage", {
   id: id(),

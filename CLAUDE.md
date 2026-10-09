@@ -38,10 +38,11 @@ Owner's decisions (already made — don't re-ask):
 - A school can never be left without an admin; you can't remove yourself.
 - CSV export guards against spreadsheet formula injection and includes a UTF-8 BOM (Excel).
 - **Teaching plan** (`/cohorts/[id]/teach`, rules in `src/lib/coverage-core.ts`): teachers mark LESSON items taught per cohort (date + who, table `cohort_coverage`); projects/deliverables/milestones are never "taught". Status per week/stage: Taught · Due now · Behind (plan window passed) · Coming up; a week gets an even share of its stage's weeks; optional stages are never "behind". "Taught, but students are behind" when taught ≥ 50% and class learned < taught − 25 points. "Mark done for present students" needs attendance that day, ticks only ACTIVE present students who had not ticked it, sets `item_progress.marked_by_id` (shown as "Marked by teacher"; cleared when the student adds evidence or re-ticks). Undo removes coverage and only unreviewed, evidence-free teacher ticks.
+- **Roadmap Builder** (`/tracks/new`, `/tracks/[slug]/edit`, rules in `src/lib/roadmap-core.ts`): `track.owner_org_id` null = an **official** roadmap (content files only, never edited in the app; schools can **Copy to my school**). A school's own roadmap (slug `<school>--<title>`; official slugs never contain `--`, sync refuses them) is visible only to that school, and while `status = DRAFT` only to its admins. Every edit goes to `track.draft` (the roadmap-file JSON) inside a row-locked transaction; **Publish** writes the draft into stage/item through `src/lib/track-store.ts` (the same code as the deploy sync), matched by key, removed things archived, never deleted, then turns the roadmap on for the school. Keys are made once from the title and never change. Upload = the same file format, checked by `parseTrackDoc` with plain-English errors; Download = `/tracks/[slug]/download[?draft=1]` (admins). Only official roadmaps or the school's own published ones can be turned on for a school or used for cohorts (`canUseTrack`).
 - Dates with no time ("YYYY-MM-DD") are calendar days: `fmtDate` formats them in UTC so a server in another zone never shows the day before.
 
 ### Content
-9 tracks, 152 stages, 1,423 items in `content/tracks/*.json`:
+9 official tracks, 152 stages, 1,423 items in `content/tracks/*.json` (schools can add their own with the Roadmap Builder; those live only in the database, as `track.draft` + stage/item rows, and download as the same JSON format):
 python-developer, ml-engineer, ai-engineer, sre-platform, forward-deployed-engineer, data-engineer, security-engineer, special-technician-ai-engineer (Edition 4), ai-for-everyone (NAVTTC, Edition 2).
 Items are typed LESSON / PROJECT / DELIVERABLE / MILESTONE. Keys are stable slugs — **never rename a key** casually; sync matches by key and student progress hangs off it.
 
@@ -59,12 +60,12 @@ Items are typed LESSON / PROJECT / DELIVERABLE / MILESTONE. Keys are stable slug
 ## 4. Code map
 
 ```
-content/tracks/*.json        roadmap content (source of truth for tracks)
+content/tracks/*.json        roadmap content (source of truth for the official tracks)
 drizzle/                     SQL migrations (generated — never hand-edit applied ones)
-scripts/sync.ts              idempotent upsert of tracks/stages/items by key (removed → archived);
+scripts/sync.ts              checks each file (parseTrackDoc), then upserts via src/lib/track-store.ts by key (removed → archived);
                              ensures SEED admin (isSuperAdmin) + first school + membership + enables all tracks
 src/db/schema.ts             tables: user, account, session, verificationToken, organization, membership(role),
-                             track, stage, item, org_track, cohort, cohort_instructor, invite, enrollment,
+                             track (+ owner_org_id, status, draft, published_at), stage, item, org_track, cohort, cohort_instructor, invite, enrollment,
                              item_progress (+ marked_by_id), stage_signoff, assessment, weekly_log, attendance, cohort_coverage
 src/db/index.ts              pg Pool + drizzle (pool max 5 in production)
 src/auth.ts                  Auth.js config
@@ -78,16 +79,21 @@ src/lib/progress.ts          data loading; re-exports progress-core. loadCells()
 src/lib/cohort-stats.ts      cohortRows (+ class stage averages, taught + coverage), pendingReviewCount, schoolTrackStats, schoolTrackStages, myTrackProgress
 src/lib/coverage-core.ts     teaching-plan maths, pure + tested: coverageOf, teachStatus, taughtNotLearned, presentToMark
 src/lib/coverage.ts          loadCoverage (cohort → itemId → date + teacher); re-exports coverage-core
-src/lib/access-core.ts       canTeachCohort — the pure, tested rule behind requireTeachableCohort
+src/lib/access-core.ts       canTeachCohort, canSeeTrack, canEditTrack, canUseTrack, canCopyTrack — pure, tested rules
+                             behind requireTeachableCohort, requireVisibleTrack, requireEditableTrack
+src/lib/roadmap-core.ts      Roadmap Builder rules, pure + tested: file format + parseTrackDoc (plain errors), edit.* steps,
+                             makeKey/schoolSlug, publishProblems, diffDocs (what a publish changes), docFromRows
+src/lib/track-store.ts       applyStages (roadmap file → stage/item, batched, archive the rest; used by sync AND Publish),
+                             liveDoc (live roadmap → file), workOnRemoved
 src/lib/utils.ts             pct, fmtDate, daysAgo, thisMonday, initials, randomCode, safeUrl, plural
-src/app/actions/*.ts         server actions: auth, learn (student), teach (instructor), admin
+src/app/actions/*.ts         server actions: auth, learn (student), teach (instructor), admin, roadmap (builder)
 src/app/(auth)/              login, register, join, join/[code]
 src/app/(app)/               dashboard, learn/[enrollmentId](+/log), cohorts(+/new, /[id], /review,
-                             /students/[enrollmentId], /attendance, /teach, /export[?type=plan]), admin/members, tracks(+/[slug], /[slug]/preview), platform
+                             /students/[enrollmentId], /attendance, /teach, /export[?type=plan]), admin/members, tracks(+/new, /[slug], /[slug]/edit, /[slug]/preview[?draft=1], /[slug]/download), platform
 src/components/              ui.tsx (ProgressBar, Badge, Tag, Stat, PageHeader…), logo.tsx, icon.tsx, theme-switch.tsx,
                              progress.tsx (SegmentBar, StageLine, GroupBar, KindBars, ClassStageList),
                              roadmap-view.tsx (student view, shared with /tracks/[slug]/preview), teach-controls.tsx
-                             (Teaching plan date/present toolbar + Mark taught buttons), forms
+                             (Teaching plan date/present toolbar + Mark taught buttons), roadmap-editor.tsx (builder forms), forms
 scripts/demo.ts              npm run demo:seed / demo:remove — "Demo School" with fake students (slug demo-school,
                              emails @demo.noorai.invalid, no passwords); never touches other schools
 ```
