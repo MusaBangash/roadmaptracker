@@ -14,7 +14,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   if (!user.consentAt) redirect("/consent");
   const theme = await savedTheme();
   const nav: { href: string; label: string }[] = [{ href: "/dashboard", label: "Dashboard" }];
-  if (role === "ADMIN" || role === "INSTRUCTOR") nav.push({ href: "/cohorts", label: "Cohorts" });
+  if (role === "ADMIN" || role === "INSTRUCTOR") nav.push({ href: "/cohorts", label: "Cohorts" }, { href: "/insights", label: "Insights" });
   if (role === "ADMIN") nav.push({ href: "/admin/members", label: "People" });
   if (org) nav.push({ href: "/tracks", label: "Tracks" });
   if (user.isSuperAdmin) nav.push({ href: "/platform", label: "Schools" });
