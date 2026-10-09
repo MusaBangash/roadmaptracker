@@ -134,6 +134,8 @@ Next, in this order (one step at a time, confirm each):
 
 `DEPLOY.md` has the long-form deployment guide (Neon → Google → Vercel → first sign-in, plus troubleshooting table).
 
+`docs/INTEGRATION.md` is the plan for merging Tracks (and Classroom Monitor) into NoorAI Lab Studio later (Tracks becomes Lab Studio stages 3.7 + 4.1), with the data-model mapping and the rules to follow in this repo until then. Read it before big design decisions.
+
 ## 8. Known gaps / feature backlog (owner may ask for these)
 
 Not built yet: password reset by email · certificates (PDF with verification link) · bulk CSV student import · comments thread on evidence · notifications (email/WhatsApp) · cross-cohort analytics charts · Urdu interface · public student portfolio page.
