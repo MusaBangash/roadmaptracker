@@ -1,6 +1,10 @@
 import "server-only";
-import { and, asc, eq, inArray, max } from "drizzle-orm";
+import { and, asc, eq, inArray, max, sql } from "drizzle-orm";
 import { db, schema } from "@/db";
+import type { Cell } from "@/lib/progress-core";
+
+// The maths lives in progress-core.ts (pure and tested); this file loads the data.
+export * from "@/lib/progress-core";
 
 export type Stage = typeof schema.stages.$inferSelect;
 export type Item = typeof schema.items.$inferSelect;
@@ -23,49 +27,46 @@ export async function loadTrackTree(trackId: string): Promise<StageNode[]> {
   return stages.map((s) => ({ ...s, items: byStage.get(s.id) ?? [] }));
 }
 
+/** Every progress row and sign-off: for pages that show each item (one student). */
 export async function loadProgress(enrollmentIds: string[]) {
   if (!enrollmentIds.length) return { progress: [] as Progress[], signoffs: [] as Signoff[] };
   const [progress, signoffs] = await Promise.all([
     db.select().from(schema.itemProgress).where(inArray(schema.itemProgress.enrollmentId, enrollmentIds)),
-    db.select().from(schema.stageSignoffs).where(inArray(schema.stageSignoffs.enrollmentId, enrollmentIds)),
+    loadSignoffs(enrollmentIds),
   ]);
   return { progress, signoffs };
 }
 
-export type StageSummary = { stageId: string; required: number; done: number; verified: number; pct: number; signedOff: boolean | null };
-export type Summary = { pct: number; done: number; required: number; verified: number; stages: StageSummary[]; stagesPassed: number };
-
-/** Optional stages (e.g. lanes) count only if the student has started them. */
-export function summarize(tree: StageNode[], progress: Progress[], signoffs: Signoff[]): Summary {
-  const done = new Map(progress.map((p) => [p.itemId, p]));
-  const signed = new Map(signoffs.map((s) => [s.stageId, s.passed]));
-  const stages: StageSummary[] = tree.map((s) => {
-    const req = s.items.filter((i) => !i.optional);
-    const d = req.filter((i) => { const p = done.get(i.id); return p && p.status !== "NEEDS_WORK"; }).length;
-    const v = req.filter((i) => done.get(i.id)?.status === "VERIFIED").length;
-    return { stageId: s.id, required: req.length, done: d, verified: v, pct: req.length ? d / req.length : 0, signedOff: signed.get(s.id) ?? null };
-  });
-  const counted = stages.filter((st, i) => !tree[i].optional || st.done > 0);
-  const required = counted.reduce((a, s) => a + s.required, 0);
-  const d = counted.reduce((a, s) => a + s.done, 0);
-  return {
-    pct: required ? d / required : 0, done: d, required,
-    verified: counted.reduce((a, s) => a + s.verified, 0),
-    stages, stagesPassed: stages.filter((s) => s.signedOff === true).length,
-  };
+export async function loadSignoffs(enrollmentIds: string[]) {
+  if (!enrollmentIds.length) return [] as Signoff[];
+  return db.select().from(schema.stageSignoffs).where(inArray(schema.stageSignoffs.enrollmentId, enrollmentIds));
 }
 
-/** Expected share of the track a student should have finished, given the cohort start date. */
-export function expectedPct(tree: StageNode[], startDate: Date, now = new Date()) {
-  const seenGroups = new Set<string>();
-  let total = 0;
-  for (const s of tree) {
-    if (s.choiceGroup) { if (seenGroups.has(s.choiceGroup)) continue; seenGroups.add(s.choiceGroup); }
-    total += s.weeks;
+/**
+ * Progress counted inside the database: one row per student, stage, group and kind instead of
+ * one per ticked item, so class and school pages stay fast with many students.
+ * Feed the result to summarizeCells(); it gives the same numbers as summarize().
+ */
+export async function loadCells(enrollmentIds: string[]): Promise<Map<string, Cell[]>> {
+  const out = new Map<string, Cell[]>(enrollmentIds.map((id) => [id, []]));
+  if (!enrollmentIds.length) return out;
+  const rows = await db
+    .select({
+      enrollmentId: schema.itemProgress.enrollmentId,
+      stageId: schema.items.stageId,
+      group: schema.items.group,
+      kind: schema.items.kind,
+      done: sql<number>`count(*) filter (where "item_progress"."status" <> 'NEEDS_WORK')`,
+      verified: sql<number>`count(*) filter (where "item_progress"."status" = 'VERIFIED')`,
+    })
+    .from(schema.itemProgress)
+    .innerJoin(schema.items, eq(schema.itemProgress.itemId, schema.items.id))
+    .where(and(inArray(schema.itemProgress.enrollmentId, enrollmentIds), eq(schema.items.optional, false), eq(schema.items.archived, false)))
+    .groupBy(schema.itemProgress.enrollmentId, schema.items.stageId, schema.items.group, schema.items.kind);
+  for (const r of rows) {
+    out.get(r.enrollmentId)?.push({ stageId: r.stageId, group: r.group, kind: r.kind, done: Number(r.done), verified: Number(r.verified) });
   }
-  if (!total) return 0;
-  const weeks = (now.getTime() - startDate.getTime()) / (7 * 24 * 3600 * 1000);
-  return Math.max(0, Math.min(1, weeks / total));
+  return out;
 }
 
 export async function lastActivity(enrollmentIds: string[]) {
@@ -84,14 +85,3 @@ export async function lastActivity(enrollmentIds: string[]) {
   }
   return out;
 }
-
-export type Risk = "inactive" | "behind" | null;
-export function riskOf(sum: Summary, expected: number, last: Date | undefined, joined: Date, now = new Date()): Risk {
-  const ref = last ?? joined;
-  if (now.getTime() - ref.getTime() > 14 * 24 * 3600 * 1000) return "inactive";
-  if (sum.pct + 0.15 < expected) return "behind";
-  return null;
-}
-
-/** Items that need instructor review: projects, deliverables and milestones marked done. */
-export const REVIEW_KINDS = ["PROJECT", "DELIVERABLE", "MILESTONE"] as const;

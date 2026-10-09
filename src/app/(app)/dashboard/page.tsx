@@ -2,7 +2,7 @@ import Link from "next/link";
 import { and, eq, sql } from "drizzle-orm";
 import { db, schema } from "@/db";
 import { getContext } from "@/lib/access";
-import { loadTrackTree, loadProgress, summarize, expectedPct } from "@/lib/progress";
+import { loadTrackTree, loadProgress, summarize, expectedPct, currentStageIndex } from "@/lib/progress";
 import { cohortRows, pendingReviewCount } from "@/lib/cohort-stats";
 import { PageHeader, ProgressBar, Stat, Empty, Badge } from "@/components/ui";
 import { JoinForm } from "@/components/auth-forms";
@@ -37,7 +37,9 @@ export default async function Dashboard() {
   const studentCards = await Promise.all(myEnrollments.map(async ({ e, c, t }) => {
     const tree = await loadTrackTree(t.id);
     const { progress, signoffs } = await loadProgress([e.id]);
-    return { e, c, t, sum: summarize(tree, progress, signoffs), expected: expectedPct(tree, c.startDate), stages: tree.length };
+    const sum = summarize(tree, progress, signoffs);
+    const here = currentStageIndex(tree, sum);
+    return { e, c, t, sum, expected: expectedPct(tree, c.startDate), stages: tree.length, now: here >= 0 ? `Stage ${here + 1} · ${tree[here].title}` : null };
   }));
 
   // ---------- instructor / admin ----------
@@ -122,6 +124,7 @@ export default async function Dashboard() {
                 <Link key={x.e.id} href={`/learn/${x.e.id}`} className="card block p-5 hover:border-primary">
                   <div className="text-sm font-semibold text-highlight-text">{x.c.name}</div>
                   <div className="mt-1 font-bold text-xl">{x.t.title}</div>
+                  {x.now && <div className="mt-1 text-sm text-ink-muted">Now on {x.now}</div>}
                   <div className="mt-4"><ProgressBar value={x.sum.pct} expected={x.expected} /></div>
                   <div className="mt-2 flex flex-wrap gap-x-4 text-xs text-ink-muted">
                     <span className="font-semibold text-ink">{pct(x.sum.pct)} done</span>

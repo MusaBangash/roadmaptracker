@@ -5,14 +5,18 @@ import { toggleItemAction, saveEvidenceAction } from "@/app/actions/learn";
 import { KindPill, StatusPill, Tag } from "@/components/ui";
 
 type Props = {
-  enrollmentId: string;
+  /** null = "Preview as student": ticks stay on this screen only and nothing is saved. */
+  enrollmentId: string | null;
   item: { id: string; title: string; detail: string; kind: string; optional: boolean };
   progress: { status: string; evidenceUrl: string | null; note: string | null; reviewNote: string | null } | null;
 };
 
 export function ItemRow({ enrollmentId, item, progress }: Props) {
   const [pending, start] = useTransition();
-  const [done, setDone] = useOptimistic(!!progress && progress.status !== "NEEDS_WORK");
+  const [saved, setSaved] = useOptimistic(!!progress && progress.status !== "NEEDS_WORK");
+  const [previewDone, setPreviewDone] = useState(false);
+  const preview = enrollmentId === null;
+  const done = preview ? previewDone : saved;
   const reviewable = item.kind !== "LESSON";
   const [open, setOpen] = useState(false);
   const [state, action, saving] = useActionState(saveEvidenceAction, undefined);
@@ -29,15 +33,16 @@ export function ItemRow({ enrollmentId, item, progress }: Props) {
           aria-label={`Mark "${item.title}" as done`}
           onChange={(e) => {
             const next = e.target.checked;
+            if (preview) return setPreviewDone(next);
             start(async () => {
-              setDone(next);
+              setSaved(next);
               await toggleItemAction(enrollmentId, item.id, next);
             });
           }}
         />
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
-            <span className={`text-sm font-semibold ${done ? "text-ink" : "text-ink"}`}>{item.title}</span>
+            <span className="text-sm font-semibold text-ink">{item.title}</span>
             <KindPill kind={item.kind} />
             {item.optional && <Tag>Optional</Tag>}
             <StatusPill status={progress?.status} />
@@ -51,6 +56,7 @@ export function ItemRow({ enrollmentId, item, progress }: Props) {
               {progress.evidenceUrl}
             </a>
           )}
+          {preview ? (reviewable && <p className="mt-1 text-xs text-ink-muted">Students add a link to their work here for review.</p>) : (<>
           <button type="button" onClick={() => setOpen(!open)} className="mt-1 block text-xs font-semibold text-primary">
             {open ? "Close" : reviewable ? (progress?.evidenceUrl ? "Edit evidence" : "Add evidence for review") : "Add a note or link"}
           </button>
@@ -65,6 +71,7 @@ export function ItemRow({ enrollmentId, item, progress }: Props) {
               {state?.ok && <p className="text-sm text-primary sm:col-span-3">{state.ok}</p>}
             </form>
           )}
+          </>)}
         </div>
       </div>
     </li>

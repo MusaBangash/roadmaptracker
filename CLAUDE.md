@@ -34,7 +34,7 @@ Owner's decisions (already made — don't re-ask):
 - **Expected %:** where the cohort plan says the student should be today, from cohort `startDate` and stage `weeks`. Shown as a marker line on progress bars.
 - **At risk:** inactive ≥ 14 days, or more than 0.15 (15 points) behind expected.
 - **Assessment pass:** average ≥ 3 **and** no criterion below 2 (rubric = Edition 4's 5 criteria, `src/lib/rubric.ts`).
-- Items needing instructor review: kinds PROJECT, DELIVERABLE, MILESTONE (`REVIEW_KINDS` in `src/lib/progress.ts`).
+- Items needing instructor review: kinds PROJECT, DELIVERABLE, MILESTONE (`REVIEW_KINDS` in `src/lib/progress-core.ts`).
 - A school can never be left without an admin; you can't remove yourself.
 - CSV export guards against spreadsheet formula injection and includes a UTF-8 BOM (Excel).
 
@@ -68,14 +68,22 @@ src/db/index.ts              pg Pool + drizzle (pool max 5 in production)
 src/auth.ts                  Auth.js config
 src/lib/access.ts            getUser, requireUser, getContext (active org via cookie "noor_org"), requireRole,
                              requireTeachableCohort, requireOwnEnrollment, requireTeachableEnrollment
-src/lib/progress.ts          loadTrackTree, loadProgress, summarize, expectedPct, lastActivity, riskOf
-src/lib/cohort-stats.ts      cohortRows, pendingReviewCount
+src/lib/progress-core.ts     ALL progress maths, pure + tested (progress-core.test.ts): summarize/summarizeCells (track →
+                             stage → week/group, lessons vs projects), expectedPct/expectedStagePcts/expectedGroupPct,
+                             currentStageIndex ("You are here"), riskOf, classStages/classAverage. Spec for the Lab Studio rewrite.
+src/lib/progress.ts          data loading; re-exports progress-core. loadCells() counts progress IN THE DATABASE (one row per
+                             student×stage×group×kind) — use it for class/school pages, loadProgress() only for one student
+src/lib/cohort-stats.ts      cohortRows (+ class stage averages), pendingReviewCount, schoolTrackStats, schoolTrackStages, myTrackProgress
 src/lib/utils.ts             pct, fmtDate, daysAgo, thisMonday, initials, randomCode, safeUrl, plural
 src/app/actions/*.ts         server actions: auth, learn (student), teach (instructor), admin
 src/app/(auth)/              login, register, join, join/[code]
 src/app/(app)/               dashboard, learn/[enrollmentId](+/log), cohorts(+/new, /[id], /review,
-                             /students/[enrollmentId], /attendance, /export), admin/members, tracks(+/[slug]), platform
-src/components/              ui.tsx (Logo, ProgressBar, pills, Stat, PageHeader…), forms
+                             /students/[enrollmentId], /attendance, /export), admin/members, tracks(+/[slug], /[slug]/preview), platform
+src/components/              ui.tsx (ProgressBar, Badge, Tag, Stat, PageHeader…), logo.tsx, icon.tsx, theme-switch.tsx,
+                             progress.tsx (SegmentBar, StageLine, GroupBar, KindBars, ClassStageList),
+                             roadmap-view.tsx (student view, shared with /tracks/[slug]/preview), forms
+scripts/demo.ts              npm run demo:seed / demo:remove — "Demo School" with fake students (slug demo-school,
+                             emails @demo.noorai.invalid, no passwords); never touches other schools
 ```
 
 **Every server action re-checks access** through `src/lib/access.ts` (org scoping + role). Keep it that way for anything new — never trust IDs from the form without checking they belong to the user's org/cohort.
@@ -91,6 +99,8 @@ npm run db:sync        # load/refresh the 9 tracks + create SEED admin & first s
 npm run dev            # http://localhost:3000
 npm run lint
 npm run typecheck
+npm test               # Vitest: progress maths (src/**/*.test.ts)
+npm run demo:seed      # create/refresh Demo School to see progress screens; npm run demo:remove deletes it
 npm run build
 npm run db:generate    # after editing src/db/schema.ts → creates a new migration file in drizzle/
 ```
@@ -145,7 +155,7 @@ Owner was advised to deploy first and let one cohort use it before adding featur
 
 - Schema change → edit `src/db/schema.ts` → `npm run db:generate` → commit the new file in `drizzle/`. Never edit an already-applied migration.
 - Content change → edit `content/tracks/*.json` → `npm run db:sync` (Vercel does it on deploy). Keep keys stable.
-- Run `npm run lint`, `npm run typecheck` and `npm run build` before pushing.
+- Run `npm run lint`, `npm run typecheck`, `npm test` and `npm run build` before pushing. A new progress rule goes in progress-core.ts with a test.
 - Don't run `npm audit fix --force` (breaking upgrades). Don't upgrade npm to 12 on Node 22.19 (unsupported engine).
 - Keep mobile-first: students mainly use phones.
 - Commit messages: plain English, what changed and why.

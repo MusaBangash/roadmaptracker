@@ -8,9 +8,12 @@
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
+    "test": "vitest run",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:sync": "tsx scripts/sync.ts",
+    "demo:seed": "tsx scripts/demo.ts seed",
+    "demo:remove": "tsx scripts/demo.ts remove",
     "vercel-build": "drizzle-kit migrate && tsx scripts/sync.ts && next build"
   },
   "dependencies": {
@@ -42,6 +45,8 @@
     "eslint-config-next": "15.5.27",
     "tailwindcss": "^4",
     "tsx": "^4.23.15",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vite-tsconfig-paths": "^5.1.4",
+    "vitest": "^3.2.7"
   }
 }

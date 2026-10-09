@@ -1,9 +1,10 @@
 import { desc, eq } from "drizzle-orm";
 import { db, schema } from "@/db";
 import { requireTeachableEnrollment } from "@/lib/access";
-import { loadTrackTree, loadProgress, summarize, expectedPct } from "@/lib/progress";
+import { loadTrackTree, loadProgress, summarize, expectedPct, expectedStagePcts, currentStageIndex } from "@/lib/progress";
+import { GroupBar, KindBars, PlanLineNote, StageLine } from "@/components/progress";
 import { reviewItemAction, signoffStageAction, setEnrollmentStatusAction } from "@/app/actions/teach";
-import { PageHeader, ProgressBar, Stat, LevelPill, KindPill, StatusPill, SignoffBadge, Badge } from "@/components/ui";
+import { PageHeader, ProgressBar, Stat, KindPill, StatusPill, Badge } from "@/components/ui";
 import { AssessmentForm } from "@/components/assessment-form";
 import { DEFAULT_RUBRIC } from "@/lib/rubric";
 import { pct, fmtDate } from "@/lib/utils";
@@ -18,6 +19,8 @@ export default async function StudentPage({ params }: { params: Promise<{ id: st
   const tree = await loadTrackTree(track.id);
   const { progress, signoffs } = await loadProgress([enrollment.id]);
   const sum = summarize(tree, progress, signoffs);
+  const expectedStages = expectedStagePcts(tree, cohort.startDate);
+  const here = currentStageIndex(tree, sum);
   const byItem = new Map(progress.map((p) => [p.itemId, p]));
   const signBy = new Map(signoffs.map((s) => [s.stageId, s]));
   const [assessments, logs] = await Promise.all([
@@ -45,7 +48,9 @@ export default async function StudentPage({ params }: { params: Promise<{ id: st
       <div className="mb-6 grid gap-3 sm:grid-cols-4">
         <div className="card p-4 sm:col-span-2">
           <div className="flex items-baseline justify-between"><span className="text-sm font-semibold text-ink-muted">Progress</span><span className="font-bold text-2xl">{pct(sum.pct)}</span></div>
-          <div className="mt-3"><ProgressBar value={sum.pct} expected={expectedPct(tree, cohort.startDate)} /></div>
+          <div className="mt-3"><ProgressBar value={sum.pct} expected={expectedPct(tree, cohort.startDate)} label="Overall progress" /></div>
+          <p className="mt-2 text-sm">{here >= 0 ? <>Now on <b>Stage {here + 1} · {tree[here].title}</b></> : "Every required stage is done and signed off."}</p>
+          <div className="mt-1"><PlanLineNote who="this student" /></div>
         </div>
         <Stat label="Stages passed" value={`${sum.stagesPassed}/${tree.length}`} />
         <Stat label="Verified items" value={sum.verified} sub={`${sum.done} done in total`} />
@@ -58,17 +63,16 @@ export default async function StudentPage({ params }: { params: Promise<{ id: st
           const so = signBy.get(stage.id);
           return (
             <details key={stage.id} className="card">
-              <summary className="flex cursor-pointer list-none flex-wrap items-center gap-3 p-4">
-                <span className="min-w-0 flex-1">
-                  <span className="flex flex-wrap items-center gap-2">
-                    <span className="font-semibold">{i + 1}. {stage.title}</span><LevelPill level={stage.level} />
-                    <SignoffBadge passed={so?.passed} notYet="Not passed" />
-                  </span>
-                  <span className="mt-2 block max-w-md"><ProgressBar value={s.pct} /></span>
-                </span>
-                <span className="text-sm text-ink-muted">{s.done}/{s.required} · {s.verified} verified</span>
+              <summary className="flex cursor-pointer list-none p-4">
+                <StageLine index={i} stage={stage} s={s} expected={expectedStages[i]} here={i === here} />
               </summary>
               <div className="border-t border-border p-4">
+                {s.groups.length > 0 ? (
+                  <div className="mb-4 grid gap-3 rounded-md bg-surface-sunken p-3 sm:grid-cols-2">
+                    {s.groups.map((g, gi) => <GroupBar key={g.name} s={s} groupIndex={gi} stageExpected={expectedStages[i]} />)}
+                  </div>
+                ) : <KindBars s={s} />}
+                <p className="mb-3 text-sm text-ink-muted">{s.verified} of {s.required} required items verified.</p>
                 {stage.doneWhen && <p className="mb-3 text-sm"><b className="text-highlight-text">Done when:</b> {stage.doneWhen}</p>}
                 <form action={signoffStageAction} className="mb-4 flex flex-wrap items-center gap-2 rounded-md bg-surface-sunken p-3">
                   <input type="hidden" name="enrollmentId" value={enrollment.id} /><input type="hidden" name="stageId" value={stage.id} />

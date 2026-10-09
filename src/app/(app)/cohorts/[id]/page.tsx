@@ -5,6 +5,8 @@ import { requireTeachableCohort } from "@/lib/access";
 import { cohortRows, pendingReviewCount } from "@/lib/cohort-stats";
 import { PageHeader, ProgressBar, Stat, RiskPill, Empty, EnrollmentBadge, Tag, sentence } from "@/components/ui";
 import { Icon } from "@/components/icon";
+import { ClassStageList, PlanLineNote } from "@/components/progress";
+import { currentStageIndex } from "@/lib/progress";
 import { CopyButton } from "@/components/copy-button";
 import { createInviteAction, deleteInviteAction, setCohortInstructorAction, archiveCohortAction } from "@/app/actions/admin";
 import { baseUrl } from "@/lib/url";
@@ -32,29 +34,33 @@ export default async function CohortPage({ params }: { params: Promise<{ id: str
   const { id } = await params;
   const ctx = await requireTeachableCohort(id);
   const { cohort } = ctx;
-  const track = (await db.query.tracks.findFirst({ where: eq(schema.tracks.id, cohort.trackId) }))!;
-  const { tree, rows, expected } = await cohortRows(cohort);
-  const pending = (await pendingReviewCount([cohort.id])).get(cohort.id) ?? 0;
+  // Independent queries run together: each trip to the database costs time.
+  const [track, { tree, rows, expected, expectedStages, stages }, pendingBy, invites, url, instructors, staff] = await Promise.all([
+    db.query.tracks.findFirst({ where: eq(schema.tracks.id, cohort.trackId) }).then((t) => t!),
+    cohortRows(cohort),
+    pendingReviewCount([cohort.id]),
+    db.query.invites.findMany({ where: eq(schema.invites.cohortId, cohort.id) }),
+    baseUrl(),
+    db.select({ id: schema.users.id, name: schema.users.name, email: schema.users.email })
+      .from(schema.cohortInstructors).innerJoin(schema.users, eq(schema.cohortInstructors.userId, schema.users.id))
+      .where(eq(schema.cohortInstructors.cohortId, cohort.id)),
+    ctx.role === "ADMIN"
+      ? db.select({ id: schema.users.id, name: schema.users.name, email: schema.users.email })
+          .from(schema.memberships).innerJoin(schema.users, eq(schema.memberships.userId, schema.users.id))
+          .where(and(eq(schema.memberships.orgId, ctx.org.id), inArray(schema.memberships.role, ["ADMIN", "INSTRUCTOR"])))
+      : Promise.resolve([]),
+  ]);
+  const pending = pendingBy.get(cohort.id) ?? 0;
   const active = rows.filter((r) => r.enrollment.status === "ACTIVE");
   const avg = active.length ? active.reduce((a, r) => a + r.sum.pct, 0) / active.length : 0;
 
   // Where the cohort is: each active student's first unfinished stage.
   const atStage = new Map<number, number>();
   for (const r of active) {
-    const i = r.sum.stages.findIndex((s, si) => !tree[si].optional && s.signedOff !== true && s.pct < 1);
+    const i = currentStageIndex(tree, r.sum);
     if (i >= 0) atStage.set(i, (atStage.get(i) ?? 0) + 1);
   }
 
-  const invites = await db.query.invites.findMany({ where: eq(schema.invites.cohortId, cohort.id) });
-  const url = await baseUrl();
-  const instructors = await db.select({ id: schema.users.id, name: schema.users.name, email: schema.users.email })
-    .from(schema.cohortInstructors).innerJoin(schema.users, eq(schema.cohortInstructors.userId, schema.users.id))
-    .where(eq(schema.cohortInstructors.cohortId, cohort.id));
-  const staff = ctx.role === "ADMIN"
-    ? await db.select({ id: schema.users.id, name: schema.users.name, email: schema.users.email })
-        .from(schema.memberships).innerJoin(schema.users, eq(schema.memberships.userId, schema.users.id))
-        .where(and(eq(schema.memberships.orgId, ctx.org.id), inArray(schema.memberships.role, ["ADMIN", "INSTRUCTOR"])))
-    : [];
   const notTeaching = staff.filter((s) => !instructors.some((i) => i.id === s.id));
 
   return (
@@ -123,6 +129,12 @@ export default async function CohortPage({ params }: { params: Promise<{ id: str
             </div>
           </div>
         )}
+      </section>
+
+      <section className="mb-8">
+        <h2 className="h2 mb-1">Progress by stage</h2>
+        <div className="mb-3"><PlanLineNote who="the class" /></div>
+        <ClassStageList tree={tree} stages={stages} expectedStages={expectedStages} open={[...atStage.keys()].sort((a, b) => a - b)[0]} />
       </section>
 
       {atStage.size > 0 && (

@@ -2,9 +2,11 @@ import Link from "next/link";
 import { pct } from "@/lib/utils";
 import { Icon, type IconName } from "@/components/icon";
 
-export function ProgressBar({ value, expected, tone = "forest" }: { value: number; expected?: number; tone?: "forest" | "saffron" }) {
+export function ProgressBar({ value, expected, tone = "forest", label }: { value: number; expected?: number; tone?: "forest" | "saffron"; label?: string }) {
+  const text = expected !== undefined && expected > 0 ? `${pct(value)}, plan expects ${pct(expected)}` : pct(value);
   return (
-    <div className="relative h-2 w-full overflow-hidden rounded-full bg-surface-sunken" role="progressbar" aria-valuenow={Math.round(value * 100)} aria-valuemin={0} aria-valuemax={100}>
+    <div className="relative h-2 w-full overflow-hidden rounded-full bg-border" role="progressbar" aria-label={label} aria-valuetext={text}
+      aria-valuenow={Math.round(value * 100)} aria-valuemin={0} aria-valuemax={100}>
       <div className={`h-full rounded-full ${tone === "forest" ? "bg-primary" : "bg-highlight"}`} style={{ width: pct(value) }} />
       {expected !== undefined && expected > 0 && (
         <div className="absolute top-0 h-full w-0.5 bg-ink/50" style={{ left: pct(expected) }} title={`Expected by now: ${pct(expected)}`} />

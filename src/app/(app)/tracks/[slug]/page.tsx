@@ -2,21 +2,46 @@ import { notFound } from "next/navigation";
 import { eq } from "drizzle-orm";
 import { db, schema } from "@/db";
 import { getContext } from "@/lib/access";
-import { loadTrackTree } from "@/lib/progress";
+import { loadTrackTree, stageWindows } from "@/lib/progress";
+import { schoolTrackStages, myTrackProgress } from "@/lib/cohort-stats";
+import { ClassStageList, SegmentBar } from "@/components/progress";
+import { Icon } from "@/components/icon";
+import { pct, plural } from "@/lib/utils";
+import Link from "next/link";
 import { PageHeader, LevelPill, KindPill } from "@/components/ui";
 
 export const metadata = { title: "Track" };
 
 export default async function TrackPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  await getContext();
+  const ctx = await getContext();
   const track = await db.query.tracks.findFirst({ where: eq(schema.tracks.slug, slug) });
   if (!track) notFound();
   const tree = await loadTrackTree(track.id);
-  const weeks = tree.reduce((a, s) => a + (s.choiceGroup ? 0 : s.weeks), 0);
+  const { total: weeks } = stageWindows(tree);
+  const staff = ctx.role === "ADMIN" || ctx.role === "INSTRUCTOR";
+  const [school, mine] = ctx.org
+    ? await Promise.all([staff ? schoolTrackStages(ctx.org.id, tree, track.id) : null, myTrackProgress(ctx.org.id, ctx.user.id)])
+    : [null, new Map<string, { enrollmentId: string; pct: number }>()];
+  const me = mine.get(track.id);
   return (
     <>
-      <PageHeader title={track.title} sub={<>{track.subtitle}{weeks ? ` · about ${weeks} weeks` : ""}</>} back={{ href: "/tracks", label: "Tracks" }} />
+      <PageHeader title={track.title} sub={<>{track.subtitle}{weeks ? ` · about ${weeks} weeks` : ""}</>} back={{ href: "/tracks", label: "Tracks" }}
+        actions={<>
+          {me && <Link href={`/learn/${me.enrollmentId}`} className="btn-primary">Open my roadmap</Link>}
+          {staff && <Link href={`/tracks/${track.slug}/preview`} className="btn-ghost"><Icon name="computer" size={18} />Preview as student</Link>}
+        </>} />
+      {me && <div className="card mb-6 p-4"><SegmentBar label="Your progress" value={me.pct} strong /></div>}
+      {school && school.students > 0 && (
+        <section className="mb-8">
+          <h2 className="h2 mb-1">How your school is doing</h2>
+          <p className="mb-3 text-sm text-ink-muted">
+            {plural(school.students, "active student")} across your open cohorts · average {pct(school.avg)}. Open a stage to see its weeks.
+          </p>
+          <ClassStageList tree={tree} stages={school.stages} averageLabel="School average" />
+        </section>
+      )}
+      <h2 className="h2 mb-3">What is in this roadmap</h2>
       {track.expert && <p className="card mb-6 p-4 text-sm"><b className="text-primary">What “expert” means here:</b> {track.expert}</p>}
       {track.benchmarks.length > 0 && (
         <section className="mb-6">
