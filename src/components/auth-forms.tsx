@@ -2,7 +2,7 @@
 
 import { useActionState } from "react";
 import Link from "next/link";
-import { loginAction, registerAction, googleAction, acceptInviteAction } from "@/app/actions/auth";
+import { loginAction, registerAction, googleAction, acceptInviteAction, resetPasswordAction, consentAction } from "@/app/actions/auth";
 import { FormError } from "@/components/ui";
 
 function GoogleButton({ next }: { next: string }) {
@@ -59,6 +59,10 @@ export function RegisterForm({ next, google }: { next: string; google: boolean }
         <div><label className="label" htmlFor="name">Full name</label><input id="name" name="name" required autoComplete="name" className="input" /></div>
         <div><label className="label" htmlFor="email">Email</label><input id="email" name="email" type="email" required autoComplete="email" className="input" /></div>
         <div><label className="label" htmlFor="password">Password</label><input id="password" name="password" type="password" required minLength={8} autoComplete="new-password" className="input" /><p className="mt-1 text-xs text-ink-muted">At least 8 characters.</p></div>
+        <label className="flex items-start gap-2 text-sm">
+          <input type="checkbox" name="consent" required className="mt-0.5 h-5 w-5 shrink-0 accent-primary" />
+          <span>I agree to the <Link href="/privacy" target="_blank" className="font-semibold text-secondary underline">Privacy notice</Link>. If I am under 18, my parent or guardian agrees too.</span>
+        </label>
         <FormError message={state?.error} />
         <button className="btn-primary w-full" disabled={pending}>{pending ? "Creating account…" : "Create account"}</button>
       </form>
@@ -78,6 +82,35 @@ export function JoinForm({ code }: { code?: string }) {
       )}
       <FormError message={state?.error} />
       <button className="btn-primary w-full" disabled={pending}>{pending ? "Joining…" : "Join"}</button>
+    </form>
+  );
+}
+
+/** Story 2: the new-password form behind a reset link. */
+export function ResetPasswordForm({ token }: { token: string }) {
+  const [state, action, pending] = useActionState(resetPasswordAction, undefined);
+  return (
+    <form action={action} className="space-y-3">
+      <input type="hidden" name="token" value={token} />
+      <div><label className="label" htmlFor="password">New password</label><input id="password" name="password" type="password" required minLength={8} autoComplete="new-password" className="input" /><p className="mt-1 text-xs text-ink-muted">At least 8 characters.</p></div>
+      <div><label className="label" htmlFor="confirm">Type it again</label><input id="confirm" name="confirm" type="password" required minLength={8} autoComplete="new-password" className="input" /></div>
+      <FormError message={state?.error} />
+      <button className="btn-primary w-full" disabled={pending}>{pending ? "Saving…" : "Save new password"}</button>
+    </form>
+  );
+}
+
+/** Story 7: people who joined before the Privacy notice (or with Google) agree once. */
+export function ConsentForm() {
+  const [state, action, pending] = useActionState(consentAction, undefined);
+  return (
+    <form action={action} className="space-y-3">
+        <label className="flex items-start gap-2 text-sm">
+          <input type="checkbox" name="consent" required className="mt-0.5 h-5 w-5 shrink-0 accent-primary" />
+          <span>I agree to the <Link href="/privacy" target="_blank" className="font-semibold text-secondary underline">Privacy notice</Link>. If I am under 18, my parent or guardian agrees too.</span>
+        </label>
+      <FormError message={state?.error} />
+      <button className="btn-primary w-full" disabled={pending}>{pending ? "Saving…" : "Continue"}</button>
     </form>
   );
 }

@@ -12,9 +12,9 @@ export const metadata = { title: "Review" };
 
 export default async function ReviewPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const { cohort } = await requireTeachableCohort(id);
+  const { cohort, user } = await requireTeachableCohort(id);
   const rows = await db
-    .select({ p: schema.itemProgress, i: schema.items, s: schema.stages, u: { name: schema.users.name, email: schema.users.email } })
+    .select({ p: schema.itemProgress, i: schema.items, s: schema.stages, u: { id: schema.users.id, name: schema.users.name, email: schema.users.email } })
     .from(schema.itemProgress)
     .innerJoin(schema.items, eq(schema.itemProgress.itemId, schema.items.id))
     .innerJoin(schema.stages, eq(schema.items.stageId, schema.stages.id))
@@ -45,13 +45,14 @@ export default async function ReviewPage({ params }: { params: Promise<{ id: str
                 {p.evidenceUrl ? <a href={p.evidenceUrl} target="_blank" rel="noreferrer" className="break-all text-secondary underline">{p.evidenceUrl}</a> : <span className="text-ink-muted">No link attached.</span>}
                 {p.note && <p className="mt-1">{p.note}</p>}
               </div>
+              {u.id === user.id ? <p className="mt-3 text-sm text-ink-muted">This is your own work. Another teacher or an admin has to check it.</p> : (
               <form action={reviewItemAction} className="mt-3 flex flex-wrap items-center gap-2">
                 <input type="hidden" name="enrollmentId" value={p.enrollmentId} />
                 <input type="hidden" name="itemId" value={p.itemId} />
                 <input name="reviewNote" placeholder="Feedback for the student (needed if sending back)" className="input min-w-0 flex-1" />
                 <button name="decision" value="VERIFIED" className="btn-primary"><Icon name="check" size={18} />Verify</button>
                 <button name="decision" value="NEEDS_WORK" className="btn-danger">Needs work</button>
-              </form>
+              </form>)}
             </div>
           ))}
         </div>

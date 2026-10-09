@@ -1,12 +1,20 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { and, eq, inArray, isNotNull, isNull } from "drizzle-orm";
+import { and, eq, inArray, isNotNull, isNull, sql } from "drizzle-orm";
 import { z } from "zod";
 import { db, schema } from "@/db";
 import { requireTeachableEnrollment, requireTeachableCohort } from "@/lib/access";
 import { DEFAULT_RUBRIC } from "@/lib/rubric";
 import { presentToMark } from "@/lib/coverage-core";
+import { canJudgeWork } from "@/lib/security-core";
+import { audit } from "@/lib/audit";
+
+const OWN_WORK = "This is your own work. Another teacher or an admin has to check it.";
+
+async function itemTitle(itemId: string) {
+  return (await db.query.items.findFirst({ where: eq(schema.items.id, itemId), columns: { title: true } }))?.title ?? "";
+}
 import type { FormState } from "./auth";
 
 async function stageInEnrollment(enrollmentId: string, stageId: string) {
@@ -33,6 +41,7 @@ export async function reviewItemAction(form: FormData) {
   const decision = form.get("decision") === "NEEDS_WORK" ? "NEEDS_WORK" : "VERIFIED";
   const reviewNote = String(form.get("reviewNote") ?? "").trim().slice(0, 1000) || null;
   const ctx = await requireTeachableEnrollment(enrollmentId);
+  if (!canJudgeWork(ctx.user.id, ctx.enrollment.userId)) throw new Error(OWN_WORK);
   if (!(await itemInEnrollment(enrollmentId, itemId))) throw new Error("Item not in this track");
   const now = new Date();
   await db.insert(schema.itemProgress)
@@ -41,6 +50,8 @@ export async function reviewItemAction(form: FormData) {
       target: [schema.itemProgress.enrollmentId, schema.itemProgress.itemId],
       set: { status: decision, reviewedById: ctx.user.id, reviewedAt: now, reviewNote, updatedAt: now },
     });
+  await audit({ orgId: ctx.org.id, actorId: ctx.user.id, action: decision === "VERIFIED" ? "review.verify" : "review.needs_work",
+    subjectId: ctx.enrollment.userId, detail: `“${await itemTitle(itemId)}”` });
   revalidatePath(`/cohorts/${ctx.cohort.id}`, "layout");
 }
 
@@ -50,6 +61,7 @@ export async function signoffStageAction(form: FormData) {
   const decision = String(form.get("decision"));
   const notes = String(form.get("notes") ?? "").trim().slice(0, 2000) || null;
   const ctx = await requireTeachableEnrollment(enrollmentId);
+  if (!canJudgeWork(ctx.user.id, ctx.enrollment.userId)) throw new Error(OWN_WORK);
   if (!(await stageInEnrollment(enrollmentId, stageId))) throw new Error("Stage not in this track");
   const where = and(eq(schema.stageSignoffs.enrollmentId, enrollmentId), eq(schema.stageSignoffs.stageId, stageId));
   if (decision === "CLEAR") {
@@ -62,12 +74,16 @@ export async function signoffStageAction(form: FormData) {
         set: { passed, notes, signedById: ctx.user.id, signedAt: new Date() },
       });
   }
+  const stage = await db.query.stages.findFirst({ where: eq(schema.stages.id, stageId), columns: { title: true } });
+  await audit({ orgId: ctx.org.id, actorId: ctx.user.id, subjectId: ctx.enrollment.userId, detail: `“${stage?.title ?? ""}”`,
+    action: decision === "CLEAR" ? "signoff.clear" : decision === "PASS" ? "signoff.pass" : "signoff.not_yet" });
   revalidatePath(`/cohorts/${ctx.cohort.id}`, "layout");
 }
 
 export async function saveAssessmentAction(_: FormState, form: FormData): Promise<FormState> {
   const enrollmentId = String(form.get("enrollmentId"));
   const ctx = await requireTeachableEnrollment(enrollmentId);
+  if (!canJudgeWork(ctx.user.id, ctx.enrollment.userId)) return { error: OWN_WORK };
   const title = String(form.get("title") ?? "").trim();
   const date = String(form.get("date") ?? "");
   if (!title) return { error: "Give the assessment a title, e.g. “Oral Defense 1”." };
@@ -89,6 +105,8 @@ export async function saveAssessmentAction(_: FormState, form: FormData): Promis
     enrollmentId, title, date: new Date(date), scores, average, passed,
     notes: String(form.get("notes") ?? "").trim().slice(0, 4000) || null, assessorId: ctx.user.id,
   });
+  await audit({ orgId: ctx.org.id, actorId: ctx.user.id, action: "assessment.save", subjectId: ctx.enrollment.userId,
+    detail: `“${title}”: ${passed ? "passed" : "not passed yet"}` });
   revalidatePath(`/cohorts/${ctx.cohort.id}/students/${enrollmentId}`);
   return { ok: `Saved: average ${average.toFixed(2)} — ${passed ? "PASSED" : "not passed yet"}.${disagreement ? " Examiners differ by 2+ on a criterion — consider a third scorer." : ""}` };
 }
@@ -97,12 +115,14 @@ export async function saveAttendanceAction(_: FormState, form: FormData): Promis
   const cohortId = String(form.get("cohortId"));
   const date = String(form.get("date") ?? "");
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return { error: "Choose a date." };
-  await requireTeachableCohort(cohortId);
+  const ctx = await requireTeachableCohort(cohortId);
   const enrolls = await db.query.enrollments.findMany({ where: eq(schema.enrollments.cohortId, cohortId) });
-  for (const e of enrolls) {
-    const present = form.get(`p_${e.id}`) === "on";
-    await db.insert(schema.attendance).values({ enrollmentId: e.id, date, present })
-      .onConflictDoUpdate({ target: [schema.attendance.enrollmentId, schema.attendance.date], set: { present } });
+  if (enrolls.length) {
+    const rows = enrolls.map((e) => ({ enrollmentId: e.id, date, present: form.get(`p_${e.id}`) === "on" }));
+    await db.insert(schema.attendance).values(rows)
+      .onConflictDoUpdate({ target: [schema.attendance.enrollmentId, schema.attendance.date], set: { present: sql.raw(`excluded."present"`) } });
+    await audit({ orgId: ctx.org.id, actorId: ctx.user.id, action: "attendance.save",
+      detail: `${ctx.cohort.name}, ${date}: ${rows.filter((r) => r.present).length} of ${rows.length} present` });
   }
   revalidatePath(`/cohorts/${cohortId}`, "layout");
   return { ok: `Attendance saved for ${enrolls.length} students.` };
@@ -114,6 +134,8 @@ export async function setEnrollmentStatusAction(form: FormData) {
   const status = statusSchema.parse(form.get("status"));
   const ctx = await requireTeachableEnrollment(enrollmentId);
   await db.update(schema.enrollments).set({ status }).where(eq(schema.enrollments.id, enrollmentId));
+  await audit({ orgId: ctx.org.id, actorId: ctx.user.id, action: "enrollment.status", subjectId: ctx.enrollment.userId,
+    detail: `${ctx.enrollment.status.toLowerCase()} → ${status.toLowerCase()}` });
   revalidatePath(`/cohorts/${ctx.cohort.id}`, "layout");
 }
 
@@ -182,6 +204,8 @@ export async function markTaughtAction(input: z.input<typeof taughtSchema>): Pro
   } else {
     await upsertCoverage(db, cohortId, itemIds, date, ctx.user.id);
   }
+  await audit({ orgId: ctx.org.id, actorId: ctx.user.id, action: "teach.mark",
+    detail: `${ctx.cohort.name}: ${itemIds.length} lesson${itemIds.length === 1 ? "" : "s"} on ${date}${markPresent ? `, ticked ${ticked} for present students` : ""}` });
   revalidatePath(`/cohorts/${cohortId}`, "layout");
   const what = itemIds.length === 1 ? "1 lesson" : `${itemIds.length} lessons`;
   return { ok: `Marked ${what} taught on ${date}.${markPresent ? ` Ticked ${ticked} for students who were present.` : ""}` };
@@ -214,6 +238,7 @@ export async function unmarkTaughtAction(input: z.input<typeof untaughtSchema>):
       ));
     }
   });
+  await audit({ orgId: ctx.org.id, actorId: ctx.user.id, action: "teach.unmark", detail: `${ctx.cohort.name}: ${itemIds.length} lesson${itemIds.length === 1 ? "" : "s"}` });
   revalidatePath(`/cohorts/${p.data.cohortId}`, "layout");
   return { ok: itemIds.length === 1 ? "Marked as not taught." : `Marked ${itemIds.length} lessons as not taught.` };
 }

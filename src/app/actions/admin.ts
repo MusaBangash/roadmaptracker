@@ -2,11 +2,15 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { and, eq, isNull, ne, sql } from "drizzle-orm";
+import { and, eq, inArray, isNull, ne, sql } from "drizzle-orm";
 import { z } from "zod";
 import { db, schema } from "@/db";
 import { requireRole, requireTeachableCohort, requireUser } from "@/lib/access";
 import { canUseTrack } from "@/lib/access-core";
+import { canResetPassword, deleteScope, type Person } from "@/lib/security-core";
+import { audit } from "@/lib/audit";
+import { hashToken, newResetToken, RESET_HOURS } from "@/lib/reset";
+import { baseUrl } from "@/lib/url";
 import { randomCode } from "@/lib/utils";
 import type { FormState } from "./auth";
 
@@ -32,6 +36,7 @@ export async function createCohortAction(_: FormState, form: FormData): Promise<
     const m = await db.query.memberships.findFirst({ where: and(eq(schema.memberships.orgId, ctx.org.id), eq(schema.memberships.userId, userId)) });
     if (m && m.role !== "STUDENT") await db.insert(schema.cohortInstructors).values({ cohortId: cohort.id, userId }).onConflictDoNothing();
   }
+  await audit({ orgId: ctx.org.id, actorId: ctx.user.id, action: "cohort.create", detail: cohort.name });
   redirect(`/cohorts/${cohort.id}`);
 }
 
@@ -42,16 +47,22 @@ export async function setCohortInstructorAction(form: FormData) {
   const add = form.get("op") === "add";
   const cohort = await db.query.cohorts.findFirst({ where: and(eq(schema.cohorts.id, cohortId), eq(schema.cohorts.orgId, ctx.org.id)) });
   if (!cohort) return;
-  if (add) await db.insert(schema.cohortInstructors).values({ cohortId, userId }).onConflictDoNothing();
-  else await db.delete(schema.cohortInstructors).where(and(eq(schema.cohortInstructors.cohortId, cohortId), eq(schema.cohortInstructors.userId, userId)));
+  if (add) {
+    // Only staff of this school can teach its cohorts.
+    const m = await db.query.memberships.findFirst({ where: and(eq(schema.memberships.orgId, ctx.org.id), eq(schema.memberships.userId, userId)) });
+    if (!m || m.role === "STUDENT") return;
+    await db.insert(schema.cohortInstructors).values({ cohortId, userId }).onConflictDoNothing();
+  } else await db.delete(schema.cohortInstructors).where(and(eq(schema.cohortInstructors.cohortId, cohortId), eq(schema.cohortInstructors.userId, userId)));
+  await audit({ orgId: ctx.org.id, actorId: ctx.user.id, action: "cohort.instructor", subjectId: userId, detail: `${add ? "Added to" : "Removed from"} ${cohort.name}` });
   revalidatePath(`/cohorts/${cohortId}`);
 }
 
 export async function archiveCohortAction(form: FormData) {
   const ctx = await requireRole(["ADMIN"]);
   const cohortId = String(form.get("cohortId"));
-  await db.update(schema.cohorts).set({ archived: form.get("archived") === "1" })
-    .where(and(eq(schema.cohorts.id, cohortId), eq(schema.cohorts.orgId, ctx.org.id)));
+  const [c] = await db.update(schema.cohorts).set({ archived: form.get("archived") === "1" })
+    .where(and(eq(schema.cohorts.id, cohortId), eq(schema.cohorts.orgId, ctx.org.id))).returning();
+  if (c) await audit({ orgId: ctx.org.id, actorId: ctx.user.id, action: "cohort.archive", detail: `${c.name}: ${c.archived ? "archived" : "reopened"}` });
   revalidatePath("/cohorts");
   revalidatePath(`/cohorts/${cohortId}`);
 }
@@ -80,16 +91,20 @@ export async function createInviteAction(form: FormData) {
     code: randomCode(10), orgId, role: p.role, cohortId: p.cohortId ?? null, maxUses: p.maxUses,
     expiresAt: new Date(Date.now() + p.days * 86400000), createdById: userId,
   });
+  await audit({ orgId, actorId: userId, action: "invite.create", detail: `${p.role.toLowerCase()}, ${p.maxUses} uses, ${p.days} days` });
   revalidatePath(p.cohortId ? `/cohorts/${p.cohortId}` : "/admin/members");
 }
 
 export async function deleteInviteAction(form: FormData) {
   const id = String(form.get("inviteId"));
-  const inv = await db.query.invites.findFirst({ where: eq(schema.invites.id, id) });
+  const base = await requireRole(["ADMIN", "INSTRUCTOR"]);
+  // Only an invite of the active school is ever found, never another school's.
+  const inv = await db.query.invites.findFirst({ where: and(eq(schema.invites.id, id), eq(schema.invites.orgId, base.org.id)) });
   if (!inv) return;
-  if (inv.cohortId) await requireTeachableCohort(inv.cohortId);
-  else await requireRole(["ADMIN"]);
+  // School-wide invites: admins only. Cohort invites: anyone who teaches that cohort.
+  const ctx = inv.cohortId ? await requireTeachableCohort(inv.cohortId) : await requireRole(["ADMIN"]);
   await db.delete(schema.invites).where(eq(schema.invites.id, id));
+  await audit({ orgId: ctx.org.id, actorId: ctx.user.id, action: "invite.delete", detail: inv.role.toLowerCase() });
   revalidatePath(inv.cohortId ? `/cohorts/${inv.cohortId}` : "/admin/members");
 }
 
@@ -105,6 +120,7 @@ export async function setMemberRoleAction(form: FormData) {
     if (Number(n) === 0) return; // never leave a school without an admin
   }
   await db.update(schema.memberships).set({ role }).where(eq(schema.memberships.id, m.id));
+  if (role !== m.role) await audit({ orgId: ctx.org.id, actorId: ctx.user.id, action: "member.role", subjectId: m.userId, detail: `${m.role.toLowerCase()} → ${role.toLowerCase()}` });
   revalidatePath("/admin/members");
 }
 
@@ -114,6 +130,7 @@ export async function removeMemberAction(form: FormData) {
   const m = await db.query.memberships.findFirst({ where: and(eq(schema.memberships.id, membershipId), eq(schema.memberships.orgId, ctx.org.id)) });
   if (!m || m.userId === ctx.user.id) return;
   await db.delete(schema.memberships).where(eq(schema.memberships.id, m.id));
+  await audit({ orgId: ctx.org.id, actorId: ctx.user.id, action: "member.remove", subjectId: m.userId, detail: m.role.toLowerCase() });
   revalidatePath("/admin/members");
 }
 
@@ -123,8 +140,10 @@ export async function toggleOrgTrackAction(form: FormData) {
   const track = await db.query.tracks.findFirst({ where: eq(schema.tracks.id, trackId) });
   // Only official roadmaps and the school's own published ones; never another school's.
   if (!track || !canUseTrack(ctx.org.id, track)) return;
-  if (form.get("enabled") === "1") await db.insert(schema.orgTracks).values({ orgId: ctx.org.id, trackId }).onConflictDoNothing();
+  const on = form.get("enabled") === "1";
+  if (on) await db.insert(schema.orgTracks).values({ orgId: ctx.org.id, trackId }).onConflictDoNothing();
   else await db.delete(schema.orgTracks).where(and(eq(schema.orgTracks.orgId, ctx.org.id), eq(schema.orgTracks.trackId, trackId)));
+  await audit({ orgId: ctx.org.id, actorId: ctx.user.id, action: "track.toggle", detail: `${track.title}: ${on ? "on" : "off"}` });
   revalidatePath("/tracks");
 }
 
@@ -161,4 +180,70 @@ export async function createOrgAction(_: FormState, form: FormData): Promise<For
   }
   revalidatePath("/platform");
   return { ok: msg };
+}
+
+// ---------- Story 2: password reset links, Story 7: deleting a person ----------
+
+async function personOf(userId: string): Promise<(Person & { email: string | null }) | null> {
+  const user = await db.query.users.findFirst({ where: eq(schema.users.id, userId) });
+  if (!user) return null;
+  const memberships = await db.select({ orgId: schema.memberships.orgId, role: schema.memberships.role })
+    .from(schema.memberships).where(eq(schema.memberships.userId, userId));
+  return { id: user.id, email: user.email, isSuperAdmin: user.isSuperAdmin, memberships };
+}
+
+/** A one-time link (1 hour) that lets this person choose a new password. Shown once, never stored. */
+export async function createResetLinkAction(_: FormState, form: FormData): Promise<FormState> {
+  const ctx = await requireRole(["ADMIN"]);
+  const target = await personOf(String(form.get("userId") ?? ""));
+  const adminOf = ctx.memberships.filter((m) => m.role === "ADMIN").map((m) => m.orgId);
+  if (!target || !target.memberships.some((m) => m.orgId === ctx.org.id)
+    || !canResetPassword({ id: ctx.user.id, adminOf, isSuperAdmin: ctx.user.isSuperAdmin }, target)) {
+    return { error: target && target.memberships.some((m) => !adminOf.includes(m.orgId))
+      ? "This person is also in another school, so only NoorAI support can reset their password."
+      : "You can't make a reset link for this person." };
+  }
+  const token = newResetToken();
+  await db.transaction(async (tx) => {
+    // Any older unused link for this person stops working.
+    await tx.delete(schema.passwordResets).where(and(eq(schema.passwordResets.userId, target.id), isNull(schema.passwordResets.usedAt)));
+    await tx.insert(schema.passwordResets).values({
+      userId: target.id, orgId: ctx.org.id, tokenHash: hashToken(token), createdById: ctx.user.id,
+      expiresAt: new Date(Date.now() + RESET_HOURS * 3600_000),
+    });
+    await audit({ orgId: ctx.org.id, actorId: ctx.user.id, action: "password.reset_link", subjectId: target.id }, tx);
+  });
+  return { ok: `${await baseUrl()}/reset/${token}` };
+}
+
+/** Permanently deletes a person's data: the whole account if they are only in this school,
+ *  otherwise only their place and work in this school. The admin must type the person's email. */
+export async function deletePersonAction(_: FormState, form: FormData): Promise<FormState> {
+  const ctx = await requireRole(["ADMIN"]);
+  const target = await personOf(String(form.get("userId") ?? ""));
+  if (!target) return { error: "That person no longer exists." };
+  const typed = String(form.get("confirmEmail") ?? "").trim().toLowerCase();
+  if (!target.email || typed !== target.email.toLowerCase()) return { error: "Type the person's email exactly to confirm." };
+  const [{ n }] = await db.select({ n: sql<number>`count(*)` }).from(schema.memberships)
+    .where(and(eq(schema.memberships.orgId, ctx.org.id), eq(schema.memberships.role, "ADMIN")));
+  const adminOf = ctx.memberships.filter((m) => m.role === "ADMIN").map((m) => m.orgId);
+  const scope = deleteScope({ id: ctx.user.id, adminOf }, target, ctx.org.id, Number(n));
+  if (!scope) return { error: "You can't delete this person. Not yourself, not a platform admin, and never the school's last admin." };
+  const role = target.memberships.find((m) => m.orgId === ctx.org.id)!.role;
+  await db.transaction(async (tx) => {
+    await audit({ orgId: ctx.org.id, actorId: ctx.user.id, action: "person.delete", subjectId: target.id,
+      detail: scope === "account" ? `${role.toLowerCase()}, whole account` : `${role.toLowerCase()}, this school only` }, tx);
+    if (scope === "account") {
+      // Everything they own goes with them (enrollments → ticks, evidence, logs, attendance, sign-offs, assessments).
+      await tx.delete(schema.users).where(eq(schema.users.id, target.id));
+      return;
+    }
+    const cohortIds = tx.select({ id: schema.cohorts.id }).from(schema.cohorts).where(eq(schema.cohorts.orgId, ctx.org.id));
+    await tx.delete(schema.enrollments).where(and(eq(schema.enrollments.userId, target.id), inArray(schema.enrollments.cohortId, cohortIds)));
+    await tx.delete(schema.cohortInstructors).where(and(eq(schema.cohortInstructors.userId, target.id), inArray(schema.cohortInstructors.cohortId, cohortIds)));
+    await tx.delete(schema.memberships).where(and(eq(schema.memberships.userId, target.id), eq(schema.memberships.orgId, ctx.org.id)));
+  });
+  revalidatePath("/admin/members");
+  // The person's row disappears, so the confirmation is shown at the top of the page.
+  redirect(`/admin/members?deleted=${scope}`);
 }

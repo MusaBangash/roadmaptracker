@@ -4,13 +4,17 @@ import { requireRole } from "@/lib/access";
 import { setMemberRoleAction, removeMemberAction, createInviteAction, deleteInviteAction } from "@/app/actions/admin";
 import { PageHeader, Tag, sentence } from "@/components/ui";
 import { CopyButton } from "@/components/copy-button";
+import { DeletePersonForm, ResetLinkForm } from "@/components/member-tools";
+import { Icon } from "@/components/icon";
+import Link from "next/link";
 import { baseUrl } from "@/lib/url";
 import { fmtDate, plural } from "@/lib/utils";
 
 export const metadata = { title: "People" };
 
-export default async function MembersPage() {
+export default async function MembersPage({ searchParams }: { searchParams: Promise<{ deleted?: string }> }) {
   const ctx = await requireRole(["ADMIN"]);
+  const { deleted } = await searchParams;
   const members = await db.select({ m: schema.memberships, u: schema.users }).from(schema.memberships)
     .innerJoin(schema.users, eq(schema.memberships.userId, schema.users.id))
     .where(eq(schema.memberships.orgId, ctx.org.id)).orderBy(schema.memberships.role, schema.users.name);
@@ -21,8 +25,18 @@ export default async function MembersPage() {
 
   return (
     <>
-      <PageHeader title="People" sub={`${ctx.org.name} · ${plural(counts.ADMIN ?? 0, "admin")} · ${plural(counts.INSTRUCTOR ?? 0, "instructor")} · ${plural(counts.STUDENT ?? 0, "student")}`} />
+      <PageHeader title="People" sub={`${ctx.org.name} · ${plural(counts.ADMIN ?? 0, "admin")} · ${plural(counts.INSTRUCTOR ?? 0, "instructor")} · ${plural(counts.STUDENT ?? 0, "student")}`}
+        actions={<>
+          <Link href="/admin/activity" className="btn-ghost"><Icon name="clock" size={18} />Activity</Link>
+          <a href="/admin/backup" className="btn-ghost"><Icon name="download" size={18} />Download school backup</a>
+        </>} />
 
+      {deleted && (
+        <p role="status" className="mb-6 flex items-center gap-2 rounded-md bg-success-soft px-4 py-3 text-sm text-success">
+          <Icon name="check" size={18} />
+          {deleted === "account" ? "Deleted. Their account and all their data are gone." : "Deleted their place and work in this school. Their account stays for their other school."}
+        </p>
+      )}
       <section className="mb-8">
         <h2 className="h2 mb-1">School invite links</h2>
         <p className="mb-3 text-sm text-ink-muted">For staff, or students not yet in a cohort. To put students straight into a cohort, use the invite link on the cohort page.</p>
@@ -70,7 +84,20 @@ export default async function MembersPage() {
                   </td>
                   <td className="p-3 text-right">
                     {m.userId !== ctx.user.id && (
-                      <form action={removeMemberAction}><input type="hidden" name="membershipId" value={m.id} /><button className="text-xs text-danger">Remove</button></form>
+                      <details className="inline-block text-left">
+                        <summary className="btn-ghost cursor-pointer list-none px-3 text-sm">More</summary>
+                        <div className="mt-2 grid w-[min(22rem,80vw)] gap-4 rounded-md border border-border bg-surface-sunken p-3">
+                          {!u.isSuperAdmin && <ResetLinkForm userId={u.id} name={u.name ?? u.email ?? "this person"} />}
+                          <form action={removeMemberAction} className="grid gap-1 border-t border-border pt-3">
+                            <input type="hidden" name="membershipId" value={m.id} />
+                            <p className="text-sm text-ink-muted">Remove from this school. Their work stays in the school&apos;s records.</p>
+                            <div><button className="btn-ghost text-danger">Remove from school</button></div>
+                          </form>
+                          {!u.isSuperAdmin && u.email && (
+                            <div className="border-t border-border pt-3"><DeletePersonForm userId={u.id} email={u.email} name={u.name ?? u.email} /></div>
+                          )}
+                        </div>
+                      </details>
                     )}
                   </td>
                 </tr>

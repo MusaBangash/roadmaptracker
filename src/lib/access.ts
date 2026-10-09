@@ -14,7 +14,10 @@ export const getUser = cache(async () => {
   const session = await auth();
   const id = session?.user?.id;
   if (!id) return null;
-  return (await db.query.users.findFirst({ where: eq(schema.users.id, id) })) ?? null;
+  const user = await db.query.users.findFirst({ where: eq(schema.users.id, id) });
+  // Signed in before a password reset: treat as signed out.
+  if (!user || user.sessionVersion !== ((session.user as { sv?: number }).sv ?? 0)) return null;
+  return user;
 });
 
 export async function requireUser() {

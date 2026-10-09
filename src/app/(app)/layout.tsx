@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { getContext } from "@/lib/access";
 import { logoutAction } from "@/app/actions/auth";
 import { OrgSwitcher } from "@/components/org-switcher";
@@ -9,6 +10,8 @@ import { ThemeSwitch } from "@/components/theme-switch";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const { user, memberships, org, role } = await getContext();
+  // Story 7: everyone agrees to the Privacy notice once before using the app.
+  if (!user.consentAt) redirect("/consent");
   const theme = await savedTheme();
   const nav: { href: string; label: string }[] = [{ href: "/dashboard", label: "Dashboard" }];
   if (role === "ADMIN" || role === "INSTRUCTOR") nav.push({ href: "/cohorts", label: "Cohorts" });
@@ -45,6 +48,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
               )}
               <div className="mt-3 lg:hidden"><ThemeSwitch initial={theme} /></div>
               <Link href="/join" className="mt-3 block text-sm text-primary">Join with a code</Link>
+              <Link href="/privacy" className="mt-2 block text-sm text-primary">Privacy notice</Link>
               <form action={logoutAction} className="mt-3"><button className="btn-ghost w-full">Sign out</button></form>
             </div>
           </details>

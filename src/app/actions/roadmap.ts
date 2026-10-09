@@ -11,6 +11,7 @@ import {
   edit, ITEM_KINDS, LIMITS, parseTrackDoc, publishProblems, RoadmapEditError, schoolSlug, type TrackDoc,
 } from "@/lib/roadmap-core";
 import { applyStages, liveDoc, trackValues } from "@/lib/track-store";
+import { audit } from "@/lib/audit";
 import type { FormState } from "./auth";
 
 // Roadmap Builder (Step 3). A school's admins make and edit their school's own roadmaps; official
@@ -87,13 +88,14 @@ export async function editRoadmapAction(_: FormState, form: FormData): Promise<F
   }
 }
 
-async function newSchoolTrack(orgId: string, orgSlug: string, doc: TrackDoc) {
+async function newSchoolTrack(orgId: string, orgSlug: string, doc: TrackDoc, actorId: string, how: string) {
   const taken = new Set((await db.select({ slug: schema.tracks.slug }).from(schema.tracks)
     .where(sql`${schema.tracks.slug} like ${`${orgSlug.slice(0, 40)}--%`}`)).map((r) => r.slug));
   const slug = schoolSlug(orgSlug, doc.title, (s) => taken.has(s));
   const [track] = await db.insert(schema.tracks).values({
     slug, ...trackValues(doc), ownerOrgId: orgId, status: "DRAFT", draft: { ...doc, slug },
   }).returning();
+  await audit({ orgId, actorId, action: "roadmap.create", detail: `${doc.title} (${how})` });
   return track;
 }
 
@@ -102,7 +104,7 @@ export async function createRoadmapAction(_: FormState, form: FormData): Promise
   const ctx = await requireRole(["ADMIN"]);
   let d: z.infer<typeof detailsSchema>;
   try { d = parse(detailsSchema, form); } catch (e) { return { error: (e as Error).message }; }
-  const track = await newSchoolTrack(ctx.org.id, ctx.org.slug, { ...d, stages: [] });
+  const track = await newSchoolTrack(ctx.org.id, ctx.org.slug, { ...d, stages: [] }, ctx.user.id, "from scratch");
   redirect(editPath(track.slug));
 }
 
@@ -112,7 +114,7 @@ export async function copyRoadmapAction(form: FormData) {
   const source = await db.query.tracks.findFirst({ where: eq(schema.tracks.id, String(form.get("trackId") ?? "")) });
   if (!source || !canCopyTrack({ userId: ctx.user.id, orgId: ctx.org.id, role: ctx.role }, source) || source.status !== "PUBLISHED") return;
   const doc = await liveDoc(db, source);
-  const track = await newSchoolTrack(ctx.org.id, ctx.org.slug, { ...doc, title: `${source.title} (${ctx.org.name})`.slice(0, LIMITS.title) });
+  const track = await newSchoolTrack(ctx.org.id, ctx.org.slug, { ...doc, title: `${source.title} (${ctx.org.name})`.slice(0, LIMITS.title) }, ctx.user.id, `copy of ${source.title}`);
   redirect(editPath(track.slug));
 }
 
@@ -138,13 +140,13 @@ export async function importRoadmapAction(_: ImportState, form: FormData): Promi
     revalidatePath(editPath(slug));
     redirect(`${editPath(slug)}?uploaded=1`);
   }
-  const track = await newSchoolTrack(ctx.org.id, ctx.org.slug, p.doc);
+  const track = await newSchoolTrack(ctx.org.id, ctx.org.slug, p.doc, ctx.user.id, "uploaded file");
   redirect(`${editPath(track.slug)}?uploaded=1`);
 }
 
 /** Story 4: write the draft into the live roadmap. Removed items are archived, never deleted. */
 export async function publishRoadmapAction(_: FormState, form: FormData): Promise<FormState> {
-  const { track, org } = await requireEditableTrack(String(form.get("trackId") ?? ""));
+  const { track, org, user } = await requireEditableTrack(String(form.get("trackId") ?? ""));
   try {
     await db.transaction(async (tx) => {
       const [t] = await tx.select().from(schema.tracks).where(eq(schema.tracks.id, track.id)).for("update");
@@ -156,6 +158,7 @@ export async function publishRoadmapAction(_: FormState, form: FormData): Promis
         .where(eq(schema.tracks.id, t.id));
       // The school can use its own roadmap for cohorts as soon as it is first published.
       if (t.status === "DRAFT") await tx.insert(schema.orgTracks).values({ orgId: org.id, trackId: t.id }).onConflictDoNothing();
+      await audit({ orgId: org.id, actorId: user.id, action: "roadmap.publish", detail: t.draft.title }, tx);
     });
   } catch (e) {
     if (e instanceof RoadmapEditError) return { error: e.message };
@@ -169,7 +172,8 @@ export async function publishRoadmapAction(_: FormState, form: FormData): Promis
 
 /** Throw away unpublished changes (a published roadmap), or delete a roadmap never published. */
 export async function discardRoadmapAction(form: FormData) {
-  const { track } = await requireEditableTrack(String(form.get("trackId") ?? ""));
+  const { track, org, user } = await requireEditableTrack(String(form.get("trackId") ?? ""));
+  await audit({ orgId: org.id, actorId: user.id, action: track.status === "DRAFT" ? "roadmap.delete" : "roadmap.discard", detail: track.draft?.title ?? track.title });
   if (track.status === "DRAFT") {
     // Never published, so no cohort can use it; deleting it loses nobody's work.
     await db.delete(schema.tracks).where(and(eq(schema.tracks.id, track.id), eq(schema.tracks.status, "DRAFT")));

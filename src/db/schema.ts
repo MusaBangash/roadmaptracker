@@ -15,6 +15,10 @@ export const users = pgTable("user", {
   image: text("image"),
   passwordHash: text("password_hash"),
   isSuperAdmin: boolean("is_super_admin").notNull().default(false),
+  /** Raised when the password is reset: every login made before it stops working. */
+  sessionVersion: integer("session_version").notNull().default(0),
+  /** When the person agreed to the Privacy notice; null = not yet (asked on next visit). */
+  consentAt: timestamp("consent_at", { mode: "date" }),
   createdAt: created(),
 });
 
@@ -146,7 +150,7 @@ export const invites = pgTable("invite", {
   maxUses: integer("max_uses").notNull().default(50),
   uses: integer("uses").notNull().default(0),
   expiresAt: timestamp("expires_at", { mode: "date" }),
-  createdById: text("created_by_id").notNull().references(() => users.id),
+  createdById: text("created_by_id").references(() => users.id, { onDelete: "set null" }),
   createdAt: created(),
 });
 
@@ -171,7 +175,7 @@ export const itemProgress = pgTable("item_progress", {
   evidenceUrl: text("evidence_url"),
   note: text("note"),
   completedAt: timestamp("completed_at", { mode: "date" }).notNull().defaultNow(),
-  reviewedById: text("reviewed_by_id").references(() => users.id),
+  reviewedById: text("reviewed_by_id").references(() => users.id, { onDelete: "set null" }),
   reviewedAt: timestamp("reviewed_at", { mode: "date" }),
   reviewNote: text("review_note"),
   /** Set when a teacher ticked this for a student who was present in class (Teaching plan);
@@ -186,7 +190,7 @@ export const stageSignoffs = pgTable("stage_signoff", {
   stageId: text("stage_id").notNull().references(() => stages.id, { onDelete: "cascade" }),
   passed: boolean("passed").notNull(),
   notes: text("notes"),
-  signedById: text("signed_by_id").notNull().references(() => users.id),
+  signedById: text("signed_by_id").references(() => users.id, { onDelete: "set null" }),
   signedAt: timestamp("signed_at", { mode: "date" }).notNull().defaultNow(),
 }, (t) => [uniqueIndex("signoff_enrollment_stage").on(t.enrollmentId, t.stageId)]);
 
@@ -199,7 +203,7 @@ export const assessments = pgTable("assessment", {
   average: real("average"),
   passed: boolean("passed"),
   notes: text("notes"),
-  assessorId: text("assessor_id").notNull().references(() => users.id),
+  assessorId: text("assessor_id").references(() => users.id, { onDelete: "set null" }),
   createdAt: created(),
 });
 
@@ -231,3 +235,42 @@ export const cohortCoverage = pgTable("cohort_coverage", {
   taughtById: text("taught_by_id").references(() => users.id, { onDelete: "set null" }),
   createdAt: created(),
 }, (t) => [uniqueIndex("coverage_cohort_item").on(t.cohortId, t.itemId)]);
+
+// ---------- Production hardening (Step 4) ----------
+
+/** Activity log: who did what, when. Rows are only ever added. Names are not copied in, so a
+ *  deleted person shows as "Deleted person" (actor/subject set null). */
+export const auditLog = pgTable("audit_log", {
+  id: id(),
+  orgId: text("org_id").references(() => organizations.id, { onDelete: "cascade" }),
+  actorId: text("actor_id").references(() => users.id, { onDelete: "set null" }),
+  /** e.g. "member.role", "review.verify", "roadmap.publish" — see AUDIT_ACTIONS in src/lib/audit-core.ts */
+  action: text("action").notNull(),
+  /** The person the change was about, if any (a student whose work was verified, a member whose role changed). */
+  subjectId: text("subject_id").references(() => users.id, { onDelete: "set null" }),
+  /** Plain-English detail without personal data, e.g. "Instructor → Admin" or "“Build a page”". */
+  detail: text("detail").notNull().default(""),
+  createdAt: created(),
+}, (t) => [index("audit_org_time").on(t.orgId, t.createdAt), index("audit_actor").on(t.actorId)]);
+
+/** Sign-in attempts with a password, for the 5-tries limit. Old rows are pruned. */
+export const loginAttempts = pgTable("login_attempt", {
+  id: id(),
+  email: text("email").notNull(),
+  ip: text("ip"),
+  ok: boolean("ok").notNull(),
+  createdAt: created(),
+}, (t) => [index("login_attempt_email_time").on(t.email, t.createdAt), index("login_attempt_ip_time").on(t.ip, t.createdAt)]);
+
+/** One-time password reset links made by a school admin. Only a hash of the token is stored. */
+export const passwordResets = pgTable("password_reset", {
+  id: id(),
+  userId: text("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  /** The school whose admin made the link (for the activity log). */
+  orgId: text("org_id").references(() => organizations.id, { onDelete: "cascade" }),
+  tokenHash: text("token_hash").notNull().unique(),
+  expiresAt: timestamp("expires_at", { mode: "date" }).notNull(),
+  usedAt: timestamp("used_at", { mode: "date" }),
+  createdById: text("created_by_id").references(() => users.id, { onDelete: "set null" }),
+  createdAt: created(),
+});

@@ -39,6 +39,15 @@ Owner's decisions (already made — don't re-ask):
 - CSV export guards against spreadsheet formula injection and includes a UTF-8 BOM (Excel).
 - **Teaching plan** (`/cohorts/[id]/teach`, rules in `src/lib/coverage-core.ts`): teachers mark LESSON items taught per cohort (date + who, table `cohort_coverage`); projects/deliverables/milestones are never "taught". Status per week/stage: Taught · Due now · Behind (plan window passed) · Coming up; a week gets an even share of its stage's weeks; optional stages are never "behind". "Taught, but students are behind" when taught ≥ 50% and class learned < taught − 25 points. "Mark done for present students" needs attendance that day, ticks only ACTIVE present students who had not ticked it, sets `item_progress.marked_by_id` (shown as "Marked by teacher"; cleared when the student adds evidence or re-ticks). Undo removes coverage and only unreviewed, evidence-free teacher ticks.
 - **Roadmap Builder** (`/tracks/new`, `/tracks/[slug]/edit`, rules in `src/lib/roadmap-core.ts`): `track.owner_org_id` null = an **official** roadmap (content files only, never edited in the app; schools can **Copy to my school**). A school's own roadmap (slug `<school>--<title>`; official slugs never contain `--`, sync refuses them) is visible only to that school, and while `status = DRAFT` only to its admins. Every edit goes to `track.draft` (the roadmap-file JSON) inside a row-locked transaction; **Publish** writes the draft into stage/item through `src/lib/track-store.ts` (the same code as the deploy sync), matched by key, removed things archived, never deleted, then turns the roadmap on for the school. Keys are made once from the title and never change. Upload = the same file format, checked by `parseTrackDoc` with plain-English errors; Download = `/tracks/[slug]/download[?draft=1]` (admins). Only official roadmaps or the school's own published ones can be turned on for a school or used for cohorts (`canUseTrack`).
+- **Security and privacy (Step 4, rules in `src/lib/security-core.ts`, all tested):**
+  - Sign-in: 5 wrong passwords per email in 15 minutes (or 30 per network address) pause sign-in; enforced inside the Credentials `authorize` (so the endpoint can't be called around it) via `src/lib/login-guard.ts`, table `login_attempt` (wrong tries only, pruned after a day).
+  - Password reset = a one-time link made by a school admin on People → More (sent by WhatsApp; no email service yet). Only a SHA-256 hash is stored (`password_reset`), 1 hour, single use; using it raises `user.session_version`, which signs out every older login (`getUser` compares it with the JWT's `sv`). An admin may reset only people whose every school they run (`canResetPassword`); the platform admin may reset anyone but another platform admin.
+  - Nobody verifies, sends back, signs off or assesses their own enrollment (`canJudgeWork`; actions refuse, pages hide the controls).
+  - Invites: a higher-role invite raises an existing member's role, never lowers it (`roleAfterInvite`); a use is taken with one atomic `UPDATE … WHERE uses < max_uses`.
+  - Activity log (`audit_log`, `src/lib/audit.ts`, actions listed in `src/lib/audit-core.ts`): every change to people, invites, reviews, sign-offs, assessments, attendance, teaching, roadmaps, cohorts, passwords and backups. Add an `audit()` call to any new action that changes data. Rows are never edited; names are not copied in (a deleted person shows as "Deleted person"). Admins read it at `/admin/activity`.
+  - Privacy: `/privacy` (public); everyone agrees once (`user.consent_at`; register checkbox, else `/consent` before the app). Admins can delete a person (`deleteScope`): whole account if this is their only school, otherwise only their part of this school; never yourself, a platform admin or the last admin; the admin types the email to confirm.
+  - School backup: `/admin/backup` (admins) = one JSON file of the school's data, items named by track slug + stage key + item key; no passwords or tokens. Also the planned import format for Lab Studio.
+  - Errors: `src/app/error.tsx` / `global-error.tsx` show a reference (Next's error digest, also in the server log); `not-found.tsx` never says whether something exists elsewhere. Health check: `/api/health` (200 ok / 503, database ping with 5 s timeout).
 - Dates with no time ("YYYY-MM-DD") are calendar days: `fmtDate` formats them in UTC so a server in another zone never shows the day before.
 
 ### Content
@@ -66,7 +75,8 @@ scripts/sync.ts              checks each file (parseTrackDoc), then upserts via 
                              ensures SEED admin (isSuperAdmin) + first school + membership + enables all tracks
 src/db/schema.ts             tables: user, account, session, verificationToken, organization, membership(role),
                              track (+ owner_org_id, status, draft, published_at), stage, item, org_track, cohort, cohort_instructor, invite, enrollment,
-                             item_progress (+ marked_by_id), stage_signoff, assessment, weekly_log, attendance, cohort_coverage
+                             item_progress (+ marked_by_id), stage_signoff, assessment, weekly_log, attendance, cohort_coverage,
+                             audit_log, login_attempt, password_reset (+ user.session_version, user.consent_at)
 src/db/index.ts              pg Pool + drizzle (pool max 5 in production)
 src/auth.ts                  Auth.js config
 src/lib/access.ts            getUser, requireUser, getContext (active org via cookie "noor_org"), requireRole,
@@ -83,22 +93,29 @@ src/lib/access-core.ts       canTeachCohort, canSeeTrack, canEditTrack, canUseTr
                              behind requireTeachableCohort, requireVisibleTrack, requireEditableTrack
 src/lib/roadmap-core.ts      Roadmap Builder rules, pure + tested: file format + parseTrackDoc (plain errors), edit.* steps,
                              makeKey/schoolSlug, publishProblems, diffDocs (what a publish changes), docFromRows
+src/lib/security-core.ts     Step 4 rules, pure + tested: loginLock, roleAfterInvite, canResetPassword, deleteScope, canJudgeWork
+src/lib/security-guards.test.ts  reads every server action and route.ts: each must call a require…() check before db/tx
+src/lib/audit-core.ts / audit.ts  activity log actions + labels / audit() writer
+src/lib/login-guard.ts       sign-in limit (used by src/auth.ts); src/lib/reset.ts reset tokens (hash only)
 src/lib/track-store.ts       applyStages (roadmap file → stage/item, batched, archive the rest; used by sync AND Publish),
                              liveDoc (live roadmap → file), workOnRemoved
 src/lib/utils.ts             pct, fmtDate, daysAgo, thisMonday, initials, randomCode, safeUrl, plural
 src/app/actions/*.ts         server actions: auth, learn (student), teach (instructor), admin, roadmap (builder)
-src/app/(auth)/              login, register, join, join/[code]
+src/app/(auth)/              login, register, join, join/[code], reset/[token], consent;  src/app/privacy (public), api/health
 src/app/(app)/               dashboard, learn/[enrollmentId](+/log), cohorts(+/new, /[id], /review,
-                             /students/[enrollmentId], /attendance, /teach, /export[?type=plan]), admin/members, tracks(+/new, /[slug], /[slug]/edit, /[slug]/preview[?draft=1], /[slug]/download), platform
+                             /students/[enrollmentId], /attendance, /teach, /export[?type=plan]), admin/members (+ /admin/activity, /admin/backup), tracks(+/new, /[slug], /[slug]/edit, /[slug]/preview[?draft=1], /[slug]/download), platform
 src/components/              ui.tsx (ProgressBar, Badge, Tag, Stat, PageHeader…), logo.tsx, icon.tsx, theme-switch.tsx,
                              progress.tsx (SegmentBar, StageLine, GroupBar, KindBars, ClassStageList),
                              roadmap-view.tsx (student view, shared with /tracks/[slug]/preview), teach-controls.tsx
-                             (Teaching plan date/present toolbar + Mark taught buttons), roadmap-editor.tsx (builder forms), forms
+                             (Teaching plan date/present toolbar + Mark taught buttons), roadmap-editor.tsx (builder forms),
+                             member-tools.tsx (reset link, delete person), forms
 scripts/demo.ts              npm run demo:seed / demo:remove — "Demo School" with fake students (slug demo-school,
                              emails @demo.noorai.invalid, no passwords); never touches other schools
 ```
 
-**Every server action re-checks access** through `src/lib/access.ts` (org scoping + role). Keep it that way for anything new — never trust IDs from the form without checking they belong to the user's org/cohort.
+**Every server action re-checks access** through `src/lib/access.ts` (org scoping + role). Keep it that way for anything new — never trust IDs from the form without checking they belong to the user's org/cohort. `src/lib/security-guards.test.ts` fails if an action or route touches the database before a require…() check; public actions are listed there on purpose. Never export anything but async functions from a `"use server"` file (every export is callable from the browser); helpers go in `src/lib/`.
+
+Don't run `npm run build` while the dev server is running — both use `.next` and the dev server loses its styles. Stop it, build, delete `.next`, restart.
 
 Gotcha: in Drizzle `sql` subqueries, write qualified table names as raw text (`"track"."id"`, `"organization"."id"`). Interpolating `${schema.tracks.id}` renders an unqualified `"id"` and breaks or silently misbehaves.
 
@@ -160,7 +177,7 @@ Next, in this order (one step at a time, confirm each):
 
 ## 8. Known gaps / feature backlog (owner may ask for these)
 
-Not built yet: password reset by email · certificates (PDF with verification link) · bulk CSV student import · comments thread on evidence · notifications (email/WhatsApp) · cross-cohort analytics charts · Urdu interface · public student portfolio page.
+Not built yet: password reset by email (admin reset links exist) · certificates (PDF with verification link) · bulk CSV student import · comments thread on evidence · notifications (email/WhatsApp) · cross-cohort analytics charts · Urdu interface · public student portfolio page.
 Owner was advised to deploy first and let one cohort use it before adding features — but follow his call.
 
 ## 9. Rules for changes

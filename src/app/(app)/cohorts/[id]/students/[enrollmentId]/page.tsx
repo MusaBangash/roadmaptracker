@@ -8,12 +8,16 @@ import { PageHeader, ProgressBar, Stat, KindPill, StatusPill, Badge } from "@/co
 import { AssessmentForm } from "@/components/assessment-form";
 import { DEFAULT_RUBRIC } from "@/lib/rubric";
 import { pct, fmtDate } from "@/lib/utils";
+import { canJudgeWork } from "@/lib/security-core";
+import { Icon } from "@/components/icon";
 
 export const metadata = { title: "Student" };
 
 export default async function StudentPage({ params }: { params: Promise<{ id: string; enrollmentId: string }> }) {
   const { enrollmentId } = await params;
-  const { cohort, enrollment } = await requireTeachableEnrollment(enrollmentId);
+  const { cohort, enrollment, user } = await requireTeachableEnrollment(enrollmentId);
+  // Story 4: nobody checks their own work (a teacher who is also enrolled in this cohort).
+  const own = !canJudgeWork(user.id, enrollment.userId);
   const student = (await db.query.users.findFirst({ where: eq(schema.users.id, enrollment.userId) }))!;
   const track = (await db.query.tracks.findFirst({ where: eq(schema.tracks.id, cohort.trackId) }))!;
   const tree = await loadTrackTree(track.id);
@@ -45,6 +49,11 @@ export default async function StudentPage({ params }: { params: Promise<{ id: st
           </form>
         }
       />
+      {own && (
+        <p role="status" className="mb-6 flex items-start gap-2 rounded-md bg-info-soft px-4 py-3 text-sm text-info">
+          <Icon name="info" size={20} /><span><b>This is your own work.</b> Another teacher or an admin has to verify, sign off and assess it.</span>
+        </p>
+      )}
       <div className="mb-6 grid gap-3 sm:grid-cols-4">
         <div className="card p-4 sm:col-span-2">
           <div className="flex items-baseline justify-between"><span className="text-sm font-semibold text-ink-muted">Progress</span><span className="font-bold text-2xl">{pct(sum.pct)}</span></div>
@@ -74,14 +83,14 @@ export default async function StudentPage({ params }: { params: Promise<{ id: st
                 ) : <KindBars s={s} />}
                 <p className="mb-3 text-sm text-ink-muted">{s.verified} of {s.required} required items verified.</p>
                 {stage.doneWhen && <p className="mb-3 text-sm"><b className="text-highlight-text">Done when:</b> {stage.doneWhen}</p>}
-                <form action={signoffStageAction} className="mb-4 flex flex-wrap items-center gap-2 rounded-md bg-surface-sunken p-3">
+                {!own && <form action={signoffStageAction} className="mb-4 flex flex-wrap items-center gap-2 rounded-md bg-surface-sunken p-3">
                   <input type="hidden" name="enrollmentId" value={enrollment.id} /><input type="hidden" name="stageId" value={stage.id} />
                   <input name="notes" defaultValue={so?.notes ?? ""} placeholder="Sign-off notes (evidence seen, test passed…)" className="input min-w-0 flex-1" />
                   <button name="decision" value="PASS" className="btn-primary">Pass stage</button>
                   <button name="decision" value="FAIL" className="btn-danger">Not yet</button>
                   {so && <button name="decision" value="CLEAR" className="btn-ghost">Clear</button>}
                   {so && <span className="w-full text-xs text-ink-muted">Last decision {fmtDate(so.signedAt)}</span>}
-                </form>
+                </form>}
                 <ul className="divide-y divide-border">
                   {stage.items.map((it) => {
                     const p = byItem.get(it.id);
@@ -92,7 +101,7 @@ export default async function StudentPage({ params }: { params: Promise<{ id: st
                           {p?.evidenceUrl && <a href={p.evidenceUrl} target="_blank" rel="noreferrer" className="ml-2 text-xs text-secondary underline">evidence</a>}
                           {p?.note && <span className="block text-xs text-ink-muted">“{p.note}”</span>}
                         </span>
-                        {p?.status !== "VERIFIED" && (
+                        {p?.status !== "VERIFIED" && !own && (
                           <form action={reviewItemAction}>
                             <input type="hidden" name="enrollmentId" value={enrollment.id} /><input type="hidden" name="itemId" value={it.id} />
                             <button name="decision" value="VERIFIED" className="text-xs font-semibold text-primary">Verify</button>
@@ -111,7 +120,8 @@ export default async function StudentPage({ params }: { params: Promise<{ id: st
       <div className="grid gap-8 lg:grid-cols-2">
         <section>
           <h2 className="h2 mb-3">Score an assessment</h2>
-          <AssessmentForm enrollmentId={enrollment.id} rubric={rubric} today={new Date().toISOString().slice(0, 10)} />
+          {own ? <p className="text-sm text-ink-muted">Another teacher or an admin has to score your assessments.</p>
+            : <AssessmentForm enrollmentId={enrollment.id} rubric={rubric} today={new Date().toISOString().slice(0, 10)} />}
           {assessments.length > 0 && (
             <div className="card mt-4 divide-y divide-border">
               {assessments.map((a) => (
