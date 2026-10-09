@@ -313,7 +313,7 @@ export const en = {
   "privacy.who3": "Other schools never see your data.",
   "privacy.who4": "NoorAI's platform team can see it only to run the service and help your school.",
   "privacy.whereTitle": "Where it is kept",
-  "privacy.where": "The app runs on Vercel and the database on Neon, in their Singapore region. Connections are encrypted.",
+  "privacy.where": "The app and its database run on a server inside the school. Only the school's own network can reach it, and the data is backed up every night.",
   "privacy.howLongTitle": "How long, and your choices",
   "privacy.long1": "We keep your data while you are part of a school on NoorAI Tracks.",
   "privacy.long2": "To see, download, correct or delete your data, ask your school's admin. An admin can delete a person's data permanently.",

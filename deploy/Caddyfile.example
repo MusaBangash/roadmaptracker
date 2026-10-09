@@ -1,0 +1,19 @@
+# Story 4: NoorAI Tracks through the R730's Caddy (the same Caddy as NoorAI Lab Studio).
+# Add ONE of these blocks to that Caddyfile, then reload Caddy. Inside the school the address is
+# plain http (https comes in phase 2 with the Cloudflare Tunnel and a real domain).
+# After choosing an address, put the same one in deploy/.env as APP_URL.
+
+# A) A school name, e.g. tracks.school.lan (the school's DNS or router must point it at the R730):
+http://tracks.school.lan {
+	# Caddy installed on the server itself:
+	reverse_proxy 127.0.0.1:3100
+	# Caddy running in Docker instead: use the host's address, e.g.
+	# reverse_proxy host.docker.internal:3100   (add  extra_hosts: ["host.docker.internal:host-gateway"]  to Caddy's service)
+}
+
+# B) No name yet: the R730's address on its own port, e.g. http://192.168.1.50:8100
+# :8100 {
+# 	reverse_proxy 127.0.0.1:3100
+# }
+
+# Without Caddy at all, Tracks already answers at http://<R730 address>:3100.

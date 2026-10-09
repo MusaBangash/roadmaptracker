@@ -1,0 +1,11 @@
+.git
+node_modules
+.next
+coverage
+tsconfig.tsbuildinfo
+*.dump
+# Secrets never go into the image; the server passes them in at start.
+.env*
+!.env.example
+deploy/.env
+deploy/backups

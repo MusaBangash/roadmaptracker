@@ -1,0 +1,43 @@
+# NoorAI Tracks on the school's own server: the app and its own PostgreSQL 18 (the same major
+# version as Neon, so the data moves across exactly). Run from this folder:  docker compose up -d
+# Settings and secrets come from deploy/.env (copy .env.example; never commit it).
+name: noorai-tracks
+
+services:
+  db:
+    image: postgres:18-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: tracks
+      POSTGRES_USER: tracks
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in deploy/.env}
+    volumes:
+      # PostgreSQL 18 keeps its data under /var/lib/postgresql/18/... (mount the parent).
+      - tracks-db:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tracks -d tracks"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    # No port is opened: only the app (on this private network) can reach the database.
+
+  app:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    image: noorai-tracks:latest
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file: .env
+    environment:
+      DATABASE_URL: postgres://tracks:${POSTGRES_PASSWORD}@db:5432/tracks
+      DIRECT_URL: postgres://tracks:${POSTGRES_PASSWORD}@db:5432/tracks
+      AUTH_TRUST_HOST: "true"
+    ports:
+      # Inside the school: http://<server address>:3100 (or through Caddy, see Caddyfile.example).
+      - "${TRACKS_PORT:-3100}:3000"
+
+volumes:
+  tracks-db:

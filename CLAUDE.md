@@ -18,7 +18,7 @@ Read this first. It is the full context for this project: what it is, who it is 
 
 Owner's decisions (already made — don't re-ask):
 - Placement: **NoorAI multi-school product**
-- Hosting: **Vercel + managed Postgres (Neon)**
+- Hosting: **the school's own Dell R730** (decided 2026-10-10; replaces Vercel + Neon), Docker Compose like NoorAI Lab Studio. Phase 1 = inside the school only (http, email + password); phase 2 (later) = home access for Tracks **and** Lab Studio through a Cloudflare Tunnel with https and Google sign-in. Neon stays as a spare copy until the move is done.
 - Login: **Email + password and Google sign-in**
 
 ### Roles and what each can do
@@ -181,7 +181,9 @@ Next, in this order (one step at a time, confirm each):
 8. [ ] First real use: create a cohort, send instructor + student invite links
 9. [ ] After first successful sign-in on production, remove `SEED_ADMIN_PASSWORD` from Vercel
 
-`DEPLOY.md` has the long-form deployment guide (Neon → Google → Vercel → first sign-in, plus troubleshooting table).
+**R730 (current plan):** `docs/DEPLOY-R730.md` (step-by-step for Musa) and `deploy/`: `docker-compose.yml` (app + its own PostgreSQL 18, the same major as Neon; app on port 3100; db not exposed), `.env.example` (deploy/.env holds the secrets, never committed), `move-from-neon.sh` (pg_dump from Neon → restore here → `scripts/compare-db.ts` counts every table on both sides, must say "All … tables match"), `backup.sh` (nightly by cron, checked with pg_restore --list, 14 days, Sunday copy to OFFSITE_DIR, optional label), `restore.sh` (types RESTORE, safety backup first, works from a copy of the file), `update.sh` (backup, keep image as :previous, git pull, build, restart, wait healthy) / `rollback.sh`, `wait-healthy.sh`, `Caddyfile.example`. The image (root `Dockerfile`) runs `scripts/docker-start.sh` on every start: drizzle-kit migrate → sync → next start. All of it was tested on Musa's PC with Docker Desktop (move: 26/26 tables matched; backup → delete → restore; update → rollback). Set `APP_URL` (links in invites/reset/certificates); `*.sh` are LF (`.gitattributes`).
+
+`DEPLOY.md` has the older Vercel + Neon guide (Neon → Google → Vercel → first sign-in, plus troubleshooting table).
 
 `docs/INTEGRATION.md` is the plan for merging Tracks (and Classroom Monitor) into NoorAI Lab Studio later (Tracks becomes Lab Studio stages 3.7 + 4.1), with the data-model mapping and the rules to follow in this repo until then. Read it before big design decisions.
 
