@@ -50,6 +50,7 @@ Owner's decisions (already made — don't re-ask):
   - Errors: `src/app/error.tsx` / `global-error.tsx` show a reference (Next's error digest, also in the server log); `not-found.tsx` never says whether something exists elsewhere. Health check: `/api/health` (200 ok / 503, database ping with 5 s timeout).
 - **Add students from a file** (`/cohorts/[id]/import`, rules in `src/lib/import-core.ts`, actions `src/app/actions/import.ts`): the cohort's teachers and admins upload a CSV (Name, Email; comma, semicolon or tab; Excel's BOM; max 500 rows / 1 MB). Preview first (new / existing account / already in cohort / problem rows with Excel row numbers); nothing saved until Add, which re-checks every row on the server. New people get an account with no password, STUDENT membership, the enrollment and a one-time "set your password" link (`password_reset`, 14 days, hash only; `/reset/[token]` says "Welcome! Set your password"); the links are shown once (copy message / download CSV, built in the browser). Existing accounts are only enrolled (name, password and role never changed); re-uploading is safe. Logged as `students.import`. CSV helpers for every export: `src/lib/csv.ts`.
 - **Certificates** (rules in `src/lib/certificate-core.ts`, data `src/lib/certificates.ts`, actions `src/app/actions/certificate.ts`): ready when every required stage is signed off **Pass** and one stage of each pick-one `choiceGroup` is passed (optional extras never needed); completion date = the last pass that counted. A teacher of the cohort or an admin issues it from the student page after checking the printed name (never on their own enrollment). Table `certificate` copies the printed details in (name, roadmap + edition, school, cohort, date, issuer) so it never changes; at most one valid per enrollment (partial unique index); cascades with the enrollment. Codes: 10 letters/digits without look-alikes, `XXXXX-XXXXX`. `/certificates/[code]` = the certificate (student, the cohort's teachers, admins; "Download PDF" = the browser's Save as PDF, so Urdu names render in Nastaliq; A4 landscape via `@page`); `/verify/[code]` = public check page (only what is printed; says "revoked" after an admin revokes with a reason). QR codes: the `qrcode` package. Logged as `certificate.issue` / `certificate.revoke`.
+- **Comments on work** (rules in `src/lib/comment-core.ts`, data `src/lib/comments.ts`, actions `src/app/actions/comment.ts`, UI `components/comment-thread.tsx`): one thread per enrollment + PROJECT/DELIVERABLE/MILESTONE, open once the work is submitted (an item_progress row exists); only the student and the cohort's teachers/admins (`requireCommentAccess`). Table `comment` (author_role STUDENT/TEACHER; kind COMMENT / VERIFIED / NEEDS_WORK / RESUBMIT): every review decision and every resubmission of sent-back work is a row, so notes are never overwritten (`item_progress.review_note` still holds the latest). Review queue = submitted and unchecked **or the student wrote last** (`waitingForTeacher` / `waitingSql`, also used by "to review" counts). Unread = the other side's comments with text after `item_progress.student_seen_at` / `staff_seen_at` (shared by all the cohort's teachers); opening or writing in a thread marks it read. Own comments: edit/delete for 15 minutes; admins hide/show (kept, logged `comment.hide`/`comment.unhide`). Max 2,000 characters, 20 per person per minute, links clickable (http/https only), Urdu in Nastaliq. **Comment times use the database clock** (`now()`, never `new Date()`) so order, "new" and the 15 minutes stay right even when a computer's clock is wrong. Deleted with the enrollment; in the school backup.
 - Dates with no time ("YYYY-MM-DD") are calendar days: `fmtDate` formats them in UTC so a server in another zone never shows the day before.
 
 ### Content
@@ -78,11 +79,12 @@ scripts/sync.ts              checks each file (parseTrackDoc), then upserts via 
 src/db/schema.ts             tables: user, account, session, verificationToken, organization, membership(role),
                              track (+ owner_org_id, status, draft, published_at), stage, item, org_track, cohort, cohort_instructor, invite, enrollment,
                              item_progress (+ marked_by_id), stage_signoff, assessment, weekly_log, attendance, cohort_coverage,
-                             audit_log, login_attempt, password_reset (+ user.session_version, user.consent_at), certificate
+                             audit_log, login_attempt, password_reset (+ user.session_version, user.consent_at), certificate,
+                             comment (+ item_progress.student_seen_at / staff_seen_at)
 src/db/index.ts              pg Pool + drizzle (pool max 5 in production)
 src/auth.ts                  Auth.js config
 src/lib/access.ts            getUser, requireUser, getContext (active org via cookie "noor_org"), requireRole,
-                             requireTeachableCohort, requireOwnEnrollment, requireTeachableEnrollment
+                             requireTeachableCohort, requireOwnEnrollment, requireTeachableEnrollment, requireCommentAccess
 src/lib/progress-core.ts     ALL progress maths, pure + tested (progress-core.test.ts): summarize/summarizeCells (track →
                              stage → week/group, lessons vs projects), expectedPct/expectedStagePcts/expectedGroupPct,
                              currentStageIndex ("You are here"), riskOf, classStages/classAverage. Spec for the Lab Studio rewrite.
@@ -99,6 +101,7 @@ src/lib/security-core.ts     Step 4 rules, pure + tested: loginLock, roleAfterIn
 src/lib/security-guards.test.ts  reads every server action and route.ts: each must call a require…() check before db/tx
 src/lib/audit-core.ts / audit.ts  activity log actions + labels / audit() writer
 src/lib/login-guard.ts       sign-in limit (used by src/auth.ts); src/lib/reset.ts reset tokens (hash only)
+src/lib/comment-core.ts      comment rules (pure + tested); comments.ts loads threads, waitingSql, unreadForStudents
 src/lib/certificate-core.ts  certificateReady, makeCertificateCode, normalizeCode (pure + tested); certificates.ts loads + QR
 src/lib/track-store.ts       applyStages (roadmap file → stage/item, batched, archive the rest; used by sync AND Publish),
                              liveDoc (live roadmap → file), workOnRemoved
@@ -111,7 +114,7 @@ src/components/              ui.tsx (ProgressBar, Badge, Tag, Stat, PageHeader�
                              progress.tsx (SegmentBar, StageLine, GroupBar, KindBars, ClassStageList),
                              roadmap-view.tsx (student view, shared with /tracks/[slug]/preview), teach-controls.tsx
                              (Teaching plan date/present toolbar + Mark taught buttons), roadmap-editor.tsx (builder forms),
-                             member-tools.tsx (reset link, delete person), certificate.tsx + certificate-tools.tsx, forms
+                             member-tools.tsx (reset link, delete person), certificate.tsx + certificate-tools.tsx, comment-thread.tsx, fold.tsx (details that stay open across refreshes), forms
 scripts/demo.ts              npm run demo:seed / demo:remove — "Demo School" with fake students (slug demo-school,
                              emails @demo.noorai.invalid, no passwords); never touches other schools
 ```
@@ -180,7 +183,7 @@ Next, in this order (one step at a time, confirm each):
 
 ## 8. Known gaps / feature backlog (owner may ask for these)
 
-Not built yet: password reset by email (admin reset links exist) · comments thread on evidence · notifications (email/WhatsApp) · cross-cohort analytics charts · Urdu interface · public student portfolio page.
+Not built yet: password reset by email (admin reset links exist) · notifications (email/WhatsApp) · cross-cohort analytics charts · Urdu interface · public student portfolio page.
 Owner was advised to deploy first and let one cohort use it before adding features — but follow his call.
 
 ## 9. Rules for changes

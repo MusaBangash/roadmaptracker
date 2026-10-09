@@ -21,7 +21,7 @@ export async function GET() {
   const eIds = enrollments.length ? enrollments.map((e) => e.id) : none;
   const ref = { stageKey: schema.stages.key, itemKey: schema.items.key };
 
-  const [people, instructors, progress, signoffs, assessments, logs, attendance, coverage, ownTracks, activity] = await Promise.all([
+  const [people, instructors, progress, signoffs, assessments, logs, attendance, coverage, ownTracks, activity, comments] = await Promise.all([
     db.select({ id: schema.users.id, name: schema.users.name, email: schema.users.email, role: schema.memberships.role, joinedAt: schema.memberships.createdAt, consentAt: schema.users.consentAt })
       .from(schema.memberships).innerJoin(schema.users, eq(schema.users.id, schema.memberships.userId)).where(eq(schema.memberships.orgId, orgId)),
     db.select().from(schema.cohortInstructors).where(inArray(schema.cohortInstructors.cohortId, cohortIds.length ? cohortIds : none)),
@@ -38,6 +38,9 @@ export async function GET() {
       .where(inArray(schema.cohortCoverage.cohortId, cohortIds.length ? cohortIds : none)),
     db.select().from(schema.tracks).where(eq(schema.tracks.ownerOrgId, orgId)),
     db.select().from(schema.auditLog).where(eq(schema.auditLog.orgId, orgId)).orderBy(schema.auditLog.createdAt),
+    db.select({ c: schema.comments, ...ref }).from(schema.comments)
+      .innerJoin(schema.items, eq(schema.items.id, schema.comments.itemId)).innerJoin(schema.stages, eq(schema.stages.id, schema.items.stageId))
+      .where(inArray(schema.comments.enrollmentId, eIds)).orderBy(schema.comments.createdAt),
   ]);
 
   const byEnrollment = <T,>(rows: T[], key: (r: T) => string) => {
@@ -50,6 +53,7 @@ export async function GET() {
   const asmt = byEnrollment(assessments, (r) => r.enrollmentId);
   const log = byEnrollment(logs, (r) => r.enrollmentId);
   const att = byEnrollment(attendance, (r) => r.enrollmentId);
+  const talk = byEnrollment(comments, (r) => r.c.enrollmentId);
 
   const backup = {
     format: "noorai-tracks-backup",
@@ -75,6 +79,10 @@ export async function GET() {
         assessments: (asmt.get(e.id) ?? []).map((a) => ({ title: a.title, date: a.date, scores: a.scores, average: a.average, passed: a.passed, notes: a.notes, assessorId: a.assessorId, createdAt: a.createdAt })),
         weeklyLogs: (log.get(e.id) ?? []).map((l) => ({ weekStart: l.weekStart, hours: l.hours, finished: l.finished, stuck: l.stuck, updatedAt: l.updatedAt })),
         attendance: (att.get(e.id) ?? []).map((a) => ({ date: a.date, present: a.present })),
+        comments: (talk.get(e.id) ?? []).map(({ c, stageKey, itemKey }) => ({
+          stage: stageKey, item: itemKey, authorId: c.authorId, authorRole: c.authorRole, kind: c.kind, body: c.body,
+          createdAt: c.createdAt, editedAt: c.editedAt, hiddenAt: c.hiddenAt, hiddenById: c.hiddenById,
+        })),
       })),
     })),
     activity: activity.map((a) => ({ at: a.createdAt, actorId: a.actorId, action: a.action, subjectId: a.subjectId, detail: a.detail })),

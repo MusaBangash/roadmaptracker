@@ -10,6 +10,9 @@ import {
   IconCircleCheck,
   IconClock,
   IconCopy,
+  IconMessageCircle,
+  IconEye,
+  IconEyeOff,
   IconDeviceDesktop,
   IconDownload,
   IconHome,
@@ -76,6 +79,10 @@ const icons = {
   download: IconDownload,
   copy: IconCopy,
   trash: IconTrash,
+  // Added in Tracks for comments on work.
+  comment: IconMessageCircle,
+  eye: IconEye,
+  "eye-off": IconEyeOff,
 };
 
 export type IconName = keyof typeof icons;

@@ -31,9 +31,10 @@ const TONE: Record<Tone, string> = {
 };
 
 /** A status: always an icon and a word, never colour alone (like Lab Studio's StatusBadge). */
-export function Badge({ tone, icon, children }: { tone: Tone; icon: IconName; children: React.ReactNode }) {
+/** `wrap`: long text may break onto a second line (phones) instead of running off the screen. */
+export function Badge({ tone, icon, children, wrap = false }: { tone: Tone; icon: IconName; children: React.ReactNode; wrap?: boolean }) {
   return (
-    <span className={`badge ${TONE[tone]}`}>
+    <span className={`badge ${TONE[tone]}${wrap ? " whitespace-normal" : ""}`}>
       <Icon name={icon} size={14} />
       {children}
     </span>

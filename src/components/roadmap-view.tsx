@@ -3,6 +3,8 @@ import { GroupBar, KindBars, PlanLineNote, StageLine } from "@/components/progre
 import { ProgressBar, Stat } from "@/components/ui";
 import { currentStageIndex, type StageNode, type Summary } from "@/lib/progress";
 import { pct } from "@/lib/utils";
+import type { CommentView } from "@/lib/comments";
+import { Fold } from "@/components/fold";
 
 type ItemProgress = { status: string; evidenceUrl: string | null; note: string | null; reviewNote: string | null; byTeacher?: boolean };
 
@@ -11,7 +13,7 @@ type ItemProgress = { status: string; evidenceUrl: string | null; note: string |
  * bar for every week (or for lessons and projects). Used by the student's own page and by
  * "Preview as student" (enrollmentId = null), so the preview is exactly what students get.
  */
-export function RoadmapView({ tree, sum, expected, expectedStages, progress, enrollmentId, taught }: {
+export function RoadmapView({ tree, sum, expected, expectedStages, progress, enrollmentId, taught, threads }: {
   tree: StageNode[];
   sum: Summary;
   /** Plan position for the whole track and for each stage; left out in a preview. */
@@ -21,6 +23,8 @@ export function RoadmapView({ tree, sum, expected, expectedStages, progress, enr
   enrollmentId: string | null;
   /** Lessons the teacher has taught this cohort: itemId → date, ready to show. */
   taught?: Map<string, string>;
+  /** Comments per itemId, with the count the student hasn't read. */
+  threads?: Map<string, { comments: CommentView[]; unread: number }>;
 }) {
   const here = currentStageIndex(tree, sum);
   const hereStage = here >= 0 ? tree[here] : null;
@@ -56,7 +60,7 @@ export function RoadmapView({ tree, sum, expected, expectedStages, progress, enr
           }
           const groupIndex = (name: string | null) => s.groups.findIndex((g) => g.name === name);
           return (
-            <details key={stage.id} className="card" open={i === here}>
+            <Fold key={stage.id} className="card" defaultOpen={i === here || stage.items.some((it) => (threads?.get(it.id)?.unread ?? 0) > 0)}>
               <summary className="flex cursor-pointer list-none p-4">
                 <StageLine index={i} stage={stage} s={s} expected={stageExpected} here={i === here} />
               </summary>
@@ -79,13 +83,13 @@ export function RoadmapView({ tree, sum, expected, expectedStages, progress, enr
                       {b.items.map((it) => (
                         <ItemRow key={it.id} enrollmentId={enrollmentId}
                           item={{ id: it.id, title: it.title, detail: it.detail, kind: it.kind, optional: it.optional }}
-                          progress={progress.get(it.id) ?? null} taughtOn={taught?.get(it.id) ?? null} />
+                          progress={progress.get(it.id) ?? null} taughtOn={taught?.get(it.id) ?? null} thread={threads?.get(it.id) ?? null} />
                       ))}
                     </ul>
                   </div>
                 ))}
               </div>
-            </details>
+            </Fold>
           );
         })}
       </div>

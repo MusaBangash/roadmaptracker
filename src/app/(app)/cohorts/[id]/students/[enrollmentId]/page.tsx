@@ -13,12 +13,15 @@ import { Icon } from "@/components/icon";
 import Link from "next/link";
 import { readinessOf, validCertificate } from "@/lib/certificates";
 import { IssueCertificateForm } from "@/components/certificate-tools";
+import { byThread, loadComments, toViews, unreadFor } from "@/lib/comments";
+import { CommentThread } from "@/components/comment-thread";
+import { REVIEW_KINDS } from "@/lib/progress-core";
 
 export const metadata = { title: "Student" };
 
 export default async function StudentPage({ params }: { params: Promise<{ id: string; enrollmentId: string }> }) {
   const { enrollmentId } = await params;
-  const { cohort, enrollment, user } = await requireTeachableEnrollment(enrollmentId);
+  const { cohort, enrollment, user, role } = await requireTeachableEnrollment(enrollmentId);
   // Story 4: nobody checks their own work (a teacher who is also enrolled in this cohort).
   const own = !canJudgeWork(user.id, enrollment.userId);
   const student = (await db.query.users.findFirst({ where: eq(schema.users.id, enrollment.userId) }))!;
@@ -35,7 +38,9 @@ export default async function StudentPage({ params }: { params: Promise<{ id: st
     db.query.weeklyLogs.findMany({ where: eq(schema.weeklyLogs.enrollmentId, enrollment.id), orderBy: desc(schema.weeklyLogs.weekStart), limit: 8 }),
   ]);
   const rubric = track.rubric?.length ? track.rubric : DEFAULT_RUBRIC;
-  const [cert, readiness] = await Promise.all([validCertificate(enrollment.id), readinessOf(enrollment.id, cohort.trackId)]);
+  const [cert, readiness, comments] = await Promise.all([validCertificate(enrollment.id), readinessOf(enrollment.id, cohort.trackId), loadComments([enrollment.id])]);
+  const threads = byThread(comments);
+  const viewer = { id: user.id, admin: role === "ADMIN" };
 
   return (
     <>
@@ -129,6 +134,11 @@ export default async function StudentPage({ params }: { params: Promise<{ id: st
                           <span className="font-medium">{it.title}</span> <KindPill kind={it.kind} /> <StatusPill status={p?.status} />
                           {p?.evidenceUrl && <a href={p.evidenceUrl} target="_blank" rel="noreferrer" className="ml-2 text-xs text-secondary underline">evidence</a>}
                           {p?.note && <span className="block text-xs text-ink-muted">“{p.note}”</span>}
+                          {p && (REVIEW_KINDS as readonly string[]).includes(it.kind) && (() => {
+                            const rows = threads.get(`${enrollment.id}:${it.id}`) ?? [];
+                            return <CommentThread enrollmentId={enrollment.id} itemId={it.id} comments={toViews(rows, viewer)} side={own ? "STUDENT" : "TEACHER"}
+                              admin={viewer.admin} unread={own ? 0 : unreadFor(rows, "TEACHER", p.staffSeenAt)} canWrite />;
+                          })()}
                         </span>
                         {p?.status !== "VERIFIED" && !own && (
                           <form action={reviewItemAction}>

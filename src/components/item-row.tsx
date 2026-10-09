@@ -3,6 +3,8 @@
 import { useActionState, useOptimistic, useState, useTransition } from "react";
 import { toggleItemAction, saveEvidenceAction } from "@/app/actions/learn";
 import { Badge, KindPill, StatusPill, Tag } from "@/components/ui";
+import { CommentThread } from "@/components/comment-thread";
+import type { CommentView } from "@/lib/comments";
 
 type Props = {
   /** null = "Preview as student": ticks stay on this screen only and nothing is saved. */
@@ -11,9 +13,11 @@ type Props = {
   progress: { status: string; evidenceUrl: string | null; note: string | null; reviewNote: string | null; byTeacher?: boolean } | null;
   /** The date the teacher taught this lesson to the cohort, ready to show (e.g. "14 Oct 2026"). */
   taughtOn?: string | null;
+  /** Comments on this work (projects, deliverables, milestones), with how many the student hasn't read. */
+  thread?: { comments: CommentView[]; unread: number } | null;
 };
 
-export function ItemRow({ enrollmentId, item, progress, taughtOn }: Props) {
+export function ItemRow({ enrollmentId, item, progress, taughtOn, thread }: Props) {
   const [pending, start] = useTransition();
   const [saved, setSaved] = useOptimistic(!!progress && progress.status !== "NEEDS_WORK");
   const [previewDone, setPreviewDone] = useState(false);
@@ -25,7 +29,7 @@ export function ItemRow({ enrollmentId, item, progress, taughtOn }: Props) {
   const locked = progress?.status === "VERIFIED";
 
   return (
-    <li className={`border-b border-border py-3 last:border-0 ${reviewable ? "-mx-3 rounded-md bg-warning-soft/40 px-3" : ""}`}>
+    <li id={`item-${item.id}`} className={`scroll-mt-20 border-b border-border py-3 last:border-0 ${reviewable ? "-mx-3 rounded-md bg-warning-soft/40 px-3" : ""}`}>
       <div className="flex items-start gap-3">
         <input
           type="checkbox"
@@ -49,13 +53,13 @@ export function ItemRow({ enrollmentId, item, progress, taughtOn }: Props) {
             {item.optional && <Tag>Optional</Tag>}
             <StatusPill status={progress?.status} />
             {taughtOn && (done
-              ? <Badge tone="info" icon="info">Taught in class · {taughtOn}</Badge>
-              : <Badge tone="warning" icon="offline">Taught in class · {taughtOn} — not done yet</Badge>)}
+              ? <Badge tone="info" icon="info" wrap>Taught in class · {taughtOn}</Badge>
+              : <Badge tone="warning" icon="offline" wrap>Taught in class · {taughtOn} — not done yet</Badge>)}
             {progress?.byTeacher && done && <Tag>Marked by teacher</Tag>}
           </div>
           {item.detail && <p className="mt-0.5 text-sm text-ink-muted">{item.detail}</p>}
           {progress?.status === "NEEDS_WORK" && progress.reviewNote && (
-            <p className="mt-2 rounded-md bg-danger-soft px-2 py-1 text-sm text-danger">Instructor: {progress.reviewNote}</p>
+            <p dir="auto" className="mt-2 whitespace-pre-wrap rounded-md bg-danger-soft px-2 py-1 text-sm text-danger">Teacher: {progress.reviewNote}</p>
           )}
           {progress?.evidenceUrl && (
             <a href={progress.evidenceUrl} target="_blank" rel="noreferrer" className="mt-1 inline-block break-all text-sm text-secondary underline">
@@ -76,6 +80,10 @@ export function ItemRow({ enrollmentId, item, progress, taughtOn }: Props) {
               {state?.error && <p className="text-sm text-danger sm:col-span-3">{state.error}</p>}
               {state?.ok && <p className="text-sm text-primary sm:col-span-3">{state.ok}</p>}
             </form>
+          )}
+          {reviewable && enrollmentId && (
+            <CommentThread enrollmentId={enrollmentId} itemId={item.id} comments={thread?.comments ?? []} side="STUDENT" admin={false}
+              unread={thread?.unread ?? 0} canWrite={!!progress} />
           )}
           </>)}
         </div>

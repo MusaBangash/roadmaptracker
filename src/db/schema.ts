@@ -182,6 +182,9 @@ export const itemProgress = pgTable("item_progress", {
   /** Set when a teacher ticked this for a student who was present in class (Teaching plan);
    *  null when the student ticked it. Cleared when the student adds their own evidence. */
   markedById: text("marked_by_id").references(() => users.id, { onDelete: "set null" }),
+  /** Comments: when the student last read this item's thread, and when any of the cohort's teachers did. */
+  studentSeenAt: timestamp("student_seen_at", { mode: "date" }),
+  staffSeenAt: timestamp("staff_seen_at", { mode: "date" }),
   updatedAt: timestamp("updated_at", { mode: "date" }).notNull().defaultNow(),
 }, (t) => [uniqueIndex("progress_enrollment_item").on(t.enrollmentId, t.itemId), index("progress_enrollment").on(t.enrollmentId)]);
 
@@ -302,4 +305,29 @@ export const certificates = pgTable("certificate", {
 }, (t) => [
   index("certificate_enrollment").on(t.enrollmentId),
   uniqueIndex("certificate_one_valid").on(t.enrollmentId).where(sql`"revoked_at" is null`),
+]);
+
+export const commentKindEnum = pgEnum("comment_kind", ["COMMENT", "VERIFIED", "NEEDS_WORK", "RESUBMIT"]);
+export type CommentKind = (typeof commentKindEnum.enumValues)[number];
+export const commentRoleEnum = pgEnum("comment_role", ["STUDENT", "TEACHER"]);
+
+/** The conversation on one piece of a student's work (an enrollment + a project, deliverable or
+ *  milestone). Review decisions and resubmissions are rows too, so the history is never overwritten.
+ *  Deleting the enrollment deletes the thread; a deleted author shows as "Deleted person". */
+export const comments = pgTable("comment", {
+  id: id(),
+  enrollmentId: text("enrollment_id").notNull().references(() => enrollments.id, { onDelete: "cascade" }),
+  itemId: text("item_id").notNull().references(() => items.id, { onDelete: "cascade" }),
+  authorId: text("author_id").references(() => users.id, { onDelete: "set null" }),
+  /** The side the author wrote for: the student, or the cohort's teachers and admins. */
+  authorRole: commentRoleEnum("author_role").notNull(),
+  kind: commentKindEnum("kind").notNull().default("COMMENT"),
+  body: text("body"),
+  createdAt: created(),
+  editedAt: timestamp("edited_at", { mode: "date" }),
+  hiddenAt: timestamp("hidden_at", { mode: "date" }),
+  hiddenById: text("hidden_by_id").references(() => users.id, { onDelete: "set null" }),
+}, (t) => [
+  index("comment_thread").on(t.enrollmentId, t.itemId, t.createdAt),
+  index("comment_author_time").on(t.authorId, t.createdAt),
 ]);

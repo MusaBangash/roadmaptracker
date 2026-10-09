@@ -6,7 +6,7 @@ import path from "node:path";
 import { describe, expect, it } from "vitest";
 
 const ROOT = process.cwd();
-const GUARD = /\b(requireUser|requireRole|requireTeachableCohort|requireTeachableEnrollment|requireOwnEnrollment|requireEditableTrack|requireVisibleTrack|changeDraft)\(/;
+const GUARD = /\b(requireUser|requireRole|requireTeachableCohort|requireTeachableEnrollment|requireOwnEnrollment|requireEditableTrack|requireVisibleTrack|changeDraft|requireCommentAccess)\(/;
 const DATA = /\b(db|tx)\s*[.]/;
 
 /** Actions anyone may call: they sign in or out, or check a one-time secret themselves. */

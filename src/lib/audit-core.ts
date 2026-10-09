@@ -28,6 +28,8 @@ export const AUDIT_ACTIONS = {
   "enrollment.status": { group: "work", label: "Changed a student's status" },
   "certificate.issue": { group: "work", label: "Issued a certificate" },
   "certificate.revoke": { group: "work", label: "Revoked a certificate" },
+  "comment.hide": { group: "work", label: "Hid a comment" },
+  "comment.unhide": { group: "work", label: "Showed a hidden comment again" },
   "attendance.save": { group: "class", label: "Took attendance" },
   "teach.mark": { group: "class", label: "Marked lessons taught" },
   "teach.unmark": { group: "class", label: "Marked lessons not taught" },

@@ -51,3 +51,10 @@ export function safeUrl(u?: string | null) {
 export function plural(n: number, word: string, many = `${word}s`) {
   return `${n} ${n === 1 ? word : many}`;
 }
+
+/** A moment as Pakistan time, e.g. "10 Oct 2026, 14:05" (the server may run in another zone). */
+export function fmtDateTime(d: Date) {
+  return new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Asia/Karachi", day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit",
+  }).format(d);
+}

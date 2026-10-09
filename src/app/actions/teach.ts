@@ -39,7 +39,7 @@ export async function reviewItemAction(form: FormData) {
   const enrollmentId = String(form.get("enrollmentId"));
   const itemId = String(form.get("itemId"));
   const decision = form.get("decision") === "NEEDS_WORK" ? "NEEDS_WORK" : "VERIFIED";
-  const reviewNote = String(form.get("reviewNote") ?? "").trim().slice(0, 1000) || null;
+  const reviewNote = String(form.get("reviewNote") ?? "").trim().slice(0, 2000) || null;
   const ctx = await requireTeachableEnrollment(enrollmentId);
   if (!canJudgeWork(ctx.user.id, ctx.enrollment.userId)) throw new Error(OWN_WORK);
   if (!(await itemInEnrollment(enrollmentId, itemId))) throw new Error("Item not in this track");
@@ -48,8 +48,10 @@ export async function reviewItemAction(form: FormData) {
     .values({ enrollmentId, itemId, status: decision, reviewedById: ctx.user.id, reviewedAt: now, reviewNote })
     .onConflictDoUpdate({
       target: [schema.itemProgress.enrollmentId, schema.itemProgress.itemId],
-      set: { status: decision, reviewedById: ctx.user.id, reviewedAt: now, reviewNote, updatedAt: now },
+      set: { status: decision, reviewedById: ctx.user.id, reviewedAt: now, reviewNote, updatedAt: now, staffSeenAt: sql`now()` },
     });
+  // Comments, Story 2: every decision joins the work's thread, so earlier notes are never lost.
+  await db.insert(schema.comments).values({ enrollmentId, itemId, authorId: ctx.user.id, authorRole: "TEACHER", kind: decision, body: reviewNote });
   await audit({ orgId: ctx.org.id, actorId: ctx.user.id, action: decision === "VERIFIED" ? "review.verify" : "review.needs_work",
     subjectId: ctx.enrollment.userId, detail: `“${await itemTitle(itemId)}”` });
   revalidatePath(`/cohorts/${ctx.cohort.id}`, "layout");

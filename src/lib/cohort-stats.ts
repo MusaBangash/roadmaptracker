@@ -4,6 +4,7 @@ import { db, schema } from "@/db";
 import { loadTrackTree, loadCells, loadSignoffs, summarizeCells, expectedPct, expectedStagePcts, classStages, classAverage, lastActivity, riskOf, REVIEW_KINDS, type StageNode } from "@/lib/progress";
 
 import { loadCoverage, taughtDates, coverageOf } from "@/lib/coverage";
+import { waitingSql } from "@/lib/comments";
 
 type Cohort = typeof schema.cohorts.$inferSelect;
 
@@ -71,7 +72,7 @@ export async function pendingReviewCount(cohortIds: string[]) {
     .from(schema.itemProgress)
     .innerJoin(schema.items, eq(schema.itemProgress.itemId, schema.items.id))
     .innerJoin(schema.enrollments, eq(schema.itemProgress.enrollmentId, schema.enrollments.id))
-    .where(and(inArray(schema.enrollments.cohortId, cohortIds), eq(schema.itemProgress.status, "DONE"), inArray(schema.items.kind, [...REVIEW_KINDS])))
+    .where(and(inArray(schema.enrollments.cohortId, cohortIds), inArray(schema.items.kind, [...REVIEW_KINDS]), waitingSql))
     .groupBy(schema.enrollments.cohortId);
   return new Map(rows.map((r) => [r.c, Number(r.n)]));
 }

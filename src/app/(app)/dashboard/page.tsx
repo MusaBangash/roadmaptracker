@@ -8,6 +8,7 @@ import { cohortRows, pendingReviewCount } from "@/lib/cohort-stats";
 import { PageHeader, ProgressBar, Stat, Empty, Badge } from "@/components/ui";
 import { JoinForm } from "@/components/auth-forms";
 import { pct, fmtDate, plural } from "@/lib/utils";
+import { unreadForStudents } from "@/lib/comments";
 
 export const metadata = { title: "Dashboard" };
 
@@ -35,13 +36,14 @@ export default async function Dashboard() {
     .innerJoin(schema.tracks, eq(schema.cohorts.trackId, schema.tracks.id))
     .where(and(eq(schema.enrollments.userId, ctx.user.id), eq(schema.cohorts.orgId, ctx.org.id)));
 
+  const unread = await unreadForStudents(myEnrollments.map((x) => x.e.id));
   const studentCards = await Promise.all(myEnrollments.map(async ({ e, c, t }) => {
     const tree = await loadTrackTree(t.id);
     const { progress, signoffs } = await loadProgress([e.id]);
     const sum = summarize(tree, progress, signoffs);
     const here = currentStageIndex(tree, sum);
     const cert = await validCertificate(e.id);
-    return { e, c, t, sum, cert, expected: expectedPct(tree, c.startDate), stages: tree.length, now: here >= 0 ? `Stage ${here + 1} · ${tree[here].title}` : null };
+    return { e, c, t, sum, cert, unread: unread.get(e.id) ?? 0, expected: expectedPct(tree, c.startDate), stages: tree.length, now: here >= 0 ? `Stage ${here + 1} · ${tree[here].title}` : null };
   }));
 
   // ---------- instructor / admin ----------
@@ -132,6 +134,7 @@ export default async function Dashboard() {
                 <Link key={x.e.id} href={`/learn/${x.e.id}`} className="card block p-5 hover:border-primary">
                   <div className="text-sm font-semibold text-highlight-text">{x.c.name}</div>
                   <div className="mt-1 font-bold text-xl">{x.t.title}</div>
+                  {x.unread > 0 && <div className="mt-2"><Badge tone="info" icon="comment" wrap>New comment from your teacher{x.unread > 1 ? ` · on ${x.unread} pieces of work` : ""}</Badge></div>}
                   {x.cert ? <div className="mt-2"><Badge tone="success" icon="star">Certificate earned · open to download</Badge></div>
                     : x.now && <div className="mt-1 text-sm text-ink-muted">Now on {x.now}</div>}
                   <div className="mt-4"><ProgressBar value={x.sum.pct} expected={x.expected} /></div>

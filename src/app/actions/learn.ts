@@ -58,11 +58,16 @@ export async function saveEvidenceAction(_: FormState, form: FormData): Promise<
     where: and(eq(schema.itemProgress.enrollmentId, enrollment.id), eq(schema.itemProgress.itemId, p.data.itemId)),
   });
   const status = existing?.status === "VERIFIED" ? "VERIFIED" : "DONE"; // resubmitting "needs work" puts it back in review
+  const now = new Date();
+  // Comments, Story 3: sending sent-back work again shows in its thread.
+  if (existing?.status === "NEEDS_WORK") {
+    await db.insert(schema.comments).values({ enrollmentId: enrollment.id, itemId: p.data.itemId, authorId: enrollment.userId, authorRole: "STUDENT", kind: "RESUBMIT" });
+  }
   await db.insert(schema.itemProgress)
     .values({ enrollmentId: enrollment.id, itemId: p.data.itemId, status, evidenceUrl: url, note: p.data.note || null })
     .onConflictDoUpdate({
       target: [schema.itemProgress.enrollmentId, schema.itemProgress.itemId],
-      set: { status, evidenceUrl: url, note: p.data.note || null, updatedAt: new Date(), markedById: null }, // now the student's own work
+      set: { status, evidenceUrl: url, note: p.data.note || null, updatedAt: now, markedById: null }, // now the student's own work
     });
   revalidatePath(`/learn/${enrollment.id}`);
   return { ok: status === "VERIFIED" ? "Saved." : "Saved — your instructor will review it." };

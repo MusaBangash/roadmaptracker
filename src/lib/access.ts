@@ -99,3 +99,13 @@ export async function requireTeachableEnrollment(enrollmentId: string) {
   const ctx = await requireTeachableCohort(enrollment.cohortId);
   return { ...ctx, enrollment };
 }
+
+/** Comments on work: the student of this enrollment, or a teacher/admin of its cohort. */
+export async function requireCommentAccess(enrollmentId: string) {
+  const user = await requireUser();
+  const enrollment = await db.query.enrollments.findFirst({ where: eq(schema.enrollments.id, enrollmentId) });
+  if (!enrollment) notFound();
+  if (enrollment.userId === user.id) return { user, enrollment, side: "STUDENT" as const, admin: null };
+  const ctx = await requireTeachableCohort(enrollment.cohortId);
+  return { user, enrollment, side: "TEACHER" as const, admin: ctx.role === "ADMIN" ? ctx.org : null };
+}
