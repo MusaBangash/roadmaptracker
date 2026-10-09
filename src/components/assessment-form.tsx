@@ -20,7 +20,7 @@ export function AssessmentForm({ enrollmentId, rubric, today }: {
       </div>
       <div className="overflow-x-auto">
         <table className="w-full min-w-[560px] text-sm">
-          <thead className="text-left text-xs uppercase tracking-wide text-ink-muted">
+          <thead className="text-left text-sm font-semibold text-ink-muted">
             <tr><th className="py-2 pr-2">Criterion</th><th className="py-2 pr-2">Examiner 1</th><th className="py-2 pr-2">Examiner 2 (optional)</th><th className="py-2">Level guide</th></tr>
           </thead>
           <tbody className="divide-y divide-border">

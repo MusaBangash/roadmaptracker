@@ -3,7 +3,7 @@ import { eq } from "drizzle-orm";
 import { db, schema } from "@/db";
 import { requireOwnEnrollment } from "@/lib/access";
 import { loadTrackTree, loadProgress, summarize, expectedPct } from "@/lib/progress";
-import { PageHeader, ProgressBar, LevelPill, Stat } from "@/components/ui";
+import { PageHeader, ProgressBar, LevelPill, Stat, Tag, SignoffBadge } from "@/components/ui";
 import { ItemRow } from "@/components/item-row";
 import { pct } from "@/lib/utils";
 
@@ -32,7 +32,7 @@ export default async function LearnPage({ params }: { params: Promise<{ enrollme
       <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
         <div className="card col-span-2 p-4">
           <div className="flex items-baseline justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wide text-ink-muted">Overall progress</span>
+            <span className="text-sm font-semibold text-ink-muted">Overall progress</span>
             <span className="font-bold text-2xl">{pct(sum.pct)}</span>
           </div>
           <div className="mt-3"><ProgressBar value={sum.pct} expected={expected} /></div>
@@ -59,9 +59,8 @@ export default async function LearnPage({ params }: { params: Promise<{ enrollme
                   <span className="flex flex-wrap items-center gap-2">
                     <span className="font-semibold">{stage.title}</span>
                     <LevelPill level={stage.level} />
-                    {stage.optional && <span className="pill bg-surface-sunken text-ink-muted">choose one</span>}
-                    {s.signedOff === true && <span className="pill bg-primary-soft text-primary">✓ signed off</span>}
-                    {s.signedOff === false && <span className="pill bg-danger-soft text-danger">not passed yet</span>}
+                    {stage.optional && <Tag>Choose one</Tag>}
+                    <SignoffBadge passed={s.signedOff} />
                   </span>
                   <span className="mt-2 block max-w-md"><ProgressBar value={s.pct} /></span>
                 </span>

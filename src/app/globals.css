@@ -47,11 +47,18 @@
 html { -webkit-text-size-adjust: 100%; }
 body { background: var(--surface); color: var(--ink); font: var(--text-body); }
 
+/* Every interactive element: 3px focus-ring, 2px offset (brand book, "States"). */
+:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 2px; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}
+
 @utility card {
   @apply rounded-lg border border-border bg-surface-raised shadow-[var(--shadow-card)];
 }
 @utility btn {
-  @apply inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-semibold transition disabled:opacity-50;
+  @apply inline-flex min-h-[var(--control-height)] items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-semibold transition disabled:opacity-50;
 }
 @utility btn-primary {
   @apply btn bg-primary text-on-primary hover:bg-primary-hover;
@@ -63,13 +70,18 @@ body { background: var(--surface); color: var(--ink); font: var(--text-body); }
   @apply btn border border-danger/40 text-danger hover:bg-danger-soft;
 }
 @utility input {
-  @apply w-full rounded-md border border-border-strong bg-surface-raised px-3 py-2 text-sm text-ink outline-none placeholder:text-ink-muted focus:border-primary focus:ring-2 focus:ring-primary/20;
+  @apply min-h-[var(--control-height)] w-full rounded-md border border-border-strong bg-surface-raised px-3 py-2 text-base text-ink placeholder:text-ink-muted;
 }
 @utility label {
-  @apply mb-1 block text-xs font-semibold uppercase tracking-wide text-ink-muted;
+  @apply mb-1 block text-sm font-semibold text-ink;
 }
 @utility pill {
-  @apply inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide;
+  @apply inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold whitespace-nowrap;
+}
+/* Status badge, same as Lab Studio StatusBadge: icon + word on a -soft background. */
+@utility badge {
+  @apply inline-flex items-center gap-1 rounded-full py-0.5 pr-2.5 pl-2 whitespace-nowrap;
+  font: var(--text-small-strong);
 }
 @utility h1 {
   font: var(--text-heading-1);

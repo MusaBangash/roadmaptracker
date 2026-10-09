@@ -2,7 +2,7 @@
 
 import { useActionState, useOptimistic, useState, useTransition } from "react";
 import { toggleItemAction, saveEvidenceAction } from "@/app/actions/learn";
-import { KindPill, StatusPill } from "@/components/ui";
+import { KindPill, StatusPill, Tag } from "@/components/ui";
 
 type Props = {
   enrollmentId: string;
@@ -39,7 +39,7 @@ export function ItemRow({ enrollmentId, item, progress }: Props) {
           <div className="flex flex-wrap items-center gap-2">
             <span className={`text-sm font-semibold ${done ? "text-ink" : "text-ink"}`}>{item.title}</span>
             <KindPill kind={item.kind} />
-            {item.optional && <span className="pill bg-surface-sunken text-ink-muted">optional</span>}
+            {item.optional && <Tag>Optional</Tag>}
             <StatusPill status={progress?.status} />
           </div>
           {item.detail && <p className="mt-0.5 text-sm text-ink-muted">{item.detail}</p>}

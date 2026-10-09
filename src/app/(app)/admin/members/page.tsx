@@ -2,7 +2,7 @@ import { and, eq, isNull } from "drizzle-orm";
 import { db, schema } from "@/db";
 import { requireRole } from "@/lib/access";
 import { setMemberRoleAction, removeMemberAction, createInviteAction, deleteInviteAction } from "@/app/actions/admin";
-import { PageHeader } from "@/components/ui";
+import { PageHeader, Tag, sentence } from "@/components/ui";
 import { CopyButton } from "@/components/copy-button";
 import { baseUrl } from "@/lib/url";
 import { fmtDate, plural } from "@/lib/utils";
@@ -31,7 +31,7 @@ export default async function MembersPage() {
             const link = `${url}/join/${inv.code}`;
             return (
               <div key={inv.id} className="flex flex-wrap items-center gap-2 p-3 text-sm">
-                <span className="pill bg-surface-sunken text-ink-muted">{inv.role.toLowerCase()}</span>
+                <Tag>{sentence(inv.role)}</Tag>
                 <code className="min-w-0 flex-1 truncate font-mono text-xs">{link}</code>
                 <span className="text-xs text-ink-muted">{inv.uses}/{inv.maxUses} used · until {fmtDate(inv.expiresAt)}</span>
                 <CopyButton text={link} />
@@ -53,7 +53,7 @@ export default async function MembersPage() {
         <h2 className="h2 mb-3">Members</h2>
         <div className="card overflow-x-auto">
           <table className="w-full min-w-[620px] text-sm">
-            <thead className="border-b border-border text-left text-xs uppercase tracking-wide text-ink-muted"><tr><th className="p-3">Name</th><th className="p-3">Joined</th><th className="p-3">Role</th><th className="p-3" /></tr></thead>
+            <thead className="border-b border-border text-left text-sm font-semibold text-ink-muted"><tr><th className="p-3">Name</th><th className="p-3">Joined</th><th className="p-3">Role</th><th className="p-3" /></tr></thead>
             <tbody className="divide-y divide-border">
               {members.map(({ m, u }) => (
                 <tr key={m.id}>

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { pct } from "@/lib/utils";
+import { Icon, type IconName } from "@/components/icon";
 
 export function ProgressBar({ value, expected, tone = "forest" }: { value: number; expected?: number; tone?: "forest" | "saffron" }) {
   return (
@@ -12,44 +13,78 @@ export function ProgressBar({ value, expected, tone = "forest" }: { value: numbe
   );
 }
 
-const LEVEL_STYLE: Record<string, string> = {
-  Foundation: "bg-primary-soft text-primary",
-  Intermediate: "bg-warning-soft text-ink",
-  Advanced: "bg-info-soft text-secondary",
-  Expert: "bg-primary text-on-primary",
-};
-export function LevelPill({ level }: { level: string }) {
-  if (!level) return null;
-  return <span className={`pill ${LEVEL_STYLE[level] ?? "bg-surface-sunken text-ink-muted"}`}>{level}</span>;
+/** "needs_work" → "Needs work": sentence case for words stored in capitals. */
+export function sentence(s: string) {
+  const t = s.replace(/_/g, " ").toLowerCase();
+  return t.charAt(0).toUpperCase() + t.slice(1);
 }
 
-const KIND_STYLE: Record<string, string> = {
-  PROJECT: "bg-warning-soft text-ink",
-  DELIVERABLE: "bg-warning-soft text-ink",
-  MILESTONE: "bg-primary text-on-primary",
+type Tone = "success" | "warning" | "danger" | "info" | "neutral";
+const TONE: Record<Tone, string> = {
+  success: "bg-success-soft text-success",
+  warning: "bg-warning-soft text-warning",
+  danger: "bg-danger-soft text-danger",
+  info: "bg-info-soft text-info",
+  neutral: "bg-surface-sunken text-ink-muted",
 };
+
+/** A status: always an icon and a word, never colour alone (like Lab Studio's StatusBadge). */
+export function Badge({ tone, icon, children }: { tone: Tone; icon: IconName; children: React.ReactNode }) {
+  return (
+    <span className={`badge ${TONE[tone]}`}>
+      <Icon name={icon} size={14} />
+      {children}
+    </span>
+  );
+}
+
+/** A label that is not a status (level, kind, role, "optional"). */
+export function Tag({ children, strong = false }: { children: React.ReactNode; strong?: boolean }) {
+  return <span className={`pill ${strong ? "bg-primary text-on-primary" : "bg-surface-sunken text-ink-muted"}`}>{children}</span>;
+}
+
+export function LevelPill({ level }: { level: string }) {
+  if (!level) return null;
+  return <Tag strong={level === "Expert"}>{level}</Tag>;
+}
+
 export function KindPill({ kind }: { kind: string }) {
   if (kind === "LESSON") return null;
-  return <span className={`pill ${KIND_STYLE[kind]}`}>{kind.toLowerCase()}</span>;
+  return <Tag strong={kind === "MILESTONE"}>{sentence(kind)}</Tag>;
 }
 
 export function StatusPill({ status }: { status: string | null | undefined }) {
-  if (status === "VERIFIED") return <span className="pill bg-primary-soft text-primary">✓ verified</span>;
-  if (status === "NEEDS_WORK") return <span className="pill bg-danger-soft text-danger">needs work</span>;
-  if (status === "DONE") return <span className="pill bg-surface-sunken text-ink-muted">done</span>;
+  if (status === "VERIFIED") return <Badge tone="success" icon="online">Verified</Badge>;
+  if (status === "NEEDS_WORK") return <Badge tone="danger" icon="error">Needs work</Badge>;
+  if (status === "DONE") return <Badge tone="neutral" icon="check">Done</Badge>;
+  return null;
+}
+
+/** A stage sign-off: passed, not passed yet, or nothing. */
+export function SignoffBadge({ passed, notYet = "Not passed yet" }: { passed: boolean | null | undefined; notYet?: string }) {
+  if (passed === true) return <Badge tone="success" icon="online">Signed off</Badge>;
+  if (passed === false) return <Badge tone="danger" icon="x">{notYet}</Badge>;
   return null;
 }
 
 export function RiskPill({ risk }: { risk: "inactive" | "behind" | null }) {
-  if (risk === "inactive") return <span className="pill bg-danger-soft text-danger">inactive 14+ days</span>;
-  if (risk === "behind") return <span className="pill bg-warning-soft text-ink">behind pace</span>;
-  return <span className="pill bg-primary-soft text-primary">on track</span>;
+  if (risk === "inactive") return <Badge tone="danger" icon="error">Inactive 14+ days</Badge>;
+  if (risk === "behind") return <Badge tone="warning" icon="offline">Behind pace</Badge>;
+  return <Badge tone="success" icon="check">On track</Badge>;
+}
+
+/** Paused, completed or withdrawn (active students show their RiskPill instead). */
+export function EnrollmentBadge({ status }: { status: string }) {
+  if (status === "COMPLETED") return <Badge tone="success" icon="star">Completed</Badge>;
+  if (status === "PAUSED") return <Badge tone="neutral" icon="clock">Paused</Badge>;
+  if (status === "WITHDRAWN") return <Badge tone="neutral" icon="minus">Withdrawn</Badge>;
+  return <Badge tone="success" icon="check">Active</Badge>;
 }
 
 export function Stat({ label, value, sub }: { label: string; value: React.ReactNode; sub?: string }) {
   return (
     <div className="card p-4">
-      <div className="text-xs font-semibold uppercase tracking-wide text-ink-muted">{label}</div>
+      <div className="text-sm font-semibold text-ink-muted">{label}</div>
       <div className="mt-1 font-bold text-2xl text-ink">{value}</div>
       {sub && <div className="mt-0.5 text-xs text-ink-muted">{sub}</div>}
     </div>

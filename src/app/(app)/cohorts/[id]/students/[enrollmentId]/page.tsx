@@ -3,7 +3,7 @@ import { db, schema } from "@/db";
 import { requireTeachableEnrollment } from "@/lib/access";
 import { loadTrackTree, loadProgress, summarize, expectedPct } from "@/lib/progress";
 import { reviewItemAction, signoffStageAction, setEnrollmentStatusAction } from "@/app/actions/teach";
-import { PageHeader, ProgressBar, Stat, LevelPill, KindPill, StatusPill } from "@/components/ui";
+import { PageHeader, ProgressBar, Stat, LevelPill, KindPill, StatusPill, SignoffBadge, Badge } from "@/components/ui";
 import { AssessmentForm } from "@/components/assessment-form";
 import { DEFAULT_RUBRIC } from "@/lib/rubric";
 import { pct, fmtDate } from "@/lib/utils";
@@ -44,7 +44,7 @@ export default async function StudentPage({ params }: { params: Promise<{ id: st
       />
       <div className="mb-6 grid gap-3 sm:grid-cols-4">
         <div className="card p-4 sm:col-span-2">
-          <div className="flex items-baseline justify-between"><span className="text-xs font-semibold uppercase tracking-wide text-ink-muted">Progress</span><span className="font-bold text-2xl">{pct(sum.pct)}</span></div>
+          <div className="flex items-baseline justify-between"><span className="text-sm font-semibold text-ink-muted">Progress</span><span className="font-bold text-2xl">{pct(sum.pct)}</span></div>
           <div className="mt-3"><ProgressBar value={sum.pct} expected={expectedPct(tree, cohort.startDate)} /></div>
         </div>
         <Stat label="Stages passed" value={`${sum.stagesPassed}/${tree.length}`} />
@@ -62,8 +62,7 @@ export default async function StudentPage({ params }: { params: Promise<{ id: st
                 <span className="min-w-0 flex-1">
                   <span className="flex flex-wrap items-center gap-2">
                     <span className="font-semibold">{i + 1}. {stage.title}</span><LevelPill level={stage.level} />
-                    {so?.passed === true && <span className="pill bg-primary-soft text-primary">✓ passed</span>}
-                    {so?.passed === false && <span className="pill bg-danger-soft text-danger">not passed</span>}
+                    <SignoffBadge passed={so?.passed} notYet="Not passed" />
                   </span>
                   <span className="mt-2 block max-w-md"><ProgressBar value={s.pct} /></span>
                 </span>
@@ -115,7 +114,7 @@ export default async function StudentPage({ params }: { params: Promise<{ id: st
                 <div key={a.id} className="p-3 text-sm">
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <span className="font-semibold">{a.title}</span>
-                    <span className={`pill ${a.passed ? "bg-primary-soft text-primary" : "bg-danger-soft text-danger"}`}>{a.passed ? "passed" : "not passed"} · {a.average?.toFixed(2)}</span>
+                    {a.passed ? <Badge tone="success" icon="online">Passed · {a.average?.toFixed(2)}</Badge> : <Badge tone="danger" icon="x">Not passed · {a.average?.toFixed(2)}</Badge>}
                   </div>
                   <div className="text-xs text-ink-muted">{fmtDate(a.date)}</div>
                   <div className="mt-1 flex flex-wrap gap-x-3 text-xs text-ink-muted">{Object.entries(a.scores).map(([k, v]) => <span key={k}>{k}: {v.join(" / ")}</span>)}</div>

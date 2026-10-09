@@ -3,7 +3,7 @@ import { asc, eq, sql } from "drizzle-orm";
 import { db, schema } from "@/db";
 import { getContext } from "@/lib/access";
 import { toggleOrgTrackAction } from "@/app/actions/admin";
-import { PageHeader } from "@/components/ui";
+import { PageHeader, Badge } from "@/components/ui";
 
 export const metadata = { title: "Tracks" };
 
@@ -25,7 +25,7 @@ export default async function TracksPage() {
       <div className="grid gap-3 md:grid-cols-2">
         {visible.map(({ t, stages, items }) => (
           <div key={t.id} className="card flex flex-col p-5">
-            <div className="text-xs font-semibold uppercase tracking-wide text-highlight-text">{t.kind === "COURSE" ? "Course" : "Role roadmap"}{t.edition ? ` · ${t.edition.replace(/\s+-\s+/g, " · ")}` : ""}</div>
+            <div className="text-sm font-semibold text-highlight-text">{t.kind === "COURSE" ? "Course" : "Role roadmap"}{t.edition ? ` · ${t.edition.replace(/\s+-\s+/g, " · ")}` : ""}</div>
             <Link href={`/tracks/${t.slug}`} className="mt-1 font-bold text-xl hover:text-primary">{t.title}</Link>
             <p className="mt-1 flex-1 text-sm text-ink-muted">{t.summary || t.subtitle}</p>
             <div className="mt-3 flex items-center justify-between text-xs text-ink-muted">
@@ -33,7 +33,10 @@ export default async function TracksPage() {
               {ctx.role === "ADMIN" && (
                 <form action={toggleOrgTrackAction}>
                   <input type="hidden" name="trackId" value={t.id} /><input type="hidden" name="enabled" value={enabled.has(t.id) ? "0" : "1"} />
-                  <button className={enabled.has(t.id) ? "btn-ghost px-3 py-1 text-xs" : "btn-primary px-3 py-1 text-xs"}>{enabled.has(t.id) ? "Enabled ✓ — turn off" : "Enable"}</button>
+                  <span className="flex items-center gap-2">
+                    {enabled.has(t.id) ? <Badge tone="success" icon="check">On for your school</Badge> : <Badge tone="neutral" icon="minus">Off</Badge>}
+                    <button className={enabled.has(t.id) ? "btn-ghost" : "btn-primary"}>{enabled.has(t.id) ? "Turn off" : "Turn on"}</button>
+                  </span>
                 </form>
               )}
             </div>

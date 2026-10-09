@@ -5,6 +5,7 @@ import { requireTeachableCohort } from "@/lib/access";
 import { REVIEW_KINDS } from "@/lib/progress";
 import { reviewItemAction } from "@/app/actions/teach";
 import { PageHeader, Empty, KindPill } from "@/components/ui";
+import { Icon } from "@/components/icon";
 import { daysAgo } from "@/lib/utils";
 
 export const metadata = { title: "Review" };
@@ -48,7 +49,7 @@ export default async function ReviewPage({ params }: { params: Promise<{ id: str
                 <input type="hidden" name="enrollmentId" value={p.enrollmentId} />
                 <input type="hidden" name="itemId" value={p.itemId} />
                 <input name="reviewNote" placeholder="Feedback for the student (needed if sending back)" className="input min-w-0 flex-1" />
-                <button name="decision" value="VERIFIED" className="btn-primary">✓ Verify</button>
+                <button name="decision" value="VERIFIED" className="btn-primary"><Icon name="check" size={18} />Verify</button>
                 <button name="decision" value="NEEDS_WORK" className="btn-danger">Needs work</button>
               </form>
             </div>

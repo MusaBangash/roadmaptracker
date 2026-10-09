@@ -4,7 +4,7 @@ import { db, schema } from "@/db";
 import { getContext } from "@/lib/access";
 import { loadTrackTree, loadProgress, summarize, expectedPct } from "@/lib/progress";
 import { cohortRows, pendingReviewCount } from "@/lib/cohort-stats";
-import { PageHeader, ProgressBar, Stat, Empty } from "@/components/ui";
+import { PageHeader, ProgressBar, Stat, Empty, Badge } from "@/components/ui";
 import { JoinForm } from "@/components/auth-forms";
 import { pct, fmtDate, plural } from "@/lib/utils";
 
@@ -97,7 +97,7 @@ export default async function Dashboard() {
                       <div className="font-semibold">{x.c.name}</div>
                       <div className="text-sm text-ink-muted">{x.t.title} · started {fmtDate(x.c.startDate)}</div>
                     </div>
-                    {x.pending > 0 && <span className="pill bg-highlight text-on-highlight">{x.pending} to review</span>}
+                    {x.pending > 0 && <Badge tone="warning" icon="clock">{x.pending} to review</Badge>}
                   </div>
                   <div className="mt-3"><ProgressBar value={x.avg} expected={x.expected} /></div>
                   <div className="mt-2 flex flex-wrap gap-x-4 text-xs text-ink-muted">
@@ -120,7 +120,7 @@ export default async function Dashboard() {
             <div className="grid gap-3 md:grid-cols-2">
               {studentCards.map((x) => (
                 <Link key={x.e.id} href={`/learn/${x.e.id}`} className="card block p-5 hover:border-primary">
-                  <div className="text-xs font-semibold uppercase tracking-wide text-highlight-text">{x.c.name}</div>
+                  <div className="text-sm font-semibold text-highlight-text">{x.c.name}</div>
                   <div className="mt-1 font-bold text-xl">{x.t.title}</div>
                   <div className="mt-4"><ProgressBar value={x.sum.pct} expected={x.expected} /></div>
                   <div className="mt-2 flex flex-wrap gap-x-4 text-xs text-ink-muted">

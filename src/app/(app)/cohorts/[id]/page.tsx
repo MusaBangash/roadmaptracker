@@ -3,7 +3,8 @@ import { and, eq, inArray } from "drizzle-orm";
 import { db, schema } from "@/db";
 import { requireTeachableCohort } from "@/lib/access";
 import { cohortRows, pendingReviewCount } from "@/lib/cohort-stats";
-import { PageHeader, ProgressBar, Stat, RiskPill, Empty } from "@/components/ui";
+import { PageHeader, ProgressBar, Stat, RiskPill, Empty, EnrollmentBadge, Tag, sentence } from "@/components/ui";
+import { Icon } from "@/components/icon";
 import { CopyButton } from "@/components/copy-button";
 import { createInviteAction, deleteInviteAction, setCohortInstructorAction, archiveCohortAction } from "@/app/actions/admin";
 import { baseUrl } from "@/lib/url";
@@ -11,13 +12,20 @@ import { pct, fmtDate, daysAgo } from "@/lib/utils";
 
 export const metadata = { title: "Cohort" };
 
-function cellClass(p: number, signed: boolean | null) {
-  if (signed === true) return "bg-primary";
-  if (signed === false) return "bg-danger";
-  if (p >= 1) return "bg-primary-hover/70";
-  if (p >= 0.5) return "bg-highlight";
-  if (p > 0) return "bg-highlight/40";
-  return "bg-surface-sunken";
+/** One stage as a mini bar: the fill height is how much is ticked; an icon below marks a sign-off.
+ *  Shape and icon carry the meaning, so it never depends on colour alone. */
+function StageCell({ p, signed, title }: { p: number; signed: boolean | null; title: string }) {
+  return (
+    <span title={title} className="flex w-3 flex-col items-center gap-0.5">
+      <span className="flex h-5 w-full flex-col justify-end overflow-hidden rounded-xs bg-surface-sunken">
+        <span className={signed === false ? "bg-danger" : "bg-primary"} style={{ height: pct(signed === true ? 1 : p) }} />
+      </span>
+      <span className={`h-3 ${signed === false ? "text-danger" : "text-success"}`}>
+        {signed === true && <Icon name="check" size={12} />}
+        {signed === false && <Icon name="x" size={12} />}
+      </span>
+    </span>
+  );
 }
 
 export default async function CohortPage({ params }: { params: Promise<{ id: string }> }) {
@@ -65,7 +73,7 @@ export default async function CohortPage({ params }: { params: Promise<{ id: str
       <div className="mb-6 grid gap-3 sm:grid-cols-4">
         <Stat label="Active students" value={active.length} sub={`${rows.length - active.length} paused, finished or withdrawn`} />
         <div className="card p-4">
-          <div className="text-xs font-semibold uppercase tracking-wide text-ink-muted">Average progress</div>
+          <div className="text-sm font-semibold text-ink-muted">Average progress</div>
           <div className="mt-1 font-bold text-2xl">{pct(avg)}</div>
           <div className="mt-2"><ProgressBar value={avg} expected={expected} /></div>
           <div className="mt-1 text-xs text-ink-muted">plan expects {pct(expected)} by today</div>
@@ -81,7 +89,7 @@ export default async function CohortPage({ params }: { params: Promise<{ id: str
         ) : (
           <div className="card overflow-x-auto">
             <table className="w-full min-w-[760px] text-sm">
-              <thead className="border-b border-border text-left text-xs uppercase tracking-wide text-ink-muted">
+              <thead className="border-b border-border text-left text-sm font-semibold text-ink-muted">
                 <tr><th className="p-3">Student</th><th className="p-3">Progress</th><th className="p-3">Stages</th><th className="p-3">Hours</th><th className="p-3">Attend.</th><th className="p-3">Last active</th><th className="p-3">Status</th></tr>
               </thead>
               <tbody className="divide-y divide-border">
@@ -93,9 +101,9 @@ export default async function CohortPage({ params }: { params: Promise<{ id: str
                     </td>
                     <td className="w-40 p-3"><ProgressBar value={r.sum.pct} expected={expected} /><div className="mt-1 text-xs text-ink-muted">{pct(r.sum.pct)} · {r.sum.verified} verified</div></td>
                     <td className="p-3">
-                      <div className="flex gap-0.5" aria-label={`${r.sum.stagesPassed} of ${tree.length} stages passed`}>
+                      <div className="flex items-start gap-0.5" aria-label={`${r.sum.stagesPassed} of ${tree.length} stages passed`}>
                         {r.sum.stages.map((s, i) => (
-                          <span key={s.stageId} title={`${i + 1}. ${tree[i].title}: ${pct(s.pct)}${s.signedOff ? " · signed off" : ""}`} className={`h-4 w-2.5 rounded-xs ${cellClass(s.pct, s.signedOff)}`} />
+                          <StageCell key={s.stageId} p={s.pct} signed={s.signedOff} title={`${i + 1}. ${tree[i].title}: ${pct(s.pct)} ticked${s.signedOff === true ? " · signed off" : s.signedOff === false ? " · not passed" : ""}`} />
                         ))}
                       </div>
                       <div className="mt-1 text-xs text-ink-muted">{r.sum.stagesPassed}/{tree.length} passed</div>
@@ -103,17 +111,15 @@ export default async function CohortPage({ params }: { params: Promise<{ id: str
                     <td className="p-3">{r.hours}</td>
                     <td className="p-3">{r.attendance ? pct(r.attendance.present / r.attendance.total) : "—"}</td>
                     <td className="p-3 text-ink-muted">{daysAgo(r.last)}</td>
-                    <td className="p-3">{r.enrollment.status === "ACTIVE" ? <RiskPill risk={r.risk} /> : <span className="pill bg-surface-sunken text-ink-muted">{r.enrollment.status.toLowerCase()}</span>}</td>
+                    <td className="p-3">{r.enrollment.status === "ACTIVE" ? <RiskPill risk={r.risk} /> : <EnrollmentBadge status={r.enrollment.status} />}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
             <div className="flex flex-wrap gap-4 border-t border-border p-3 text-xs text-ink-muted">
-              <span><span className="mr-1 inline-block h-3 w-2 rounded-xs bg-primary align-middle" />signed off</span>
-              <span><span className="mr-1 inline-block h-3 w-2 rounded-xs bg-primary-hover/70 align-middle" />all ticked</span>
-              <span><span className="mr-1 inline-block h-3 w-2 rounded-xs bg-highlight align-middle" />half or more</span>
-              <span><span className="mr-1 inline-block h-3 w-2 rounded-xs bg-highlight/40 align-middle" />started</span>
-              <span><span className="mr-1 inline-block h-3 w-2 rounded-xs bg-danger align-middle" />not passed</span>
+              <span>Each stage is a small bar: the fuller it is, the more the student has ticked.</span>
+              <span className="inline-flex items-center gap-1 text-success"><Icon name="check" size={14} /><span className="text-ink-muted">signed off</span></span>
+              <span className="inline-flex items-center gap-1 text-danger"><Icon name="x" size={14} /><span className="text-ink-muted">not passed</span></span>
             </div>
           </div>
         )}
@@ -144,7 +150,7 @@ export default async function CohortPage({ params }: { params: Promise<{ id: str
               const expired = (inv.expiresAt && inv.expiresAt < new Date()) || inv.uses >= inv.maxUses;
               return (
                 <div key={inv.id} className="flex flex-wrap items-center gap-2 p-3 text-sm">
-                  <span className="pill bg-surface-sunken text-ink-muted">{inv.role.toLowerCase()}</span>
+                  <Tag>{sentence(inv.role)}</Tag>
                   <code className="min-w-0 flex-1 truncate font-mono text-xs">{link}</code>
                   <span className={`text-xs ${expired ? "text-danger" : "text-ink-muted"}`}>{inv.uses}/{inv.maxUses} used · {expired ? "expired" : `until ${fmtDate(inv.expiresAt)}`}</span>
                   <CopyButton text={link} />
