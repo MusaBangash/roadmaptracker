@@ -19,7 +19,7 @@ export default async function Dashboard() {
       <>
         <PageHeader title={`Welcome, ${first}`} sub="You're not part of a school yet." />
         <div className="card max-w-md p-6">
-          <p className="mb-4 text-sm text-muted">Ask your instructor or school admin for an invite link or code, then enter it here.</p>
+          <p className="mb-4 text-sm text-ink-muted">Ask your instructor or school admin for an invite link or code, then enter it here.</p>
           <JoinForm />
         </div>
       </>
@@ -91,16 +91,16 @@ export default async function Dashboard() {
           ) : (
             <div className="grid gap-3 md:grid-cols-2">
               {teachCards.map((x) => (
-                <Link key={x.c.id} href={`/cohorts/${x.c.id}`} className="card block p-4 hover:border-forest">
+                <Link key={x.c.id} href={`/cohorts/${x.c.id}`} className="card block p-4 hover:border-primary">
                   <div className="flex items-start justify-between gap-2">
                     <div>
                       <div className="font-semibold">{x.c.name}</div>
-                      <div className="text-sm text-muted">{x.t.title} · started {fmtDate(x.c.startDate)}</div>
+                      <div className="text-sm text-ink-muted">{x.t.title} · started {fmtDate(x.c.startDate)}</div>
                     </div>
-                    {x.pending > 0 && <span className="pill bg-saffron text-text">{x.pending} to review</span>}
+                    {x.pending > 0 && <span className="pill bg-highlight text-on-highlight">{x.pending} to review</span>}
                   </div>
                   <div className="mt-3"><ProgressBar value={x.avg} expected={x.expected} /></div>
-                  <div className="mt-2 flex flex-wrap gap-x-4 text-xs text-muted">
+                  <div className="mt-2 flex flex-wrap gap-x-4 text-xs text-ink-muted">
                     <span>{plural(x.students, "student")}</span><span>average {pct(x.avg)}</span>
                     {x.atRisk > 0 && <span className="font-semibold text-danger">{x.atRisk} need attention</span>}
                   </div>
@@ -119,12 +119,12 @@ export default async function Dashboard() {
           ) : (
             <div className="grid gap-3 md:grid-cols-2">
               {studentCards.map((x) => (
-                <Link key={x.e.id} href={`/learn/${x.e.id}`} className="card block p-5 hover:border-forest">
-                  <div className="text-xs font-semibold uppercase tracking-wide text-saffron-ink">{x.c.name}</div>
-                  <div className="mt-1 font-serif text-xl">{x.t.title}</div>
+                <Link key={x.e.id} href={`/learn/${x.e.id}`} className="card block p-5 hover:border-primary">
+                  <div className="text-xs font-semibold uppercase tracking-wide text-highlight-text">{x.c.name}</div>
+                  <div className="mt-1 font-bold text-xl">{x.t.title}</div>
                   <div className="mt-4"><ProgressBar value={x.sum.pct} expected={x.expected} /></div>
-                  <div className="mt-2 flex flex-wrap gap-x-4 text-xs text-muted">
-                    <span className="font-semibold text-text">{pct(x.sum.pct)} done</span>
+                  <div className="mt-2 flex flex-wrap gap-x-4 text-xs text-ink-muted">
+                    <span className="font-semibold text-ink">{pct(x.sum.pct)} done</span>
                     <span>{x.sum.stagesPassed}/{x.stages} stages passed</span>
                     <span>{x.sum.verified} verified</span>
                     {x.sum.pct + 0.15 < x.expected && <span className="font-semibold text-danger">behind the plan — keep going</span>}

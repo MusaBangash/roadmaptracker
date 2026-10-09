@@ -44,7 +44,7 @@ export default async function StudentPage({ params }: { params: Promise<{ id: st
       />
       <div className="mb-6 grid gap-3 sm:grid-cols-4">
         <div className="card p-4 sm:col-span-2">
-          <div className="flex items-baseline justify-between"><span className="text-xs font-semibold uppercase tracking-wide text-muted">Progress</span><span className="font-serif text-2xl">{pct(sum.pct)}</span></div>
+          <div className="flex items-baseline justify-between"><span className="text-xs font-semibold uppercase tracking-wide text-ink-muted">Progress</span><span className="font-bold text-2xl">{pct(sum.pct)}</span></div>
           <div className="mt-3"><ProgressBar value={sum.pct} expected={expectedPct(tree, cohort.startDate)} /></div>
         </div>
         <Stat label="Stages passed" value={`${sum.stagesPassed}/${tree.length}`} />
@@ -62,37 +62,37 @@ export default async function StudentPage({ params }: { params: Promise<{ id: st
                 <span className="min-w-0 flex-1">
                   <span className="flex flex-wrap items-center gap-2">
                     <span className="font-semibold">{i + 1}. {stage.title}</span><LevelPill level={stage.level} />
-                    {so?.passed === true && <span className="pill bg-forest-tint text-forest">✓ passed</span>}
-                    {so?.passed === false && <span className="pill bg-danger-tint text-danger">not passed</span>}
+                    {so?.passed === true && <span className="pill bg-primary-soft text-primary">✓ passed</span>}
+                    {so?.passed === false && <span className="pill bg-danger-soft text-danger">not passed</span>}
                   </span>
                   <span className="mt-2 block max-w-md"><ProgressBar value={s.pct} /></span>
                 </span>
-                <span className="text-sm text-muted">{s.done}/{s.required} · {s.verified} verified</span>
+                <span className="text-sm text-ink-muted">{s.done}/{s.required} · {s.verified} verified</span>
               </summary>
-              <div className="border-t border-line p-4">
-                {stage.doneWhen && <p className="mb-3 text-sm"><b className="text-saffron-ink">Done when:</b> {stage.doneWhen}</p>}
-                <form action={signoffStageAction} className="mb-4 flex flex-wrap items-center gap-2 rounded-lg bg-surface-2 p-3">
+              <div className="border-t border-border p-4">
+                {stage.doneWhen && <p className="mb-3 text-sm"><b className="text-highlight-text">Done when:</b> {stage.doneWhen}</p>}
+                <form action={signoffStageAction} className="mb-4 flex flex-wrap items-center gap-2 rounded-md bg-surface-sunken p-3">
                   <input type="hidden" name="enrollmentId" value={enrollment.id} /><input type="hidden" name="stageId" value={stage.id} />
                   <input name="notes" defaultValue={so?.notes ?? ""} placeholder="Sign-off notes (evidence seen, test passed…)" className="input min-w-0 flex-1" />
                   <button name="decision" value="PASS" className="btn-primary">Pass stage</button>
                   <button name="decision" value="FAIL" className="btn-danger">Not yet</button>
                   {so && <button name="decision" value="CLEAR" className="btn-ghost">Clear</button>}
-                  {so && <span className="w-full text-xs text-muted">Last decision {fmtDate(so.signedAt)}</span>}
+                  {so && <span className="w-full text-xs text-ink-muted">Last decision {fmtDate(so.signedAt)}</span>}
                 </form>
-                <ul className="divide-y divide-line">
+                <ul className="divide-y divide-border">
                   {stage.items.map((it) => {
                     const p = byItem.get(it.id);
                     return (
                       <li key={it.id} className="flex flex-wrap items-center gap-2 py-2 text-sm">
                         <span className="min-w-0 flex-1">
                           <span className="font-medium">{it.title}</span> <KindPill kind={it.kind} /> <StatusPill status={p?.status} />
-                          {p?.evidenceUrl && <a href={p.evidenceUrl} target="_blank" rel="noreferrer" className="ml-2 text-xs text-sky underline">evidence</a>}
-                          {p?.note && <span className="block text-xs text-muted">“{p.note}”</span>}
+                          {p?.evidenceUrl && <a href={p.evidenceUrl} target="_blank" rel="noreferrer" className="ml-2 text-xs text-secondary underline">evidence</a>}
+                          {p?.note && <span className="block text-xs text-ink-muted">“{p.note}”</span>}
                         </span>
                         {p?.status !== "VERIFIED" && (
                           <form action={reviewItemAction}>
                             <input type="hidden" name="enrollmentId" value={enrollment.id} /><input type="hidden" name="itemId" value={it.id} />
-                            <button name="decision" value="VERIFIED" className="text-xs font-semibold text-forest">Verify</button>
+                            <button name="decision" value="VERIFIED" className="text-xs font-semibold text-primary">Verify</button>
                           </form>
                         )}
                       </li>
@@ -110,15 +110,15 @@ export default async function StudentPage({ params }: { params: Promise<{ id: st
           <h2 className="h2 mb-3">Score an assessment</h2>
           <AssessmentForm enrollmentId={enrollment.id} rubric={rubric} today={new Date().toISOString().slice(0, 10)} />
           {assessments.length > 0 && (
-            <div className="card mt-4 divide-y divide-line">
+            <div className="card mt-4 divide-y divide-border">
               {assessments.map((a) => (
                 <div key={a.id} className="p-3 text-sm">
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <span className="font-semibold">{a.title}</span>
-                    <span className={`pill ${a.passed ? "bg-forest-tint text-forest" : "bg-danger-tint text-danger"}`}>{a.passed ? "passed" : "not passed"} · {a.average?.toFixed(2)}</span>
+                    <span className={`pill ${a.passed ? "bg-primary-soft text-primary" : "bg-danger-soft text-danger"}`}>{a.passed ? "passed" : "not passed"} · {a.average?.toFixed(2)}</span>
                   </div>
-                  <div className="text-xs text-muted">{fmtDate(a.date)}</div>
-                  <div className="mt-1 flex flex-wrap gap-x-3 text-xs text-muted">{Object.entries(a.scores).map(([k, v]) => <span key={k}>{k}: {v.join(" / ")}</span>)}</div>
+                  <div className="text-xs text-ink-muted">{fmtDate(a.date)}</div>
+                  <div className="mt-1 flex flex-wrap gap-x-3 text-xs text-ink-muted">{Object.entries(a.scores).map(([k, v]) => <span key={k}>{k}: {v.join(" / ")}</span>)}</div>
                   {a.notes && <p className="mt-1 text-xs">{a.notes}</p>}
                 </div>
               ))}
@@ -127,13 +127,13 @@ export default async function StudentPage({ params }: { params: Promise<{ id: st
         </section>
         <section>
           <h2 className="h2 mb-3">Recent weekly logs</h2>
-          <div className="card divide-y divide-line">
-            {logs.length === 0 && <p className="p-4 text-sm text-muted">No weeks logged yet.</p>}
+          <div className="card divide-y divide-border">
+            {logs.length === 0 && <p className="p-4 text-sm text-ink-muted">No weeks logged yet.</p>}
             {logs.map((l) => (
               <div key={l.id} className="p-3 text-sm">
-                <div className="flex justify-between"><span className="font-semibold">Week of {fmtDate(l.weekStart)}</span><span className="text-muted">{l.hours} h</span></div>
+                <div className="flex justify-between"><span className="font-semibold">Week of {fmtDate(l.weekStart)}</span><span className="text-ink-muted">{l.hours} h</span></div>
                 {l.finished && <p className="mt-1">{l.finished}</p>}
-                {l.stuck && <p className="mt-1 text-muted">Stuck: {l.stuck}</p>}
+                {l.stuck && <p className="mt-1 text-ink-muted">Stuck: {l.stuck}</p>}
               </div>
             ))}
           </div>

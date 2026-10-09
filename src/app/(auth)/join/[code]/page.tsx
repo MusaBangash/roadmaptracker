@@ -12,7 +12,7 @@ export default async function JoinCodePage({ params }: { params: Promise<{ code:
   const { code } = await params;
   const invite = await db.query.invites.findFirst({ where: eq(schema.invites.code, code.toLowerCase()) });
   if (!invite) {
-    return (<><h1 className="h2 mb-2">Invite not found</h1><p className="text-sm text-muted">Check the link with your instructor, or <Link href="/join" className="text-forest">enter a code</Link>.</p></>);
+    return (<><h1 className="h2 mb-2">Invite not found</h1><p className="text-sm text-ink-muted">Check the link with your instructor, or <Link href="/join" className="text-primary">enter a code</Link>.</p></>);
   }
   const org = await db.query.organizations.findFirst({ where: eq(schema.organizations.id, invite.orgId) });
   const cohort = invite.cohortId ? await db.query.cohorts.findFirst({ where: eq(schema.cohorts.id, invite.cohortId) }) : null;
@@ -22,8 +22,8 @@ export default async function JoinCodePage({ params }: { params: Promise<{ code:
     <>
       <p className="label">Invitation</p>
       <h1 className="h2 mb-2">Join {org?.name}</h1>
-      <p className="mb-6 text-sm text-muted">
-        You&apos;re invited as {ROLE_LABEL[invite.role]}{cohort ? <> in <b className="text-text">{cohort.name}</b></> : null}.
+      <p className="mb-6 text-sm text-ink-muted">
+        You&apos;re invited as {ROLE_LABEL[invite.role]}{cohort ? <> in <b className="text-ink">{cohort.name}</b></> : null}.
       </p>
       {user ? (
         <>

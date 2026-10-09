@@ -20,10 +20,10 @@ export function AssessmentForm({ enrollmentId, rubric, today }: {
       </div>
       <div className="overflow-x-auto">
         <table className="w-full min-w-[560px] text-sm">
-          <thead className="text-left text-xs uppercase tracking-wide text-muted">
+          <thead className="text-left text-xs uppercase tracking-wide text-ink-muted">
             <tr><th className="py-2 pr-2">Criterion</th><th className="py-2 pr-2">Examiner 1</th><th className="py-2 pr-2">Examiner 2 (optional)</th><th className="py-2">Level guide</th></tr>
           </thead>
-          <tbody className="divide-y divide-line">
+          <tbody className="divide-y divide-border">
             {rubric.map((r, i) => (
               <tr key={r.criterion}>
                 <td className="py-2 pr-2 font-semibold">{r.criterion}</td>
@@ -34,18 +34,18 @@ export function AssessmentForm({ enrollmentId, rubric, today }: {
                     </select>
                   </td>
                 ))}
-                <td className="py-2 text-xs text-muted">{r.levels.map((l, li) => <span key={li} className="mr-2 whitespace-nowrap">{li + 1}: {l}</span>)}</td>
+                <td className="py-2 text-xs text-ink-muted">{r.levels.map((l, li) => <span key={li} className="mr-2 whitespace-nowrap">{li + 1}: {l}</span>)}</td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
       <div><label className="label" htmlFor="notes">Notes</label><textarea id="notes" name="notes" rows={2} className="input" placeholder="What was strong, what to fix before the re-defense…" /></div>
-      <p className="text-xs text-muted">Pass rule: average 3.0 or higher, and no criterion below 2.</p>
+      <p className="text-xs text-ink-muted">Pass rule: average 3.0 or higher, and no criterion below 2.</p>
       <div className="flex flex-wrap items-center gap-3">
         <button className="btn-primary" disabled={pending}>{pending ? "Saving…" : "Save scores"}</button>
         {state?.error && <span className="text-sm text-danger">{state.error}</span>}
-        {state?.ok && <span className="text-sm text-forest">{state.ok}</span>}
+        {state?.ok && <span className="text-sm text-primary">{state.ok}</span>}
       </div>
     </form>
   );

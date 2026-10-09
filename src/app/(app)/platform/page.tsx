@@ -23,10 +23,10 @@ export default async function PlatformPage() {
       <OrgForm />
       <div className="card mt-6 overflow-x-auto">
         <table className="w-full min-w-[520px] text-sm">
-          <thead className="border-b border-line text-left text-xs uppercase tracking-wide text-muted"><tr><th className="p-3">School</th><th className="p-3">Members</th><th className="p-3">Students</th><th className="p-3">Cohorts</th><th className="p-3">Created</th></tr></thead>
-          <tbody className="divide-y divide-line">
+          <thead className="border-b border-border text-left text-xs uppercase tracking-wide text-ink-muted"><tr><th className="p-3">School</th><th className="p-3">Members</th><th className="p-3">Students</th><th className="p-3">Cohorts</th><th className="p-3">Created</th></tr></thead>
+          <tbody className="divide-y divide-border">
             {orgs.map(({ o, members, students, cohorts }) => (
-              <tr key={o.id}><td className="p-3 font-semibold">{o.name}</td><td className="p-3">{Number(members)}</td><td className="p-3">{Number(students)}</td><td className="p-3">{Number(cohorts)}</td><td className="p-3 text-muted">{fmtDate(o.createdAt)}</td></tr>
+              <tr key={o.id}><td className="p-3 font-semibold">{o.name}</td><td className="p-3">{Number(members)}</td><td className="p-3">{Number(students)}</td><td className="p-3">{Number(cohorts)}</td><td className="p-3 text-ink-muted">{fmtDate(o.createdAt)}</td></tr>
             ))}
           </tbody>
         </table>

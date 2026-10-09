@@ -27,14 +27,14 @@ export default async function LogPage({ params }: { params: Promise<{ enrollment
       <WeeklyLogForm enrollmentId={enrollment.id} weekStart={monday} initial={current ?? undefined} />
       <h2 className="h2 mb-3 mt-8">Earlier weeks</h2>
       {logs.length === 0 ? <Empty title="No weeks logged yet">Write one line every week — even a week with no progress.</Empty> : (
-        <div className="card divide-y divide-line">
+        <div className="card divide-y divide-border">
           {logs.map((l) => (
             <div key={l.id} className="grid gap-1 p-4 sm:grid-cols-[160px_80px_1fr]">
               <div className="text-sm font-semibold">Week of {fmtDate(l.weekStart)}</div>
-              <div className="text-sm text-muted">{l.hours} h</div>
+              <div className="text-sm text-ink-muted">{l.hours} h</div>
               <div className="text-sm">
-                {l.finished || <span className="text-muted">—</span>}
-                {l.stuck && <div className="mt-1 text-muted">Stuck: {l.stuck}</div>}
+                {l.finished || <span className="text-ink-muted">—</span>}
+                {l.stuck && <div className="mt-1 text-ink-muted">Stuck: {l.stuck}</div>}
               </div>
             </div>
           ))}

@@ -20,11 +20,11 @@ export default async function CohortsPage() {
   const archived = rows.filter((r) => r.c.archived);
 
   const List = ({ list }: { list: typeof rows }) => (
-    <div className="card divide-y divide-line">
+    <div className="card divide-y divide-border">
       {list.map(({ c, t }) => (
-        <Link key={c.id} href={`/cohorts/${c.id}`} className="flex flex-wrap items-center justify-between gap-2 p-4 hover:bg-surface-2">
-          <div><div className="font-semibold">{c.name}</div><div className="text-sm text-muted">{t.title}</div></div>
-          <div className="text-sm text-muted">Started {fmtDate(c.startDate)}</div>
+        <Link key={c.id} href={`/cohorts/${c.id}`} className="flex flex-wrap items-center justify-between gap-2 p-4 hover:bg-surface-sunken">
+          <div><div className="font-semibold">{c.name}</div><div className="text-sm text-ink-muted">{t.title}</div></div>
+          <div className="text-sm text-ink-muted">Started {fmtDate(c.startDate)}</div>
         </Link>
       ))}
     </div>

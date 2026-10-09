@@ -32,11 +32,11 @@ export default async function LearnPage({ params }: { params: Promise<{ enrollme
       <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
         <div className="card col-span-2 p-4">
           <div className="flex items-baseline justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wide text-muted">Overall progress</span>
-            <span className="font-serif text-2xl">{pct(sum.pct)}</span>
+            <span className="text-xs font-semibold uppercase tracking-wide text-ink-muted">Overall progress</span>
+            <span className="font-bold text-2xl">{pct(sum.pct)}</span>
           </div>
           <div className="mt-3"><ProgressBar value={sum.pct} expected={expected} /></div>
-          <p className="mt-2 text-xs text-muted">The line marks where the cohort plan expects you to be today ({pct(expected)}).</p>
+          <p className="mt-2 text-xs text-ink-muted">The line marks where the cohort plan expects you to be today ({pct(expected)}).</p>
         </div>
         <Stat label="Done" value={`${sum.done}/${sum.required}`} sub="lessons and projects" />
         <Stat label="Stages passed" value={`${sum.stagesPassed}/${tree.length}`} sub={`${sum.verified} ${sum.verified === 1 ? "item" : "items"} verified`} />
@@ -54,29 +54,29 @@ export default async function LearnPage({ params }: { params: Promise<{ enrollme
           return (
             <details key={stage.id} className="card group" open={i === firstOpen}>
               <summary className="flex cursor-pointer list-none flex-wrap items-center gap-3 p-4">
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-forest text-xs font-bold text-on-forest">{i + 1}</span>
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-primary text-xs font-bold text-on-primary">{i + 1}</span>
                 <span className="min-w-0 flex-1">
                   <span className="flex flex-wrap items-center gap-2">
                     <span className="font-semibold">{stage.title}</span>
                     <LevelPill level={stage.level} />
-                    {stage.optional && <span className="pill bg-surface-2 text-muted">choose one</span>}
-                    {s.signedOff === true && <span className="pill bg-forest-tint text-forest">✓ signed off</span>}
-                    {s.signedOff === false && <span className="pill bg-danger-tint text-danger">not passed yet</span>}
+                    {stage.optional && <span className="pill bg-surface-sunken text-ink-muted">choose one</span>}
+                    {s.signedOff === true && <span className="pill bg-primary-soft text-primary">✓ signed off</span>}
+                    {s.signedOff === false && <span className="pill bg-danger-soft text-danger">not passed yet</span>}
                   </span>
                   <span className="mt-2 block max-w-md"><ProgressBar value={s.pct} /></span>
                 </span>
-                <span className="text-sm text-muted">{s.done}/{s.required}{stage.weeks ? ` · ~${stage.weeks} wk` : ""}</span>
+                <span className="text-sm text-ink-muted">{s.done}/{s.required}{stage.weeks ? ` · ~${stage.weeks} wk` : ""}</span>
               </summary>
-              <div className="border-t border-line px-4 pb-4 pt-3">
+              <div className="border-t border-border px-4 pb-4 pt-3">
                 <dl className="mb-3 grid gap-x-4 gap-y-1 text-sm sm:grid-cols-[120px_1fr]">
-                  {stage.benchmark && (<><dt className="font-semibold text-muted">Benchmark</dt><dd>{stage.benchmark}</dd></>)}
-                  {stage.goal && (<><dt className="font-semibold text-muted">Goal</dt><dd>{stage.goal}</dd></>)}
-                  {stage.doneWhen && (<><dt className="font-semibold text-saffron-ink">Done when</dt><dd className="font-semibold">{stage.doneWhen}</dd></>)}
-                  {stage.resources && (<><dt className="font-semibold text-muted">Resources</dt><dd className="text-muted">{stage.resources}</dd></>)}
+                  {stage.benchmark && (<><dt className="font-semibold text-ink-muted">Benchmark</dt><dd>{stage.benchmark}</dd></>)}
+                  {stage.goal && (<><dt className="font-semibold text-ink-muted">Goal</dt><dd>{stage.goal}</dd></>)}
+                  {stage.doneWhen && (<><dt className="font-semibold text-highlight-text">Done when</dt><dd className="font-semibold">{stage.doneWhen}</dd></>)}
+                  {stage.resources && (<><dt className="font-semibold text-ink-muted">Resources</dt><dd className="text-ink-muted">{stage.resources}</dd></>)}
                 </dl>
                 {groups.map((g, gi) => (
                   <div key={gi} className="mt-2">
-                    {g.name && <h3 className="mb-1 mt-3 text-sm font-bold text-forest">{g.name}</h3>}
+                    {g.name && <h3 className="mb-1 mt-3 text-sm font-bold text-primary">{g.name}</h3>}
                     <ul>
                       {g.items.map((it) => {
                         const p = byItem.get(it.id);

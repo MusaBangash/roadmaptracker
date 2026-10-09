@@ -1,0 +1,77 @@
+/* The logo is Latin-script and always reads left to right, even on Urdu screens. */
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  font-family: var(--font-sans);
+  line-height: 1.2;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.mark {
+  flex: none;
+}
+
+.rays {
+  stroke: var(--logo-sun);
+}
+
+.sun {
+  fill: var(--logo-sun);
+}
+
+.pageLeft {
+  fill: var(--logo-page-left);
+}
+
+.pageRight {
+  fill: var(--logo-page-right);
+}
+
+.name {
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.ai {
+  color: var(--highlight-text);
+}
+
+.product {
+  padding-inline-start: 0.45em;
+  border-inline-start: 1px solid var(--border-strong);
+  font-weight: 400;
+  color: var(--ink-muted);
+}
+
+/* Reverse: for forest green or dark photos, whatever the theme. The reference used raw
+   hex; these are the same colours from the brand scales. */
+.logo.reverse {
+  color: var(--sand-50);
+}
+
+.logo.reverse .ai {
+  color: var(--saffron-300);
+}
+
+.logo.reverse .product {
+  border-color: var(--forest-400);
+  color: var(--forest-100);
+}
+
+.mark.reverse .rays {
+  stroke: var(--saffron-300);
+}
+
+.mark.reverse .sun {
+  fill: var(--saffron-300);
+}
+
+.mark.reverse .pageLeft {
+  fill: var(--sand-50);
+}
+
+.mark.reverse .pageRight {
+  fill: var(--forest-200);
+}

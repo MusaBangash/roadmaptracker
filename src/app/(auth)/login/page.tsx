@@ -11,8 +11,8 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
   return (
     <>
       <h1 className="h2 mb-1">Sign in</h1>
-      <p className="mb-6 text-sm text-muted">Track your roadmap, your projects and your sign-offs.</p>
-      {error && <p className="mb-4 rounded-lg bg-danger-tint px-3 py-2 text-sm text-danger">Sign-in didn&apos;t complete. Please try again.</p>}
+      <p className="mb-6 text-sm text-ink-muted">Track your roadmap, your projects and your sign-offs.</p>
+      {error && <p className="mb-4 rounded-md bg-danger-soft px-3 py-2 text-sm text-danger">Sign-in didn&apos;t complete. Please try again.</p>}
       <LoginForm next={next} google={googleEnabled} />
     </>
   );

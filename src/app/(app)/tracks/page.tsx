@@ -25,10 +25,10 @@ export default async function TracksPage() {
       <div className="grid gap-3 md:grid-cols-2">
         {visible.map(({ t, stages, items }) => (
           <div key={t.id} className="card flex flex-col p-5">
-            <div className="text-xs font-semibold uppercase tracking-wide text-saffron-ink">{t.kind === "COURSE" ? "Course" : "Role roadmap"}{t.edition ? ` · ${t.edition.replace(/\s+-\s+/g, " · ")}` : ""}</div>
-            <Link href={`/tracks/${t.slug}`} className="mt-1 font-serif text-xl hover:text-forest">{t.title}</Link>
-            <p className="mt-1 flex-1 text-sm text-muted">{t.summary || t.subtitle}</p>
-            <div className="mt-3 flex items-center justify-between text-xs text-muted">
+            <div className="text-xs font-semibold uppercase tracking-wide text-highlight-text">{t.kind === "COURSE" ? "Course" : "Role roadmap"}{t.edition ? ` · ${t.edition.replace(/\s+-\s+/g, " · ")}` : ""}</div>
+            <Link href={`/tracks/${t.slug}`} className="mt-1 font-bold text-xl hover:text-primary">{t.title}</Link>
+            <p className="mt-1 flex-1 text-sm text-ink-muted">{t.summary || t.subtitle}</p>
+            <div className="mt-3 flex items-center justify-between text-xs text-ink-muted">
               <span>{Number(stages)} stages · {Number(items)} items</span>
               {ctx.role === "ADMIN" && (
                 <form action={toggleOrgTrackAction}>

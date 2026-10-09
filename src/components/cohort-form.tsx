@@ -27,7 +27,7 @@ export function CohortForm({ tracks, staff, today }: {
           <div className="grid gap-2 sm:grid-cols-2">
             {staff.map((s) => (
               <label key={s.id} className="flex items-center gap-2 text-sm">
-                <input type="checkbox" name="instructorIds" value={s.id} className="h-4 w-4 accent-[var(--forest)]" />
+                <input type="checkbox" name="instructorIds" value={s.id} className="h-4 w-4 accent-primary" />
                 {s.name ?? s.email}
               </label>
             ))}

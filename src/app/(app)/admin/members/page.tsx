@@ -25,15 +25,15 @@ export default async function MembersPage() {
 
       <section className="mb-8">
         <h2 className="h2 mb-1">School invite links</h2>
-        <p className="mb-3 text-sm text-muted">For staff, or students not yet in a cohort. To put students straight into a cohort, use the invite link on the cohort page.</p>
-        <div className="card divide-y divide-line">
+        <p className="mb-3 text-sm text-ink-muted">For staff, or students not yet in a cohort. To put students straight into a cohort, use the invite link on the cohort page.</p>
+        <div className="card divide-y divide-border">
           {invites.map((inv) => {
             const link = `${url}/join/${inv.code}`;
             return (
               <div key={inv.id} className="flex flex-wrap items-center gap-2 p-3 text-sm">
-                <span className="pill bg-surface-2 text-muted">{inv.role.toLowerCase()}</span>
+                <span className="pill bg-surface-sunken text-ink-muted">{inv.role.toLowerCase()}</span>
                 <code className="min-w-0 flex-1 truncate font-mono text-xs">{link}</code>
-                <span className="text-xs text-muted">{inv.uses}/{inv.maxUses} used · until {fmtDate(inv.expiresAt)}</span>
+                <span className="text-xs text-ink-muted">{inv.uses}/{inv.maxUses} used · until {fmtDate(inv.expiresAt)}</span>
                 <CopyButton text={link} />
                 <form action={deleteInviteAction}><input type="hidden" name="inviteId" value={inv.id} /><button className="text-xs text-danger">Delete</button></form>
               </div>
@@ -53,12 +53,12 @@ export default async function MembersPage() {
         <h2 className="h2 mb-3">Members</h2>
         <div className="card overflow-x-auto">
           <table className="w-full min-w-[620px] text-sm">
-            <thead className="border-b border-line text-left text-xs uppercase tracking-wide text-muted"><tr><th className="p-3">Name</th><th className="p-3">Joined</th><th className="p-3">Role</th><th className="p-3" /></tr></thead>
-            <tbody className="divide-y divide-line">
+            <thead className="border-b border-border text-left text-xs uppercase tracking-wide text-ink-muted"><tr><th className="p-3">Name</th><th className="p-3">Joined</th><th className="p-3">Role</th><th className="p-3" /></tr></thead>
+            <tbody className="divide-y divide-border">
               {members.map(({ m, u }) => (
                 <tr key={m.id}>
-                  <td className="p-3"><div className="font-semibold">{u.name ?? "—"}</div><div className="text-xs text-muted">{u.email}</div></td>
-                  <td className="p-3 text-muted">{fmtDate(m.createdAt)}</td>
+                  <td className="p-3"><div className="font-semibold">{u.name ?? "—"}</div><div className="text-xs text-ink-muted">{u.email}</div></td>
+                  <td className="p-3 text-ink-muted">{fmtDate(m.createdAt)}</td>
                   <td className="p-3">
                     <form action={setMemberRoleAction} className="flex gap-2">
                       <input type="hidden" name="membershipId" value={m.id} />

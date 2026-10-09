@@ -1,0 +1,44 @@
+/* Type styles from docs/BUILD_GUIDE.md ("Type, space and components") as one variable each,
+   used as `font: var(--text-body)`. In Urdu (lang="ur") every style switches to
+   Noto Nastaliq Urdu with about double the line height, so components need no Urdu code.
+   Nothing a student reads is smaller than 16px in English or 16px in Urdu.
+   Mark Latin text inside an Urdu page with lang="en" (a username, "English" in the language
+   switch) and it keeps Public Sans; mark Urdu inside an English page with lang="ur". */
+
+:root,
+[lang="en"] {
+  --text-display: 700 40px/48px var(--font-sans);
+  --text-heading-1: 700 32px/40px var(--font-sans);
+  --text-heading-2: 600 24px/32px var(--font-sans);
+  --text-heading-3: 600 20px/28px var(--font-sans);
+  --text-body-large: 400 18px/28px var(--font-sans);
+  --text-body: 400 16px/24px var(--font-sans);
+  --text-body-strong: 600 16px/24px var(--font-sans);
+  --text-small: 400 14px/20px var(--font-sans);
+  --text-small-strong: 600 14px/20px var(--font-sans);
+  --text-caption: 600 12px/16px var(--font-sans);
+  --text-caption-mono: 600 12px/16px var(--font-mono);
+  --text-code: 400 14px/22px var(--font-mono);
+}
+
+/* Urdu: urdu-heading is 26px/52px bold, urdu-body 18px/38px. Code stays in JetBrains Mono. */
+[lang="ur"] {
+  --text-display: 700 32px/64px var(--font-urdu);
+  --text-heading-1: 700 26px/52px var(--font-urdu);
+  --text-heading-2: 700 22px/44px var(--font-urdu);
+  --text-heading-3: 700 20px/40px var(--font-urdu);
+  --text-body-large: 400 20px/40px var(--font-urdu);
+  --text-body: 400 18px/38px var(--font-urdu);
+  --text-body-strong: 700 18px/38px var(--font-urdu);
+  --text-small: 400 16px/32px var(--font-urdu);
+  --text-small-strong: 700 16px/32px var(--font-urdu);
+  --text-caption: 700 14px/28px var(--font-urdu);
+  --text-caption-mono: 700 14px/28px var(--font-urdu);
+}
+
+/* Latin inside Urdu text that sets no font of its own (a username, "NoorAI", an app
+   name) keeps the Latin typeface. :where() gives this no weight, so any component's own
+   font (code, backup codes) still wins. */
+:where([lang="ur"] [lang="en"]) {
+  font-family: var(--font-sans);
+}

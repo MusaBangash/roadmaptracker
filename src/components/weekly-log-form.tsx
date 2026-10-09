@@ -17,7 +17,7 @@ export function WeeklyLogForm({ enrollmentId, weekStart, initial }: {
       <div className="flex items-center gap-3 sm:col-span-2">
         <button className="btn-primary" disabled={pending}>{pending ? "Saving…" : "Save week"}</button>
         {state?.error && <span className="text-sm text-danger">{state.error}</span>}
-        {state?.ok && <span className="text-sm text-forest">{state.ok}</span>}
+        {state?.ok && <span className="text-sm text-primary">{state.ok}</span>}
       </div>
     </form>
   );

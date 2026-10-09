@@ -1,99 +1,81 @@
 @import "tailwindcss";
 
-/* NoorAI "Growth" palette — forest green, saffron, sky blue, cream. Light and dark themes. */
+/* The NoorAI brand, copied from Lab Studio's packages/brand (see src/brand/README.md).
+   Fonts are served by this app: nothing loads from Google. Light and dark switch through
+   <html data-theme="light|dark">, set before paint by the script in src/app/layout.tsx. */
+@import "../brand/fonts/fonts.css";
+@import "../brand/tokens.css";
+@import "../brand/type.css";
+
 :root {
-  --bg: #fbf7ee;
-  --surface: #ffffff;
-  --surface-2: #f3eee2;
-  --text: #1b2620;
-  --muted: #5d6b63;
-  --line: #e4ddcc;
-  --forest: #1e4d3a;
-  --forest-2: #2f6b4f;
-  --forest-tint: #e3efe7;
-  --saffron: #e8a33d;
-  --saffron-tint: #fcefd6;
-  --saffron-ink: #8a5a10;
-  --sky: #3d8fcf;
-  --sky-tint: #e2f0fa;
-  --danger: #b4412f;
-  --danger-tint: #fbe6e1;
-  --on-forest: #ffffff;
+  color-scheme: light;
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #0f1814;
-    --surface: #16231d;
-    --surface-2: #1c2c24;
-    --text: #e8efe9;
-    --muted: #a1b2a8;
-    --line: #2a3c33;
-    --forest: #5fb488;
-    --forest-2: #7cc79f;
-    --forest-tint: #1d3a2c;
-    --saffron: #f0b65c;
-    --saffron-tint: #3d2f17;
-    --saffron-ink: #f0b65c;
-    --sky: #7bb8e8;
-    --sky-tint: #183246;
-    --danger: #ec8a77;
-    --danger-tint: #3f201a;
-    --on-forest: #0f1814;
-  }
+[data-theme="dark"] {
+  color-scheme: dark;
 }
 
+/* Brand semantic tokens as Tailwind colours: bg-surface-raised, text-ink-muted, bg-primary… */
 @theme inline {
-  --color-bg: var(--bg);
   --color-surface: var(--surface);
-  --color-surface-2: var(--surface-2);
-  --color-text: var(--text);
-  --color-muted: var(--muted);
-  --color-line: var(--line);
-  --color-forest: var(--forest);
-  --color-forest-2: var(--forest-2);
-  --color-forest-tint: var(--forest-tint);
-  --color-saffron: var(--saffron);
-  --color-saffron-tint: var(--saffron-tint);
-  --color-saffron-ink: var(--saffron-ink);
-  --color-sky: var(--sky);
-  --color-sky-tint: var(--sky-tint);
+  --color-surface-raised: var(--surface-raised);
+  --color-surface-sunken: var(--surface-sunken);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-on-primary: var(--on-primary);
+  --color-primary-soft: var(--primary-soft);
+  --color-on-primary-soft: var(--on-primary-soft);
+  --color-highlight: var(--highlight);
+  --color-on-highlight: var(--on-highlight);
+  --color-highlight-text: var(--highlight-text);
+  --color-secondary: var(--secondary);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
   --color-danger: var(--danger);
-  --color-danger-tint: var(--danger-tint);
-  --color-on-forest: var(--on-forest);
-  --font-serif: "Literata", Georgia, serif;
-  --font-sans: "Public Sans", system-ui, sans-serif;
+  --color-danger-soft: var(--danger-soft);
+  --color-on-danger: var(--on-danger);
+  --color-info: var(--info);
+  --color-info-soft: var(--info-soft);
+  --color-focus-ring: var(--focus-ring);
 }
 
 html { -webkit-text-size-adjust: 100%; }
-body { background: var(--bg); color: var(--text); font-family: var(--font-sans); }
+body { background: var(--surface); color: var(--ink); font: var(--text-body); }
 
 @utility card {
-  @apply rounded-xl border border-line bg-surface;
+  @apply rounded-lg border border-border bg-surface-raised shadow-[var(--shadow-card)];
 }
 @utility btn {
-  @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition disabled:opacity-50;
+  @apply inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-semibold transition disabled:opacity-50;
 }
 @utility btn-primary {
-  @apply btn bg-forest text-on-forest hover:bg-forest-2;
+  @apply btn bg-primary text-on-primary hover:bg-primary-hover;
 }
 @utility btn-ghost {
-  @apply btn border border-line bg-surface text-text hover:bg-surface-2;
+  @apply btn border border-border-strong bg-surface-raised text-ink hover:bg-primary-soft;
 }
 @utility btn-danger {
-  @apply btn border border-danger/40 text-danger hover:bg-danger-tint;
+  @apply btn border border-danger/40 text-danger hover:bg-danger-soft;
 }
 @utility input {
-  @apply w-full rounded-lg border border-line bg-surface px-3 py-2 text-sm text-text outline-none placeholder:text-muted focus:border-forest focus:ring-2 focus:ring-forest/20;
+  @apply w-full rounded-md border border-border-strong bg-surface-raised px-3 py-2 text-sm text-ink outline-none placeholder:text-ink-muted focus:border-primary focus:ring-2 focus:ring-primary/20;
 }
 @utility label {
-  @apply mb-1 block text-xs font-semibold uppercase tracking-wide text-muted;
+  @apply mb-1 block text-xs font-semibold uppercase tracking-wide text-ink-muted;
 }
 @utility pill {
   @apply inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide;
 }
 @utility h1 {
-  @apply font-serif text-2xl font-medium text-text sm:text-3xl;
+  font: var(--text-heading-1);
+  color: var(--ink);
 }
 @utility h2 {
-  @apply font-serif text-xl font-medium text-text;
+  font: var(--text-heading-2);
+  color: var(--ink);
 }

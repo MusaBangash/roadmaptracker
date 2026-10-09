@@ -19,11 +19,11 @@ export function ItemRow({ enrollmentId, item, progress }: Props) {
   const locked = progress?.status === "VERIFIED";
 
   return (
-    <li className={`border-b border-line py-3 last:border-0 ${reviewable ? "-mx-3 rounded-lg bg-saffron-tint/40 px-3" : ""}`}>
+    <li className={`border-b border-border py-3 last:border-0 ${reviewable ? "-mx-3 rounded-md bg-warning-soft/40 px-3" : ""}`}>
       <div className="flex items-start gap-3">
         <input
           type="checkbox"
-          className="mt-0.5 h-5 w-5 shrink-0 accent-[var(--forest)]"
+          className="mt-0.5 h-5 w-5 shrink-0 accent-primary"
           checked={done}
           disabled={locked || pending}
           aria-label={`Mark "${item.title}" as done`}
@@ -37,21 +37,21 @@ export function ItemRow({ enrollmentId, item, progress }: Props) {
         />
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
-            <span className={`text-sm font-semibold ${done ? "text-text" : "text-text"}`}>{item.title}</span>
+            <span className={`text-sm font-semibold ${done ? "text-ink" : "text-ink"}`}>{item.title}</span>
             <KindPill kind={item.kind} />
-            {item.optional && <span className="pill bg-surface-2 text-muted">optional</span>}
+            {item.optional && <span className="pill bg-surface-sunken text-ink-muted">optional</span>}
             <StatusPill status={progress?.status} />
           </div>
-          {item.detail && <p className="mt-0.5 text-sm text-muted">{item.detail}</p>}
+          {item.detail && <p className="mt-0.5 text-sm text-ink-muted">{item.detail}</p>}
           {progress?.status === "NEEDS_WORK" && progress.reviewNote && (
-            <p className="mt-2 rounded-md bg-danger-tint px-2 py-1 text-sm text-danger">Instructor: {progress.reviewNote}</p>
+            <p className="mt-2 rounded-md bg-danger-soft px-2 py-1 text-sm text-danger">Instructor: {progress.reviewNote}</p>
           )}
           {progress?.evidenceUrl && (
-            <a href={progress.evidenceUrl} target="_blank" rel="noreferrer" className="mt-1 inline-block break-all text-sm text-sky underline">
+            <a href={progress.evidenceUrl} target="_blank" rel="noreferrer" className="mt-1 inline-block break-all text-sm text-secondary underline">
               {progress.evidenceUrl}
             </a>
           )}
-          <button type="button" onClick={() => setOpen(!open)} className="mt-1 block text-xs font-semibold text-forest">
+          <button type="button" onClick={() => setOpen(!open)} className="mt-1 block text-xs font-semibold text-primary">
             {open ? "Close" : reviewable ? (progress?.evidenceUrl ? "Edit evidence" : "Add evidence for review") : "Add a note or link"}
           </button>
           {open && (
@@ -62,7 +62,7 @@ export function ItemRow({ enrollmentId, item, progress }: Props) {
               <input name="note" defaultValue={progress?.note ?? ""} placeholder="Short note (optional)" className="input" />
               <button className="btn-primary" disabled={saving}>{saving ? "Saving…" : "Save"}</button>
               {state?.error && <p className="text-sm text-danger sm:col-span-3">{state.error}</p>}
-              {state?.ok && <p className="text-sm text-forest sm:col-span-3">{state.ok}</p>}
+              {state?.ok && <p className="text-sm text-primary sm:col-span-3">{state.ok}</p>}
             </form>
           )}
         </div>

@@ -24,8 +24,8 @@ function GoogleButton({ next }: { next: string }) {
 
 function Divider() {
   return (
-    <div className="my-4 flex items-center gap-3 text-xs text-muted">
-      <span className="h-px flex-1 bg-line" /> or <span className="h-px flex-1 bg-line" />
+    <div className="my-4 flex items-center gap-3 text-xs text-ink-muted">
+      <span className="h-px flex-1 bg-border" /> or <span className="h-px flex-1 bg-border" />
     </div>
   );
 }
@@ -42,8 +42,8 @@ export function LoginForm({ next, google }: { next: string; google: boolean }) {
         <FormError message={state?.error} />
         <button className="btn-primary w-full" disabled={pending}>{pending ? "Signing in…" : "Sign in"}</button>
       </form>
-      <p className="mt-4 text-center text-sm text-muted">
-        New here? <Link className="font-semibold text-forest" href={`/register?next=${encodeURIComponent(next)}`}>Create an account</Link>
+      <p className="mt-4 text-center text-sm text-ink-muted">
+        New here? <Link className="font-semibold text-primary" href={`/register?next=${encodeURIComponent(next)}`}>Create an account</Link>
       </p>
     </div>
   );
@@ -58,12 +58,12 @@ export function RegisterForm({ next, google }: { next: string; google: boolean }
         <input type="hidden" name="next" value={next} />
         <div><label className="label" htmlFor="name">Full name</label><input id="name" name="name" required autoComplete="name" className="input" /></div>
         <div><label className="label" htmlFor="email">Email</label><input id="email" name="email" type="email" required autoComplete="email" className="input" /></div>
-        <div><label className="label" htmlFor="password">Password</label><input id="password" name="password" type="password" required minLength={8} autoComplete="new-password" className="input" /><p className="mt-1 text-xs text-muted">At least 8 characters.</p></div>
+        <div><label className="label" htmlFor="password">Password</label><input id="password" name="password" type="password" required minLength={8} autoComplete="new-password" className="input" /><p className="mt-1 text-xs text-ink-muted">At least 8 characters.</p></div>
         <FormError message={state?.error} />
         <button className="btn-primary w-full" disabled={pending}>{pending ? "Creating account…" : "Create account"}</button>
       </form>
-      <p className="mt-4 text-center text-sm text-muted">
-        Already have an account? <Link className="font-semibold text-forest" href={`/login?next=${encodeURIComponent(next)}`}>Sign in</Link>
+      <p className="mt-4 text-center text-sm text-ink-muted">
+        Already have an account? <Link className="font-semibold text-primary" href={`/login?next=${encodeURIComponent(next)}`}>Sign in</Link>
       </p>
     </div>
   );
