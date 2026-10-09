@@ -37,6 +37,8 @@ Owner's decisions (already made — don't re-ask):
 - Items needing instructor review: kinds PROJECT, DELIVERABLE, MILESTONE (`REVIEW_KINDS` in `src/lib/progress-core.ts`).
 - A school can never be left without an admin; you can't remove yourself.
 - CSV export guards against spreadsheet formula injection and includes a UTF-8 BOM (Excel).
+- **Teaching plan** (`/cohorts/[id]/teach`, rules in `src/lib/coverage-core.ts`): teachers mark LESSON items taught per cohort (date + who, table `cohort_coverage`); projects/deliverables/milestones are never "taught". Status per week/stage: Taught · Due now · Behind (plan window passed) · Coming up; a week gets an even share of its stage's weeks; optional stages are never "behind". "Taught, but students are behind" when taught ≥ 50% and class learned < taught − 25 points. "Mark done for present students" needs attendance that day, ticks only ACTIVE present students who had not ticked it, sets `item_progress.marked_by_id` (shown as "Marked by teacher"; cleared when the student adds evidence or re-ticks). Undo removes coverage and only unreviewed, evidence-free teacher ticks.
+- Dates with no time ("YYYY-MM-DD") are calendar days: `fmtDate` formats them in UTC so a server in another zone never shows the day before.
 
 ### Content
 9 tracks, 152 stages, 1,423 items in `content/tracks/*.json`:
@@ -63,7 +65,7 @@ scripts/sync.ts              idempotent upsert of tracks/stages/items by key (re
                              ensures SEED admin (isSuperAdmin) + first school + membership + enables all tracks
 src/db/schema.ts             tables: user, account, session, verificationToken, organization, membership(role),
                              track, stage, item, org_track, cohort, cohort_instructor, invite, enrollment,
-                             item_progress, stage_signoff, assessment, weekly_log, attendance
+                             item_progress (+ marked_by_id), stage_signoff, assessment, weekly_log, attendance, cohort_coverage
 src/db/index.ts              pg Pool + drizzle (pool max 5 in production)
 src/auth.ts                  Auth.js config
 src/lib/access.ts            getUser, requireUser, getContext (active org via cookie "noor_org"), requireRole,
@@ -73,15 +75,19 @@ src/lib/progress-core.ts     ALL progress maths, pure + tested (progress-core.te
                              currentStageIndex ("You are here"), riskOf, classStages/classAverage. Spec for the Lab Studio rewrite.
 src/lib/progress.ts          data loading; re-exports progress-core. loadCells() counts progress IN THE DATABASE (one row per
                              student×stage×group×kind) — use it for class/school pages, loadProgress() only for one student
-src/lib/cohort-stats.ts      cohortRows (+ class stage averages), pendingReviewCount, schoolTrackStats, schoolTrackStages, myTrackProgress
+src/lib/cohort-stats.ts      cohortRows (+ class stage averages, taught + coverage), pendingReviewCount, schoolTrackStats, schoolTrackStages, myTrackProgress
+src/lib/coverage-core.ts     teaching-plan maths, pure + tested: coverageOf, teachStatus, taughtNotLearned, presentToMark
+src/lib/coverage.ts          loadCoverage (cohort → itemId → date + teacher); re-exports coverage-core
+src/lib/access-core.ts       canTeachCohort — the pure, tested rule behind requireTeachableCohort
 src/lib/utils.ts             pct, fmtDate, daysAgo, thisMonday, initials, randomCode, safeUrl, plural
 src/app/actions/*.ts         server actions: auth, learn (student), teach (instructor), admin
 src/app/(auth)/              login, register, join, join/[code]
 src/app/(app)/               dashboard, learn/[enrollmentId](+/log), cohorts(+/new, /[id], /review,
-                             /students/[enrollmentId], /attendance, /export), admin/members, tracks(+/[slug], /[slug]/preview), platform
+                             /students/[enrollmentId], /attendance, /teach, /export[?type=plan]), admin/members, tracks(+/[slug], /[slug]/preview), platform
 src/components/              ui.tsx (ProgressBar, Badge, Tag, Stat, PageHeader…), logo.tsx, icon.tsx, theme-switch.tsx,
                              progress.tsx (SegmentBar, StageLine, GroupBar, KindBars, ClassStageList),
-                             roadmap-view.tsx (student view, shared with /tracks/[slug]/preview), forms
+                             roadmap-view.tsx (student view, shared with /tracks/[slug]/preview), teach-controls.tsx
+                             (Teaching plan date/present toolbar + Mark taught buttons), forms
 scripts/demo.ts              npm run demo:seed / demo:remove — "Demo School" with fake students (slug demo-school,
                              emails @demo.noorai.invalid, no passwords); never touches other schools
 ```

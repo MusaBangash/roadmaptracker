@@ -56,10 +56,12 @@ export default async function Dashboard() {
   }
   const pending = await pendingReviewCount(teach.map((x) => x.c.id));
   const teachCards = await Promise.all(teach.map(async ({ c, t }) => {
-    const { rows, expected } = await cohortRows(c);
+    const { rows, expected, tree, coverage } = await cohortRows(c);
+    const n = coverage.next;
+    const nextToTeach = n ? `Stage ${n.stageIndex + 1} · ${n.groupIndex !== null ? coverage.stages[n.stageIndex].groups[n.groupIndex].name : tree[n.stageIndex].title}` : null;
     const active = rows.filter((r) => r.enrollment.status === "ACTIVE");
     const avg = active.length ? active.reduce((a, r) => a + r.sum.pct, 0) / active.length : 0;
-    return { c, t, students: active.length, avg, expected, atRisk: active.filter((r) => r.risk).length, pending: pending.get(c.id) ?? 0 };
+    return { c, t, students: active.length, avg, expected, atRisk: active.filter((r) => r.risk).length, pending: pending.get(c.id) ?? 0, nextToTeach, behind: coverage.behind };
   }));
 
   let counts: Record<string, number> = {};
@@ -105,6 +107,10 @@ export default async function Dashboard() {
                   <div className="mt-2 flex flex-wrap gap-x-4 text-xs text-ink-muted">
                     <span>{plural(x.students, "student")}</span><span>average {pct(x.avg)}</span>
                     {x.atRisk > 0 && <span className="font-semibold text-danger">{x.atRisk} need attention</span>}
+                  </div>
+                  <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-border pt-3 text-sm">
+                    <span>{x.nextToTeach ? <>Next to teach: <b>{x.nextToTeach}</b></> : "Everything in the plan is taught."}</span>
+                    {x.behind > 0 && <Badge tone="warning" icon="offline">Teaching behind: {plural(x.behind, "week")}</Badge>}
                   </div>
                 </Link>
               ))}

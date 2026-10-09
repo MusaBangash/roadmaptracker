@@ -48,6 +48,8 @@ Same stack as Lab Studio. The agent, the WebSocket relay and the live-screen pag
 | `item_progress`, `stage_signoff` | Topic status (done, remaining, behind, extra) and teacher sign-off |
 | `assessment` (5-criterion rubric) | Results / rubric marking (3.5, 3.6) |
 | `attendance` | Attendance (2.2) — Lab Studio's comes from seat logins, so Tracks' manual register is only a fallback |
+| `cohort_coverage` (lesson taught to a cohort: date, teacher) | Course plan tracker topic status (3.7): done / remaining / behind; rules in `src/lib/coverage-core.ts` |
+| `item_progress.marked_by_id` (teacher ticked it for a present student) | Attendance-linked completion; keep separate from the student's own ticks |
 | `weekly_log` | No match yet — propose as part of 4.1 Progress |
 | `content/tracks/*.json` | Import format for course plans in 3.7 |
 

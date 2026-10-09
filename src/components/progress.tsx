@@ -1,6 +1,7 @@
 import { Badge, LevelPill, ProgressBar, SignoffBadge, Tag } from "@/components/ui";
 import { BEHIND_BY, REVIEW_KINDS, expectedGroupPct, type ClassPart, type ClassStage, type Part, type StageSummary } from "@/lib/progress-core";
-import { pct, plural } from "@/lib/utils";
+import { fmtDate, pct, plural } from "@/lib/utils";
+import { taughtNotLearned, type Segment, type StageCoverage, type TeachStatus } from "@/lib/coverage-core";
 
 // Progress bars for every level of a roadmap: the whole track, each stage, and each week
 // (or lessons and projects) inside a stage. Used by students, instructors and admins alike.
@@ -90,9 +91,11 @@ export function PlanLineNote({ who = "you" }: { who?: string }) {
 const classDetail = (p: ClassPart, unit = "student") => p.students ? `average ${pct(p.avg)} · ${plural(p.students, unit)}` : "no students yet";
 
 /** The whole class (or school) at every level: one row per stage, opening to its weeks. */
-export function ClassStageList({ tree, stages, expectedStages, open, averageLabel = "Class average" }: {
+export function ClassStageList({ tree, stages, expectedStages, open, averageLabel = "Class average", coverage }: {
   tree: (StageMeta & { id: string; items: { kind: string; optional: boolean }[] })[]; stages: ClassStage[]; expectedStages?: number[]; open?: number;
   averageLabel?: string;
+  /** A cohort's teaching plan: adds Taught bars next to the class averages. */
+  coverage?: StageCoverage[];
 }) {
   return (
     <div className="card divide-y divide-border">
@@ -110,8 +113,13 @@ export function ClassStageList({ tree, stages, expectedStages, open, averageLabe
                 <LevelPill level={stage.level} />
                 {stage.optional && <Tag>Choose one</Tag>}
                 {isBehind(c.avg, expected) && c.students > 0 && <Badge tone="warning" icon="offline">Behind plan</Badge>}
+                {coverage && <TeachBadge status={coverage[i].status} on={coverage[i].lastTaughtOn} />}
               </span>
+              {coverage && coverage[i].required > 0 && (
+                <SegmentBar label="Taught" value={coverage[i].pct} expected={expected} detail={`${coverage[i].taught} of ${coverage[i].required} lessons`} />
+              )}
               <SegmentBar label={stage.optional ? `${plural(c.students, "student")} chose this` : averageLabel} value={c.avg} expected={expected} detail={pct(c.avg)} />
+              {coverage && taughtNotLearned(coverage[i].pct, c.avg) && <span><Badge tone="warning" icon="offline">Taught, but students are behind</Badge></span>}
               <span className="flex flex-wrap gap-x-4 text-xs text-ink-muted">
                 <span>{c.finished} finished</span>
                 <span>{c.signedOff} signed off</span>
@@ -121,10 +129,20 @@ export function ClassStageList({ tree, stages, expectedStages, open, averageLabe
             {hasInside && (
               <div className="mt-3 grid gap-3 rounded-md bg-surface-sunken p-3 sm:grid-cols-2">
                 {c.groups.length > 0
-                  ? c.groups.map((g, gi) => (
-                      <SegmentBar key={g.name} label={g.name} value={g.avg} detail={classDetail(g)}
-                        expected={expected === undefined ? undefined : expectedGroupPct(expected, gi, c.groups.length)} />
-                    ))
+                  ? c.groups.map((g, gi) => {
+                      const t = coverage?.[i].groups[gi];
+                      return (
+                        <div key={g.name} className="grid gap-1">
+                          <SegmentBar label={g.name} value={g.avg} detail={classDetail(g)}
+                            expected={expected === undefined ? undefined : expectedGroupPct(expected, gi, c.groups.length)} />
+                          {t && t.required > 0 && (
+                            <span className="flex items-center gap-2 text-xs text-ink-muted">
+                              <TeachBadge status={t.status} on={t.lastTaughtOn} /> {t.taught} of {t.required} lessons taught
+                            </span>
+                          )}
+                        </div>
+                      );
+                    })
                   : (<>
                       <SegmentBar label="Lessons" value={c.lessons.avg} detail={classDetail(c.lessons)} />
                       <SegmentBar label="Projects" value={c.projects.avg} detail={classDetail(c.projects)} />
@@ -134,6 +152,31 @@ export function ClassStageList({ tree, stages, expectedStages, open, averageLabe
           </details>
         );
       })}
+    </div>
+  );
+}
+
+// ---------- Teaching plan ----------
+
+/** Where a week or stage stands in the teaching plan: always an icon and a word. */
+export function TeachBadge({ status, on }: { status: TeachStatus | null; on?: string | null }) {
+  if (status === "taught") return <Badge tone="success" icon="check">Taught{on ? ` · ${fmtDate(on)}` : ""}</Badge>;
+  if (status === "due") return <Badge tone="info" icon="clock">Due now</Badge>;
+  if (status === "behind") return <Badge tone="warning" icon="offline">Behind</Badge>;
+  if (status === "upcoming") return <Badge tone="neutral" icon="calendar">Coming up</Badge>;
+  return null;
+}
+
+/** Taught and Learned bars side by side, with a warning when the class is well behind what was taught. */
+export function TaughtLearned({ taught, learned, expected }: { taught: Segment; learned: number; expected?: number }) {
+  if (!taught.required) return <SegmentBar label="Learned (class average)" value={learned} />;
+  return (
+    <div className="grid gap-2">
+      <SegmentBar label="Taught" value={taught.pct} expected={expected} detail={`${taught.taught} of ${taught.required} lessons · ${pct(taught.pct)}`} />
+      <SegmentBar label="Learned (class average)" value={learned} />
+      {taughtNotLearned(taught.pct, learned) && (
+        <span><Badge tone="warning" icon="offline">Taught, but students are behind</Badge></span>
+      )}
     </div>
   );
 }

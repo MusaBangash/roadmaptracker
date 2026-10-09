@@ -12,7 +12,8 @@
 import "dotenv/config";
 import { and, eq, inArray, like, notLike } from "drizzle-orm";
 import { db, schema } from "../src/db";
-import { REVIEW_KINDS, stageWindows } from "../src/lib/progress-core";
+import { OTHER_GROUP, REVIEW_KINDS, stageWindows } from "../src/lib/progress-core";
+import { coverageOf, isLesson } from "../src/lib/coverage-core";
 
 const SLUG = "demo-school";
 const DOMAIN = "@demo.noorai.invalid";
@@ -34,9 +35,10 @@ const rand = rng(20261009);
 
 /** How each fake student behaves, relative to where the plan expects them. */
 type Profile = { name: string; offset: number; inactiveDays?: number; status?: "PAUSED" | "WITHDRAWN" };
-const COHORTS: { name: string; track: string; weeksAgo: number; students: Profile[] }[] = [
+/** teachLagWeeks: how far the demo teacher is behind the plan. */
+const COHORTS: { name: string; track: string; weeksAgo: number; teachLagWeeks: number; students: Profile[] }[] = [
   {
-    name: "Demo — Special Technician AI Engineer", track: "special-technician-ai-engineer", weeksAgo: 11,
+    name: "Demo — Special Technician AI Engineer", track: "special-technician-ai-engineer", weeksAgo: 11, teachLagWeeks: 2,
     students: [
       { name: "Ayesha Khan", offset: 0.12 },
       { name: "Bilal Ahmed", offset: 0.03 },
@@ -49,7 +51,7 @@ const COHORTS: { name: string; track: string; weeksAgo: number; students: Profil
     ],
   },
   {
-    name: "Demo — AI Engineer", track: "ai-engineer", weeksAgo: 14,
+    name: "Demo — AI Engineer", track: "ai-engineer", weeksAgo: 14, teachLagWeeks: 0,
     students: [
       { name: "Ali Raza", offset: 0.08 },
       { name: "Hira Shah", offset: 0 },
@@ -111,6 +113,7 @@ async function seed(tx: Tx) {
     const { total } = stageWindows(tree);
     const expected = Math.min(1, c.weeksAgo / total);
 
+    const roster: { id: string; active: boolean; done: Set<string> }[] = [];
     for (const p of c.students) {
       n++;
       const [u] = await tx.insert(schema.users).values({ name: p.name, email: `demo-student-${String(n).padStart(2, "0")}${DOMAIN}` }).returning();
@@ -166,6 +169,41 @@ async function seed(tx: Tx) {
         enrollmentId: enr.id, date: new Date(start.getTime() + w * WEEK).toISOString().slice(0, 10),
         present: start.getTime() + w * WEEK < lastDay && rand() > 0.1,
       })));
+      roster.push({ id: enr.id, active: (p.status ?? "ACTIVE") === "ACTIVE", done: doneIds });
+    }
+
+    // What the demo teacher has taught: each week of the plan, as far as the plan had reached
+    // `teachLagWeeks` ago, taught on the days of that week's own plan window.
+    const taughtWeeks = Math.max(0, c.weeksAgo - c.teachLagWeeks);
+    const plan = coverageOf(tree, new Map(), start);
+    const taughtRows = plan.stages.flatMap((st, si) => {
+      if (tree[si].optional) return [];
+      const req = tree[si].items.filter((i) => !i.optional);
+      const segments = st.groups.length
+        ? st.groups.map((g) => ({ w: g.window, lessons: req.filter((i) => (i.group ?? OTHER_GROUP) === g.name && isLesson(i.kind)) }))
+        : [{ w: st.window, lessons: req.filter((i) => isLesson(i.kind)) }];
+      return segments.flatMap(({ w, lessons }) => {
+        const share = w.end > w.start ? Math.max(0, Math.min(1, (taughtWeeks - w.start) / (w.end - w.start))) : taughtWeeks >= w.start ? 1 : 0;
+        const k = Math.round(share * lessons.length);
+        return lessons.slice(0, k).map((l, j) => ({
+          cohortId: cohort.id, itemId: l.id, taughtById: teacher.id,
+          taughtOn: new Date(start.getTime() + (w.start + ((j + 0.5) / lessons.length) * (w.end - w.start)) * WEEK).toISOString().slice(0, 10),
+        }));
+      });
+    });
+    if (taughtRows.length) await tx.insert(schema.cohortCoverage).values(taughtRows);
+
+    // The latest lesson was also ticked for the active students present that day ("Marked by teacher").
+    const latest = taughtRows.at(-1);
+    if (latest) {
+      const present = roster.filter((r) => r.active && !r.done.has(latest.itemId));
+      if (present.length) {
+        await tx.insert(schema.attendance).values(present.map((r) => ({ enrollmentId: r.id, date: latest.taughtOn, present: true }))).onConflictDoNothing();
+        await tx.insert(schema.itemProgress).values(present.map((r) => ({
+          enrollmentId: r.id, itemId: latest.itemId, status: "DONE" as const, markedById: teacher.id,
+          completedAt: new Date(`${latest.taughtOn}T12:00:00Z`), updatedAt: new Date(`${latest.taughtOn}T12:00:00Z`),
+        })));
+      }
     }
   }
   return { cohorts: COHORTS.length, students: n, ticks, admin: admin?.email ?? null };

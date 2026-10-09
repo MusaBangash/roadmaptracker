@@ -35,7 +35,7 @@ export default async function CohortPage({ params }: { params: Promise<{ id: str
   const ctx = await requireTeachableCohort(id);
   const { cohort } = ctx;
   // Independent queries run together: each trip to the database costs time.
-  const [track, { tree, rows, expected, expectedStages, stages }, pendingBy, invites, url, instructors, staff] = await Promise.all([
+  const [track, { tree, rows, expected, expectedStages, stages, coverage }, pendingBy, invites, url, instructors, staff] = await Promise.all([
     db.query.tracks.findFirst({ where: eq(schema.tracks.id, cohort.trackId) }).then((t) => t!),
     cohortRows(cohort),
     pendingReviewCount([cohort.id]),
@@ -71,6 +71,7 @@ export default async function CohortPage({ params }: { params: Promise<{ id: str
         back={{ href: "/cohorts", label: "Cohorts" }}
         actions={<>
           <Link href={`/cohorts/${cohort.id}/review`} className={pending ? "btn-primary" : "btn-ghost"}>Review{pending ? ` (${pending})` : ""}</Link>
+          <Link href={`/cohorts/${cohort.id}/teach`} className="btn-ghost">Teaching plan</Link>
           <Link href={`/cohorts/${cohort.id}/attendance`} className="btn-ghost">Attendance</Link>
           <a href={`/cohorts/${cohort.id}/export`} className="btn-ghost">Export CSV</a>
         </>}
@@ -134,7 +135,7 @@ export default async function CohortPage({ params }: { params: Promise<{ id: str
       <section className="mb-8">
         <h2 className="h2 mb-1">Progress by stage</h2>
         <div className="mb-3"><PlanLineNote who="the class" /></div>
-        <ClassStageList tree={tree} stages={stages} expectedStages={expectedStages} open={[...atStage.keys()].sort((a, b) => a - b)[0]} />
+        <ClassStageList tree={tree} stages={stages} expectedStages={expectedStages} coverage={coverage.stages} open={[...atStage.keys()].sort((a, b) => a - b)[0]} />
       </section>
 
       {atStage.size > 0 && (

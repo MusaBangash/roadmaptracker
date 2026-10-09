@@ -6,6 +6,7 @@ import { and, eq } from "drizzle-orm";
 import { auth } from "@/auth";
 import { db, schema } from "@/db";
 import type { Role } from "@/db/schema";
+import { canTeachCohort } from "@/lib/access-core";
 
 export const ORG_COOKIE = "noor_org";
 
@@ -50,16 +51,12 @@ export async function requireRole(roles: Role[]) {
 /** A cohort the current user may teach: school admins see all cohorts; instructors only their own. */
 export async function requireTeachableCohort(cohortId: string) {
   const ctx = await requireRole(["ADMIN", "INSTRUCTOR"]);
-  const cohort = await db.query.cohorts.findFirst({
-    where: and(eq(schema.cohorts.id, cohortId), eq(schema.cohorts.orgId, ctx.org.id)),
-  });
-  if (!cohort) notFound();
-  if (ctx.role === "INSTRUCTOR") {
-    const link = await db.query.cohortInstructors.findFirst({
-      where: and(eq(schema.cohortInstructors.cohortId, cohortId), eq(schema.cohortInstructors.userId, ctx.user.id)),
-    });
-    if (!link) notFound();
-  }
+  const [cohort, links] = await Promise.all([
+    db.query.cohorts.findFirst({ where: and(eq(schema.cohorts.id, cohortId), eq(schema.cohorts.orgId, ctx.org.id)) }),
+    db.select({ userId: schema.cohortInstructors.userId }).from(schema.cohortInstructors).where(eq(schema.cohortInstructors.cohortId, cohortId)),
+  ]);
+  // Not found (rather than "forbidden") so a cohort of another school or teacher is not revealed.
+  if (!cohort || !canTeachCohort({ userId: ctx.user.id, orgId: ctx.org.id, role: ctx.role }, cohort, links.map((l) => l.userId))) notFound();
   return { ...ctx, cohort };
 }
 

@@ -4,14 +4,14 @@ import { ProgressBar, Stat } from "@/components/ui";
 import { currentStageIndex, type StageNode, type Summary } from "@/lib/progress";
 import { pct } from "@/lib/utils";
 
-type ItemProgress = { status: string; evidenceUrl: string | null; note: string | null; reviewNote: string | null };
+type ItemProgress = { status: string; evidenceUrl: string | null; note: string | null; reviewNote: string | null; byTeacher?: boolean };
 
 /**
  * A roadmap as a student sees it: overall bar, then each stage with its bar, and inside it a
  * bar for every week (or for lessons and projects). Used by the student's own page and by
  * "Preview as student" (enrollmentId = null), so the preview is exactly what students get.
  */
-export function RoadmapView({ tree, sum, expected, expectedStages, progress, enrollmentId }: {
+export function RoadmapView({ tree, sum, expected, expectedStages, progress, enrollmentId, taught }: {
   tree: StageNode[];
   sum: Summary;
   /** Plan position for the whole track and for each stage; left out in a preview. */
@@ -19,6 +19,8 @@ export function RoadmapView({ tree, sum, expected, expectedStages, progress, enr
   expectedStages?: number[];
   progress: Map<string, ItemProgress>;
   enrollmentId: string | null;
+  /** Lessons the teacher has taught this cohort: itemId → date, ready to show. */
+  taught?: Map<string, string>;
 }) {
   const here = currentStageIndex(tree, sum);
   const hereStage = here >= 0 ? tree[here] : null;
@@ -77,7 +79,7 @@ export function RoadmapView({ tree, sum, expected, expectedStages, progress, enr
                       {b.items.map((it) => (
                         <ItemRow key={it.id} enrollmentId={enrollmentId}
                           item={{ id: it.id, title: it.title, detail: it.detail, kind: it.kind, optional: it.optional }}
-                          progress={progress.get(it.id) ?? null} />
+                          progress={progress.get(it.id) ?? null} taughtOn={taught?.get(it.id) ?? null} />
                       ))}
                     </ul>
                   </div>

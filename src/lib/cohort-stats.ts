@@ -3,6 +3,8 @@ import { and, eq, inArray, sql } from "drizzle-orm";
 import { db, schema } from "@/db";
 import { loadTrackTree, loadCells, loadSignoffs, summarizeCells, expectedPct, expectedStagePcts, classStages, classAverage, lastActivity, riskOf, REVIEW_KINDS, type StageNode } from "@/lib/progress";
 
+import { loadCoverage, taughtDates, coverageOf } from "@/lib/coverage";
+
 type Cohort = typeof schema.cohorts.$inferSelect;
 
 /** Sign-offs grouped by student, so each lookup is instant. */
@@ -23,7 +25,7 @@ export async function cohortRows(cohort: Cohort, tree?: StageNode[]) {
   ]);
   tree = loadedTree;
   const ids = rows.map((r) => r.e.id);
-  const [cells, signoffs, last, hours, att] = await Promise.all([
+  const [cells, signoffs, last, hours, att, taught] = await Promise.all([
     loadCells(ids),
     loadSignoffs(ids),
     lastActivity(ids),
@@ -35,6 +37,7 @@ export async function cohortRows(cohort: Cohort, tree?: StageNode[]) {
       ? db.select({ e: schema.attendance.enrollmentId, total: sql<number>`count(*)`, present: sql<number>`count(*) filter (where ${schema.attendance.present})` })
           .from(schema.attendance).where(inArray(schema.attendance.enrollmentId, ids)).groupBy(schema.attendance.enrollmentId)
       : Promise.resolve([]),
+    loadCoverage(cohort.id),
   ]);
   const signBy = byEnrollment(signoffs);
   const expected = expectedPct(tree, cohort.startDate);
@@ -55,6 +58,9 @@ export async function cohortRows(cohort: Cohort, tree?: StageNode[]) {
     expectedStages: expectedStagePcts(tree, cohort.startDate),
     /** Class averages per stage, group and kind, over active students. */
     stages: classStages(tree, active.map((r) => r.sum)),
+    /** What the teacher has taught this cohort, against the plan. */
+    taught,
+    coverage: coverageOf(tree, taughtDates(taught), cohort.startDate),
   };
 }
 

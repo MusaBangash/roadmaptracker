@@ -2,16 +2,18 @@
 
 import { useActionState, useOptimistic, useState, useTransition } from "react";
 import { toggleItemAction, saveEvidenceAction } from "@/app/actions/learn";
-import { KindPill, StatusPill, Tag } from "@/components/ui";
+import { Badge, KindPill, StatusPill, Tag } from "@/components/ui";
 
 type Props = {
   /** null = "Preview as student": ticks stay on this screen only and nothing is saved. */
   enrollmentId: string | null;
   item: { id: string; title: string; detail: string; kind: string; optional: boolean };
-  progress: { status: string; evidenceUrl: string | null; note: string | null; reviewNote: string | null } | null;
+  progress: { status: string; evidenceUrl: string | null; note: string | null; reviewNote: string | null; byTeacher?: boolean } | null;
+  /** The date the teacher taught this lesson to the cohort, ready to show (e.g. "14 Oct 2026"). */
+  taughtOn?: string | null;
 };
 
-export function ItemRow({ enrollmentId, item, progress }: Props) {
+export function ItemRow({ enrollmentId, item, progress, taughtOn }: Props) {
   const [pending, start] = useTransition();
   const [saved, setSaved] = useOptimistic(!!progress && progress.status !== "NEEDS_WORK");
   const [previewDone, setPreviewDone] = useState(false);
@@ -46,6 +48,10 @@ export function ItemRow({ enrollmentId, item, progress }: Props) {
             <KindPill kind={item.kind} />
             {item.optional && <Tag>Optional</Tag>}
             <StatusPill status={progress?.status} />
+            {taughtOn && (done
+              ? <Badge tone="info" icon="info">Taught in class · {taughtOn}</Badge>
+              : <Badge tone="warning" icon="offline">Taught in class · {taughtOn} — not done yet</Badge>)}
+            {progress?.byTeacher && done && <Tag>Marked by teacher</Tag>}
           </div>
           {item.detail && <p className="mt-0.5 text-sm text-ink-muted">{item.detail}</p>}
           {progress?.status === "NEEDS_WORK" && progress.reviewNote && (

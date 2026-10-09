@@ -4,8 +4,11 @@ export function pct(n: number) {
 
 export function fmtDate(d: Date | string | null | undefined) {
   if (!d) return "—";
+  // A date with no time ("2026-10-14") is a calendar day: format it in UTC so a server in
+  // another time zone never shows the day before.
+  const dayOnly = typeof d === "string" && /^\d{4}-\d{2}-\d{2}$/.test(d);
   const date = typeof d === "string" ? new Date(d) : d;
-  return date.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+  return date.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", ...(dayOnly ? { timeZone: "UTC" } : {}) });
 }
 
 export function daysAgo(d: Date | null | undefined) {

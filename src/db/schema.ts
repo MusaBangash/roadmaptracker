@@ -167,6 +167,9 @@ export const itemProgress = pgTable("item_progress", {
   reviewedById: text("reviewed_by_id").references(() => users.id),
   reviewedAt: timestamp("reviewed_at", { mode: "date" }),
   reviewNote: text("review_note"),
+  /** Set when a teacher ticked this for a student who was present in class (Teaching plan);
+   *  null when the student ticked it. Cleared when the student adds their own evidence. */
+  markedById: text("marked_by_id").references(() => users.id, { onDelete: "set null" }),
   updatedAt: timestamp("updated_at", { mode: "date" }).notNull().defaultNow(),
 }, (t) => [uniqueIndex("progress_enrollment_item").on(t.enrollmentId, t.itemId), index("progress_enrollment").on(t.enrollmentId)]);
 
@@ -209,3 +212,15 @@ export const attendance = pgTable("attendance", {
   date: date("date", { mode: "string" }).notNull(),
   present: boolean("present").notNull(),
 }, (t) => [uniqueIndex("attendance_enrollment_date").on(t.enrollmentId, t.date)]);
+
+// ---------- Teaching plan ----------
+
+/** A lesson a teacher has taught to one cohort: when and by whom. One row per cohort and lesson. */
+export const cohortCoverage = pgTable("cohort_coverage", {
+  id: id(),
+  cohortId: text("cohort_id").notNull().references(() => cohorts.id, { onDelete: "cascade" }),
+  itemId: text("item_id").notNull().references(() => items.id, { onDelete: "cascade" }),
+  taughtOn: date("taught_on", { mode: "string" }).notNull(),
+  taughtById: text("taught_by_id").references(() => users.id, { onDelete: "set null" }),
+  createdAt: created(),
+}, (t) => [uniqueIndex("coverage_cohort_item").on(t.cohortId, t.itemId)]);

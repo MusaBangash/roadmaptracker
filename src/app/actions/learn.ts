@@ -32,7 +32,7 @@ export async function toggleItemAction(enrollmentId: string, itemId: string, don
       .values({ enrollmentId: enrollment.id, itemId, status: "DONE" })
       .onConflictDoUpdate({
         target: [schema.itemProgress.enrollmentId, schema.itemProgress.itemId],
-        set: { status: "DONE", completedAt: new Date(), updatedAt: new Date() },
+        set: { status: "DONE", completedAt: new Date(), updatedAt: new Date(), markedById: null },
       });
   } else if (existing) {
     await db.delete(schema.itemProgress).where(where);
@@ -62,7 +62,7 @@ export async function saveEvidenceAction(_: FormState, form: FormData): Promise<
     .values({ enrollmentId: enrollment.id, itemId: p.data.itemId, status, evidenceUrl: url, note: p.data.note || null })
     .onConflictDoUpdate({
       target: [schema.itemProgress.enrollmentId, schema.itemProgress.itemId],
-      set: { status, evidenceUrl: url, note: p.data.note || null, updatedAt: new Date() },
+      set: { status, evidenceUrl: url, note: p.data.note || null, updatedAt: new Date(), markedById: null }, // now the student's own work
     });
   revalidatePath(`/learn/${enrollment.id}`);
   return { ok: status === "VERIFIED" ? "Saved." : "Saved — your instructor will review it." };
