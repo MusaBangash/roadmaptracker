@@ -8,6 +8,7 @@ export const AUDIT_GROUPS = {
   roadmaps: "Roadmaps and tracks",
   school: "Cohorts and school data",
   account: "Passwords and sign-in",
+  labs: "Labs and equipment",
 } as const;
 export type AuditGroup = keyof typeof AUDIT_GROUPS;
 
@@ -47,6 +48,11 @@ export const AUDIT_ACTIONS = {
   "certificate.design_off": { group: "school", label: "Stopped using the certificate design" },
   "certificate.design_delete": { group: "school", label: "Deleted an unused certificate design" },
   "certificate.design_online": { group: "school", label: "Changed the online version of the certificate design" },
+  "lab.create": { group: "labs", label: "Added a lab" },
+  "lab.update": { group: "labs", label: "Changed a lab" },
+  "lab.inspect": { group: "labs", label: "Inspected a lab" },
+  "lab.problem": { group: "labs", label: "Reported a lab problem" },
+  "lab.fix": { group: "labs", label: "Marked a lab problem fixed" },
   "password.reset_link": { group: "account", label: "Made a password reset link" },
   "password.reset": { group: "account", label: "Set a new password with a reset link" },
 } as const satisfies Record<string, { group: AuditGroup; label: string }>;

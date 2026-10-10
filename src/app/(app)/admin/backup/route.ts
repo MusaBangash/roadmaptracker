@@ -86,6 +86,27 @@ export async function GET() {
       })),
     })),
     activity: activity.map((a) => ({ at: a.createdAt, actorId: a.actorId, action: a.action, subjectId: a.subjectId, detail: a.detail })),
+    // Lab checks: every lab with its teachers, inspections and problems (open and fixed).
+    labs: await (async () => {
+      const [labs, teachers, inspections, faults] = await Promise.all([
+        db.select().from(schema.labs).where(eq(schema.labs.orgId, orgId)),
+        db.select({ labId: schema.labTeachers.labId, userId: schema.labTeachers.userId }).from(schema.labTeachers)
+          .innerJoin(schema.labs, eq(schema.labs.id, schema.labTeachers.labId)).where(eq(schema.labs.orgId, orgId)),
+        db.select().from(schema.labInspections).where(eq(schema.labInspections.orgId, orgId)).orderBy(schema.labInspections.inspectedOn),
+        db.select().from(schema.labFaults).where(eq(schema.labFaults.orgId, orgId)).orderBy(schema.labFaults.reportedAt),
+      ]);
+      return labs.map((l) => ({
+        id: l.id, name: l.name, pcCount: l.pcCount, pcItems: l.pcItems, roomItems: l.roomItems, archived: l.archived,
+        teacherIds: teachers.filter((t) => t.labId === l.id).map((t) => t.userId),
+        inspections: inspections.filter((x) => x.labId === l.id).map((x) => ({
+          id: x.id, inspectedOn: x.inspectedOn, byId: x.byId, pcCount: x.pcCount, pcItems: x.pcItems, roomItems: x.roomItems, findings: x.findings, note: x.note,
+        })),
+        problems: faults.filter((f) => f.labId === l.id).map((f) => ({
+          station: f.station, item: f.item, status: f.status, note: f.note, inspectionId: f.inspectionId, reportedById: f.reportedById,
+          reportedAt: f.reportedAt, fixedAt: f.fixedAt, fixedById: f.fixedById, fixNote: f.fixNote,
+        })),
+      }));
+    })(),
   };
   await audit({ orgId, actorId: ctx.user.id, action: "school.export" });
   const day = new Date().toISOString().slice(0, 10);

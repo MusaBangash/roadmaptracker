@@ -64,6 +64,13 @@
       "when": 1791592532658,
       "tag": "0008_wealthy_power_man",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1791603962920,
+      "tag": "0009_many_carlie_cooper",
+      "breakpoints": true
     }
   ]
 }

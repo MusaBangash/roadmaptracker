@@ -373,3 +373,65 @@ export const comments = pgTable("comment", {
   index("comment_thread").on(t.enrollmentId, t.itemId, t.createdAt),
   index("comment_author_time").on(t.authorId, t.createdAt),
 ]);
+
+// ---------- Lab checks (equipment inspections) ----------
+
+export const faultStatusEnum = pgEnum("fault_status", ["MISSING", "NOT_WORKING", "DAMAGED"]);
+export type FaultStatus = (typeof faultStatusEnum.enumValues)[number];
+
+/** A computer lab of a school: its PCs ("PC 1" … "PC n"), what is checked on each PC, and the room's
+ *  own equipment (projector…). The lab's teachers (lab_teacher) and the school's admins look after it. */
+export const labs = pgTable("lab", {
+  id: id(),
+  orgId: text("org_id").notNull().references(() => organizations.id, { onDelete: "cascade" }),
+  name: text("name").notNull(),
+  pcCount: integer("pc_count").notNull(),
+  pcItems: jsonb("pc_items").$type<string[]>().notNull(),
+  roomItems: jsonb("room_items").$type<string[]>().notNull(),
+  archived: boolean("archived").notNull().default(false),
+  createdAt: created(),
+}, (t) => [index("lab_org").on(t.orgId)]);
+
+export const labTeachers = pgTable("lab_teacher", {
+  labId: text("lab_id").notNull().references(() => labs.id, { onDelete: "cascade" }),
+  userId: text("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+}, (t) => [primaryKey({ columns: [t.labId, t.userId] })]);
+
+/** One full check of a lab (monthly). It keeps a copy of what the lab had then (PCs, items) and the
+ *  problems found, so an old report reads the same after the lab is changed. */
+export const labInspections = pgTable("lab_inspection", {
+  id: id(),
+  labId: text("lab_id").notNull().references(() => labs.id, { onDelete: "cascade" }),
+  orgId: text("org_id").notNull().references(() => organizations.id, { onDelete: "cascade" }),
+  inspectedOn: date("inspected_on", { mode: "string" }).notNull(),
+  byId: text("by_id").references(() => users.id, { onDelete: "set null" }),
+  labName: text("lab_name").notNull(),
+  pcCount: integer("pc_count").notNull(),
+  pcItems: jsonb("pc_items").$type<string[]>().notNull(),
+  roomItems: jsonb("room_items").$type<string[]>().notNull(),
+  findings: jsonb("findings").$type<{ station: string; item: string; status: FaultStatus; note: string }[]>().notNull(),
+  note: text("note"),
+  createdAt: created(),
+}, (t) => [index("lab_inspection_lab").on(t.labId, t.inspectedOn)]);
+
+/** A problem with one thing in a lab ("PC 5" + "Mouse", or "Room" + "Projector"). It stays open,
+ *  in every report, until someone marks it fixed. At most one open problem per thing. */
+export const labFaults = pgTable("lab_fault", {
+  id: id(),
+  labId: text("lab_id").notNull().references(() => labs.id, { onDelete: "cascade" }),
+  orgId: text("org_id").notNull().references(() => organizations.id, { onDelete: "cascade" }),
+  station: text("station").notNull(),
+  item: text("item").notNull(),
+  status: faultStatusEnum("status").notNull(),
+  note: text("note"),
+  /** The inspection that found it; null = reported on its own ("Report a problem"). */
+  inspectionId: text("inspection_id").references(() => labInspections.id, { onDelete: "set null" }),
+  reportedById: text("reported_by_id").references(() => users.id, { onDelete: "set null" }),
+  reportedAt: created(),
+  fixedAt: timestamp("fixed_at", { mode: "date" }),
+  fixedById: text("fixed_by_id").references(() => users.id, { onDelete: "set null" }),
+  fixNote: text("fix_note"),
+}, (t) => [
+  index("lab_fault_lab").on(t.labId),
+  uniqueIndex("lab_fault_one_open").on(t.labId, t.station, t.item).where(sql`"fixed_at" is null`),
+]);

@@ -63,6 +63,18 @@ export async function requireTeachableCohort(cohortId: string) {
   return { ...ctx, cohort };
 }
 
+/** A lab the current user looks after: the school's admins all labs, a teacher only the labs they are
+ *  given (lab_teacher). Others get "not found", so another school's lab is not revealed. */
+export async function requireLabAccess(labId: string) {
+  const ctx = await requireRole(["ADMIN", "INSTRUCTOR"]);
+  const [lab, link] = await Promise.all([
+    db.query.labs.findFirst({ where: and(eq(schema.labs.id, labId), eq(schema.labs.orgId, ctx.org.id)) }),
+    db.query.labTeachers.findFirst({ where: and(eq(schema.labTeachers.labId, labId), eq(schema.labTeachers.userId, ctx.user.id)) }),
+  ]);
+  if (!lab || (ctx.role !== "ADMIN" && !link)) notFound();
+  return { ...ctx, lab };
+}
+
 const viewerOf = (ctx: { user: { id: string }; org: { id: string } | null; role: Role | null }): Viewer =>
   ({ userId: ctx.user.id, orgId: ctx.org?.id ?? null, role: ctx.role });
 
