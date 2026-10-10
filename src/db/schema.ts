@@ -326,8 +326,8 @@ export const certificates = pgTable("certificate", {
 ]);
 
 /** A school's own certificate design: an A4 landscape picture with empty spaces, plus where each value
- *  is printed on it. Uploading a new picture adds a row (the old one stays for the certificates printed
- *  on it); `current` marks the one used for new certificates (at most one per school). */
+ *  is printed on it. Uploading a new picture adds a row (the old one stays if certificates were printed
+ *  on it, else it is deleted); `current` marks the one used for new certificates (at most one per school). */
 export const certificateDesigns = pgTable("certificate_design", {
   id: id(),
   orgId: text("org_id").notNull().references(() => organizations.id, { onDelete: "cascade" }),
@@ -336,6 +336,11 @@ export const certificateDesigns = pgTable("certificate_design", {
   width: integer("width").notNull(),
   height: integer("height").notNull(),
   layout: jsonb("layout").$type<CertLayout>().notNull(),
+  /** Optional second picture of the same design for the online copy (students' PDF), e.g. without the
+   *  signature lines that are signed by hand on the printed copy. Same shape as `image`. */
+  onlineImage: bytea("online_image"),
+  onlineMime: text("online_mime"),
+  onlineUpdatedAt: timestamp("online_updated_at", { mode: "date" }),
   current: boolean("current").notNull().default(true),
   createdById: text("created_by_id").references(() => users.id, { onDelete: "set null" }),
   createdAt: created(),

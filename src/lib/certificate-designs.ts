@@ -9,6 +9,7 @@ import { courseWeeks, durationText, nextRegNo, parseLayout, sessionText } from "
 const designColumns = {
   id: schema.certificateDesigns.id, orgId: schema.certificateDesigns.orgId, width: schema.certificateDesigns.width,
   height: schema.certificateDesigns.height, layout: schema.certificateDesigns.layout, createdAt: schema.certificateDesigns.createdAt,
+  onlineUpdatedAt: schema.certificateDesigns.onlineUpdatedAt,
 };
 
 /** The design new certificates of this school are printed on (without the picture's bytes), or null. */
@@ -19,8 +20,20 @@ export async function currentDesign(orgId: string) {
   return d && layout ? { ...d, layout } : null;
 }
 
-/** The picture's address. The id never points at another picture, so browsers may keep it. */
-export const designImageUrl = (designId: string) => `/certificate-image/${designId}`;
+/**
+ * The picture's address: the print version, or the online version when the design has one (else the
+ * print version again). The print picture behind an id never changes; the online one can be replaced,
+ * so its address carries when it was uploaded and browsers may keep every address forever.
+ */
+export function designImageUrl(designId: string, onlineUpdatedAt?: Date | null) {
+  return onlineUpdatedAt ? `/certificate-image/${designId}?copy=online&v=${onlineUpdatedAt.getTime()}` : `/certificate-image/${designId}`;
+}
+
+/** How many certificates were printed on a design (they keep it, so it can't be deleted). */
+export async function certificatesOn(designId: string) {
+  const [r] = await db.select({ n: sql<number>`count(*)::int` }).from(schema.certificates).where(eq(schema.certificates.designId, designId));
+  return r.n;
+}
 
 /** What the issue form offers for this student: the next Reg No and the cohort's last-used values. */
 export async function issueDefaults(orgId: string, cohort: typeof schema.cohorts.$inferSelect, trackTitle: string) {

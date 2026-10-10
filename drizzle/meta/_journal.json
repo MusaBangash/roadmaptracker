@@ -57,6 +57,13 @@
       "when": 1791590129100,
       "tag": "0007_furry_tarot",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1791592532658,
+      "tag": "0008_wealthy_power_man",
+      "breakpoints": true
     }
   ]
 }

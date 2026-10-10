@@ -20,7 +20,7 @@ import { getT } from "@/i18n/server";
 export const metadata = { title: "Certificate" };
 
 /** Story 3 + 5: the certificate, for the student who earned it and the people who teach their cohort. */
-export default async function CertificatePage({ params }: { params: Promise<{ code: string }> }) {
+export default async function CertificatePage({ params, searchParams }: { params: Promise<{ code: string }>; searchParams: Promise<{ copy?: string }> }) {
   const code = normalizeCode((await params).code);
   if (!code) notFound();
   const [ctx, t] = await Promise.all([getContext(), getT()]);
@@ -39,8 +39,12 @@ export default async function CertificatePage({ params }: { params: Promise<{ co
   // Printed on the school's own design (Certificate design, Story 4), with the places it was issued with.
   const layout = cert.layout && parseLayout(cert.layout);
   const design = cert.designId && layout
-    ? await db.query.certificateDesigns.findFirst({ where: eq(schema.certificateDesigns.id, cert.designId), columns: { id: true, width: true, height: true } })
+    ? await db.query.certificateDesigns.findFirst({ where: eq(schema.certificateDesigns.id, cert.designId), columns: { id: true, width: true, height: true, onlineUpdatedAt: true } })
     : null;
+  // Option B: the online version (no signature lines) for everyone; the cohort's teachers and admins can
+  // switch to the print version to print and sign by hand.
+  const printCopy = !!design && teaches && (await searchParams).copy === "print";
+  const hasOnline = !!design?.onlineUpdatedAt;
   const back = own ? { href: `/learn/${enrollment.id}`, label: t("cert.myRoadmap") } : { href: `/cohorts/${cohort.id}/students/${enrollment.id}`, label: cert.nameOnCertificate };
   return (
     <>
@@ -48,9 +52,17 @@ export default async function CertificatePage({ params }: { params: Promise<{ co
       <div className="print:hidden">
         <PageHeader title={t("cert.title")} sub={`${cert.trackTitle} · ${cert.cohortName}`} back={back}
           actions={!cert.revokedAt && <>
-            <PrintButton />
+            {printCopy ? <PrintButton label="Print" /> : <PrintButton />}
+            {design && teaches && hasOnline && (printCopy
+              ? <Link href={`/certificates/${code}`} className="btn-ghost">Online copy</Link>
+              : <Link href={`/certificates/${code}?copy=print`} className="btn-ghost"><Icon name="print" size={18} />Print for signing</Link>)}
             <CopyButton text={checkUrl} label={t("cert.copyCheck")} />
           </>} />
+        {printCopy && hasOnline && !cert.revokedAt && (
+          <p className="mb-4 flex items-start gap-2 rounded-md bg-info-soft px-4 py-3 text-sm text-info">
+            <Icon name="info" size={20} /><span><b>Print version</b>, with the signature lines: print it and sign by hand. Students see the online version.</span>
+          </p>
+        )}
         {cert.revokedAt ? (
           <p role="alert" className="mb-6 flex items-start gap-2 rounded-md bg-danger-soft px-4 py-3 text-sm text-danger">
             <Icon name="error" size={20} />
@@ -58,7 +70,7 @@ export default async function CertificatePage({ params }: { params: Promise<{ co
               ? t.rich("cert.revokedReason", { b: (s) => <b>{s}</b> }, { date: t.date(cert.revokedAt), reason: cert.revokeReason })
               : t.rich("cert.revoked", { b: (s) => <b>{s}</b> }, { date: t.date(cert.revokedAt) })}</span>
           </p>
-        ) : (
+        ) : !printCopy && (
           <p className="mb-6 text-sm text-ink-muted">
             {t.rich("cert.help", { b: (s) => <b className="text-ink">{s}</b>, link: (s) => <Link href={`/verify/${code}`} className="text-secondary underline">{s}</Link> })}
           </p>
@@ -66,7 +78,7 @@ export default async function CertificatePage({ params }: { params: Promise<{ co
       </div>
       <div className={cert.revokedAt ? "opacity-50 print:hidden" : ""}>
         {design && layout ? (
-          <DesignedCertificate imageUrl={designImageUrl(design.id)} aspect={design.width / design.height} layout={layout} qr={await qrSvg(checkUrl)} code={cert.code}
+          <DesignedCertificate imageUrl={designImageUrl(design.id, printCopy ? null : design.onlineUpdatedAt)} aspect={design.width / design.height} layout={layout} qr={await qrSvg(checkUrl)} code={cert.code}
             values={{
               name: cert.nameOnCertificate, regNo: cert.regNo ?? "", date: formatCertDate(pakistanDay(cert.issuedAt), layout.dateFormat),
               course: cert.courseTitle ?? cert.trackTitle, duration: cert.duration ?? "", session: cert.session ?? "", level: cert.level ?? "",

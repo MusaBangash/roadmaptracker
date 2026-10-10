@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useEffect, useState } from "react";
-import { saveLayoutAction, uploadDesignAction } from "@/app/actions/certificate-design";
+import { saveLayoutAction, uploadDesignAction, uploadOnlineAction } from "@/app/actions/certificate-design";
 import { DesignedCertificate, type DesignValues } from "@/components/designed-certificate";
 import { FormError } from "@/components/ui";
 import { Icon } from "@/components/icon";
@@ -14,15 +14,21 @@ const SAMPLE: Omit<DesignValues, "name" | "date"> = {
   regNo: "B5-AI-011", course: "Artificial Intelligence", duration: "12 Weeks", session: "Jun 2026 – Aug 2026", level: "Foundation",
 };
 
-/** Story 1: upload (or replace) the school's empty certificate picture. */
-export function DesignUploadForm({ replacing }: { replacing: boolean }) {
-  const [state, action, pending] = useActionState(uploadDesignAction, undefined);
+/** Story 1: upload (or replace) the school's empty certificate picture; `online` = its online version
+ *  (option B: the same design without the signature lines, for students' PDFs). */
+export function DesignUploadForm({ replacing, online = false }: { replacing: boolean; online?: boolean }) {
+  const [state, action, pending] = useActionState(online ? uploadOnlineAction : uploadDesignAction, undefined);
+  const id = online ? "online-file" : replacing ? "replace-file" : "design-file";
   return (
     <form action={action} className="grid gap-3">
       <div>
-        <label className="label" htmlFor="design-file">{replacing ? "New picture" : "Certificate picture"}</label>
-        <input id="design-file" name="file" type="file" required accept="image/png,image/jpeg" className="input" />
-        <p className="mt-1 text-xs text-ink-muted">PNG (best) or JPG, A4 lying down, at least 2000 pixels wide (3508 × 2480 is best), under 8 MB. The spaces for the name, Reg No, date and course must be <b>empty</b>.</p>
+        <label className="label" htmlFor={id}>{online ? "Online version" : replacing ? "New picture" : "Certificate picture (print version)"}</label>
+        <input id={id} name="file" type="file" required accept="image/png,image/jpeg" className="input" />
+        <p className="mt-1 text-xs text-ink-muted">
+          {online
+            ? <>The <b>same design at the same size</b>, with the signature lines replaced, e.g. by &ldquo;Digitally issued, scan the QR code to verify&rdquo;. PNG or JPG, under 8 MB.</>
+            : <>PNG (best) or JPG, A4 lying down, at least 2000 pixels wide (3508 × 2480 is best), under 8 MB. The spaces for the name, Reg No, date and course must be <b>empty</b>.</>}
+        </p>
       </div>
       <FormError message={state?.error} />
       {state?.ok && <p role="status" className="text-sm text-success">{state.ok}</p>}
@@ -31,10 +37,12 @@ export function DesignUploadForm({ replacing }: { replacing: boolean }) {
   );
 }
 
-/** Story 2: drag each value to its place, set its look, preview, save. */
-export function DesignEditor({ designId, imageUrl, aspect, initial, qr }: {
-  designId: string; imageUrl: string; aspect: number; initial: CertLayout; qr: string;
+/** Story 2: drag each value to its place, set its look, preview, save. Both pictures share the places,
+ *  so the online version can be checked here too. */
+export function DesignEditor({ designId, imageUrl, onlineUrl, aspect, initial, qr }: {
+  designId: string; imageUrl: string; onlineUrl: string | null; aspect: number; initial: CertLayout; qr: string;
 }) {
+  const [view, setView] = useState<"print" | "online">("print");
   const [layout, setLayout] = useState(initial);
   const [saved, setSaved] = useState(JSON.stringify(initial));
   const [selected, setSelected] = useState<FieldKey | null>("name");
@@ -85,8 +93,16 @@ export function DesignEditor({ designId, imageUrl, aspect, initial, qr }: {
             </button>
           ))}
         </div>
+        {onlineUrl && (
+          <div className="mb-2 flex gap-1 text-xs" role="radiogroup" aria-label="Which picture">
+            {([["print", "Print version"], ["online", "Online version"]] as const).map(([v, l]) => (
+              <button key={v} type="button" role="radio" aria-checked={view === v} onClick={() => setView(v)}
+                className={`rounded-md border px-3 py-1 font-semibold ${view === v ? "border-primary bg-primary-soft text-ink" : "border-border text-ink-muted"}`}>{l}</button>
+            ))}
+          </div>
+        )}
         <div tabIndex={0} className="rounded-md border border-border outline-none focus-visible:ring-2 focus-visible:ring-primary">
-          <DesignedCertificate imageUrl={imageUrl} aspect={aspect} layout={layout} values={values} qr={qr} code="7K3MQ-9TXWA"
+          <DesignedCertificate imageUrl={view === "online" && onlineUrl ? onlineUrl : imageUrl} aspect={aspect} layout={layout} values={values} qr={qr} code="7K3MQ-9TXWA"
             editing={{ selected, onSelect: setSelected, onMove: (k, x, y) => setField(k, { x: round(x), y: round(y) }) }} />
         </div>
         <p className="mt-2 text-xs text-ink-muted">Drag a value to move it. Arrow keys move the chosen one a little (hold Shift for more). The example text is not saved. Easiest on a computer.</p>

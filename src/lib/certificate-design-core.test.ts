@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   askedFields, boxOf, checkCertExtras, courseWeeks, DEFAULT_LAYOUT, designProblem, durationText, formatCertDate,
-  imageInfo, nextRegNo, pakistanDay, parseLayout, sessionText, type CertLayout,
+  imageInfo, nextRegNo, onlineProblem, pakistanDay, parseLayout, sessionText, type CertLayout,
 } from "./certificate-design-core";
 
 function pngHeader(width: number, height: number) {
@@ -44,6 +44,21 @@ describe("designProblem", () => {
     expect(designProblem(info(2480, 3508), 1000)).toMatch(/portrait/);
     expect(designProblem(info(1920, 1080), 1000)).toMatch(/shape of an A4/);
     expect(designProblem(info(1400, 990), 1000)).toMatch(/blurry/);
+  });
+});
+
+describe("onlineProblem", () => {
+  const print = { width: 3508, height: 2480 };
+  const info = (width: number, height: number) => ({ mime: "image/png" as const, width, height });
+  it("accepts the same design at the same shape, even at another size", () => {
+    expect(onlineProblem(print, info(3508, 2480), 1000)).toBeNull();
+    expect(onlineProblem(print, info(2480 * 1.4145, 2480), 1000)).toBeNull();
+    expect(onlineProblem({ width: 2000, height: 1414 }, info(3508, 2480), 1000)).toBeNull();
+  });
+  it("refuses a different shape, and anything the print version would refuse", () => {
+    expect(onlineProblem(print, info(3508, 2440), 1000)).toMatch(/same size/);
+    expect(onlineProblem(print, info(1400, 990), 1000)).toMatch(/blurry/);
+    expect(onlineProblem(print, null, 1000)).toMatch(/isn't a PNG or JPG/);
   });
 });
 

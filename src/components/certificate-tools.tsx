@@ -7,11 +7,11 @@ import { Icon } from "@/components/icon";
 import { useT } from "@/i18n/client";
 
 /** "Download PDF": the browser's own Save as PDF, which draws Urdu names correctly. */
-export function PrintButton() {
+export function PrintButton({ label }: { label?: string }) {
   const t = useT();
   return (
     <button type="button" className="btn-primary" onClick={() => window.print()}>
-      <Icon name="download" size={18} />{t("cert.download")}
+      <Icon name={label ? "print" : "download"} size={18} />{label ?? t("cert.download")}
     </button>
   );
 }

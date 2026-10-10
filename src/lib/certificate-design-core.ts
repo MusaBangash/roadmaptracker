@@ -53,6 +53,16 @@ export function designProblem(info: ImageInfo | null, bytes: number): string | n
   return null;
 }
 
+/** The online version must be the same design at the same shape, so every value lands in the same place. */
+export function onlineProblem(print: { width: number; height: number }, info: ImageInfo | null, bytes: number): string | null {
+  const basic = designProblem(info, bytes);
+  if (basic || !info) return basic;
+  if (Math.abs(info.width / info.height - print.width / print.height) > 0.005) {
+    return `The online version is ${info.width} × ${info.height} but the print version is ${print.width} × ${print.height}. Export both at the same size, so the values land in the same places.`;
+  }
+  return null;
+}
+
 // ---------- The layout ----------
 
 export const TEXT_FIELDS = ["name", "regNo", "date", "course", "duration", "session", "level"] as const;

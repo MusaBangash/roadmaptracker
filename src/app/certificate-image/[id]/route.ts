@@ -3,8 +3,9 @@ import { db, schema } from "@/db";
 import { requireUser } from "@/lib/access";
 
 /** The picture of a school's certificate design: for the school's members, and for anyone whose own
- *  certificate is printed on it. The picture behind an id never changes, so the browser keeps it. */
-export async function GET(_: Request, { params }: { params: Promise<{ id: string }> }) {
+ *  certificate is printed on it. `?copy=online` = the online version (falls back to the print one).
+ *  Addresses never point at another picture (see designImageUrl), so the browser keeps them. */
+export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const user = await requireUser();
   const { id } = await params;
   const design = await db.query.certificateDesigns.findFirst({ where: eq(schema.certificateDesigns.id, id) });
@@ -17,9 +18,10 @@ export async function GET(_: Request, { params }: { params: Promise<{ id: string
       .where(and(eq(schema.certificates.designId, design.id), eq(schema.enrollments.userId, user.id))).limit(1),
   ]);
   if (!member && !own.length) return notFound();
-  return new Response(new Uint8Array(design.image), {
+  const online = new URL(request.url).searchParams.get("copy") === "online" && design.onlineImage && design.onlineMime;
+  return new Response(new Uint8Array(online ? design.onlineImage! : design.image), {
     headers: {
-      "Content-Type": design.mime,
+      "Content-Type": online ? design.onlineMime! : design.mime,
       "Cache-Control": "private, max-age=31536000, immutable",
       "X-Content-Type-Options": "nosniff",
     },

@@ -45,6 +45,8 @@ export const AUDIT_ACTIONS = {
   "certificate.design": { group: "school", label: "Uploaded a certificate design" },
   "certificate.design_layout": { group: "school", label: "Moved the values on the certificate design" },
   "certificate.design_off": { group: "school", label: "Stopped using the certificate design" },
+  "certificate.design_delete": { group: "school", label: "Deleted an unused certificate design" },
+  "certificate.design_online": { group: "school", label: "Changed the online version of the certificate design" },
   "password.reset_link": { group: "account", label: "Made a password reset link" },
   "password.reset": { group: "account", label: "Set a new password with a reset link" },
 } as const satisfies Record<string, { group: AuditGroup; label: string }>;
