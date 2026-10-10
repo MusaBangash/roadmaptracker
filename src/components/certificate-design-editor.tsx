@@ -2,12 +2,12 @@
 
 import { useActionState, useEffect, useState } from "react";
 import { saveLayoutAction, uploadDesignAction, uploadOnlineAction } from "@/app/actions/certificate-design";
-import { DesignedCertificate, type DesignValues } from "@/components/designed-certificate";
+import { DesignedCertificate, type DesignValues, type ElementKey } from "@/components/designed-certificate";
 import { FormError } from "@/components/ui";
 import { Icon } from "@/components/icon";
 import {
-  DATE_FORMATS, DEFAULT_LAYOUT, FIELD_LABELS, TEXT_FIELDS, formatCertDate,
-  type CertLayout, type FieldKey, type TextField,
+  DATE_FORMATS, DEFAULT_LAYOUT, FIELD_LABELS, MAX_TEXTS, TEXT_FIELDS, formatCertDate, newText, parseLayout,
+  type CertLayout, type Copy, type FieldKey, type TextField,
 } from "@/lib/certificate-design-core";
 
 const SAMPLE: Omit<DesignValues, "name" | "date"> = {
@@ -37,16 +37,17 @@ export function DesignUploadForm({ replacing, online = false }: { replacing: boo
   );
 }
 
-/** Story 2: drag each value to its place, set its look, preview, save. Both pictures share the places,
- *  so the online version can be checked here too. */
+/** Story 2 (+ school texts): drag each value and each of the school's texts into place, set its look,
+ *  preview the print and online copies, save. Both pictures share the places. */
 export function DesignEditor({ designId, imageUrl, onlineUrl, aspect, initial, qr }: {
   designId: string; imageUrl: string; onlineUrl: string | null; aspect: number; initial: CertLayout; qr: string;
 }) {
-  const [view, setView] = useState<"print" | "online">("print");
+  const [view, setView] = useState<Copy>("print");
   const [layout, setLayout] = useState(initial);
   const [saved, setSaved] = useState(JSON.stringify(initial));
-  const [selected, setSelected] = useState<FieldKey | null>("name");
+  const [selected, setSelected] = useState<ElementKey | null>("name");
   const [sampleName, setSampleName] = useState("Hafiza Maryam Munir");
+  const [fileError, setFileError] = useState<string | null>(null);
   const [state, action, pending] = useActionState(async (prev: Parameters<typeof saveLayoutAction>[0], form: FormData) => {
     const r = await saveLayoutAction(prev, form);
     if (r?.ok) setSaved(String(form.get("layout")));
@@ -63,63 +64,120 @@ export function DesignEditor({ designId, imageUrl, onlineUrl, aspect, initial, q
     return () => window.removeEventListener("beforeunload", warn);
   }, [dirty]);
 
-  const setField = (k: FieldKey, patch: Record<string, unknown>) =>
-    setLayout((l) => ({ ...l, fields: { ...l.fields, [k]: { ...l.fields[k], ...patch } } }));
+  const textOf = (k: ElementKey | null) => k?.startsWith("t:") ? layout.texts.find((x) => `t:${x.id}` === k) ?? null : null;
+  const setElement = (k: ElementKey, patch: Record<string, unknown>) => setLayout((l) => k.startsWith("t:")
+    ? { ...l, texts: l.texts.map((x) => (`t:${x.id}` === k ? { ...x, ...patch } : x)) }
+    : { ...l, fields: { ...l.fields, [k]: { ...l.fields[k as FieldKey], ...patch } } });
   const round = (v: number) => Math.round(v * 10000) / 10000;
+  const posOf = (k: ElementKey) => textOf(k) ?? layout.fields[k as FieldKey];
 
-  // Arrow keys move the chosen value a little (Shift = more): for exact placing and for keyboards.
+  function addText() {
+    if (layout.texts.length >= MAX_TEXTS) return;
+    const id = Math.random().toString(36).slice(2, 10);
+    setLayout((l) => ({ ...l, texts: [...l.texts, newText(id)] }));
+    setSelected(`t:${id}`);
+  }
+  function deleteText(k: ElementKey) {
+    setLayout((l) => ({ ...l, texts: l.texts.filter((x) => `t:${x.id}` !== k) }));
+    setSelected("name");
+  }
+
+  // Layout file: the places and texts as a small file, to copy a finished layout to another school.
+  function downloadLayout() {
+    const url = URL.createObjectURL(new Blob([JSON.stringify(layout, null, 2)], { type: "application/json" }));
+    const a = Object.assign(document.createElement("a"), { href: url, download: "certificate-layout.json" });
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+  async function loadLayout(file: File | undefined) {
+    setFileError(null);
+    if (!file) return;
+    const parsed = file.size < 200_000 ? parseLayout(await file.text()) : null;
+    if (!parsed) { setFileError("That isn't a certificate layout file (it comes from “Save layout file”)."); return; }
+    setLayout(parsed);
+    setSelected("name");
+  }
+
+  // Arrow keys move the chosen thing a little (Shift = more): for exact placing and for keyboards.
   function onKey(e: React.KeyboardEvent) {
     if (!selected || !["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(e.key)) return;
     if ((e.target as HTMLElement).closest("input, select, textarea")) return;
     e.preventDefault();
     const step = e.shiftKey ? 0.01 : 0.001;
-    const f = layout.fields[selected];
+    const f = posOf(selected);
     const dx = e.key === "ArrowLeft" ? -step : e.key === "ArrowRight" ? step : 0;
     const dy = e.key === "ArrowUp" ? -step : e.key === "ArrowDown" ? step : 0;
-    setField(selected, { x: round(Math.min(1, Math.max(0, f.x + dx))), y: round(Math.min(1, Math.max(0, f.y + dy))) });
+    setElement(selected, { x: round(Math.min(1, Math.max(0, f.x + dx))), y: round(Math.min(1, Math.max(0, f.y + dy))) });
   }
 
   const values: DesignValues = { ...SAMPLE, name: sampleName, date: formatCertDate(new Date().toISOString().slice(0, 10), layout.dateFormat) };
-  const sel = selected ? layout.fields[selected] : null;
+  const text = textOf(selected);
+  const sel = selected ? posOf(selected) : null;
+  const chip = (on: boolean, faded: boolean) =>
+    `max-w-[14rem] truncate rounded-full border px-3 py-1 text-xs font-semibold ${on ? "border-primary bg-primary text-on-primary" : "border-border-strong text-ink-muted hover:text-ink"} ${faded ? "line-through opacity-70" : ""}`;
 
   return (
-    <div className="grid gap-4 lg:grid-cols-[1fr_18rem]" onKeyDown={onKey}>
+    <div className="grid gap-4 lg:grid-cols-[1fr_19rem]" onKeyDown={onKey}>
       <div>
         <div className="mb-2 flex flex-wrap gap-1.5" role="toolbar" aria-label="Values on the certificate">
           {(["name", ...TEXT_FIELDS.filter((k) => k !== "name"), "qr"] as FieldKey[]).map((k) => (
-            <button key={k} type="button" onClick={() => setSelected(k)} aria-pressed={selected === k}
-              className={`rounded-full border px-3 py-1 text-xs font-semibold ${selected === k ? "border-primary bg-primary text-on-primary" : "border-border-strong text-ink-muted hover:text-ink"} ${layout.fields[k].hidden ? "line-through opacity-70" : ""}`}>
+            <button key={k} type="button" onClick={() => setSelected(k)} aria-pressed={selected === k} className={chip(selected === k, layout.fields[k].hidden)}>
               {FIELD_LABELS[k]}
             </button>
           ))}
         </div>
-        {onlineUrl && (
-          <div className="mb-2 flex gap-1 text-xs" role="radiogroup" aria-label="Which picture">
-            {([["print", "Print version"], ["online", "Online version"]] as const).map(([v, l]) => (
-              <button key={v} type="button" role="radio" aria-checked={view === v} onClick={() => setView(v)}
-                className={`rounded-md border px-3 py-1 font-semibold ${view === v ? "border-primary bg-primary-soft text-ink" : "border-border text-ink-muted"}`}>{l}</button>
-            ))}
-          </div>
-        )}
-        <div tabIndex={0} className="rounded-md border border-border outline-none focus-visible:ring-2 focus-visible:ring-primary">
-          <DesignedCertificate imageUrl={view === "online" && onlineUrl ? onlineUrl : imageUrl} aspect={aspect} layout={layout} values={values} qr={qr} code="7K3MQ-9TXWA"
-            editing={{ selected, onSelect: setSelected, onMove: (k, x, y) => setField(k, { x: round(x), y: round(y) }) }} />
+        <div className="mb-2 flex flex-wrap items-center gap-1.5" role="toolbar" aria-label="The school's own texts">
+          {layout.texts.map((x) => (
+            <button key={x.id} type="button" onClick={() => setSelected(`t:${x.id}`)} aria-pressed={selected === `t:${x.id}`} title={x.text}
+              className={chip(selected === `t:${x.id}`, x.hidden)}>
+              {x.show === "print" ? "Print: " : x.show === "online" ? "Online: " : ""}{x.text || "(empty)"}
+            </button>
+          ))}
+          <button type="button" className="rounded-full border border-dashed border-border-strong px-3 py-1 text-xs font-semibold text-secondary disabled:opacity-50"
+            onClick={addText} disabled={layout.texts.length >= MAX_TEXTS}>
+            + Add text
+          </button>
         </div>
-        <p className="mt-2 text-xs text-ink-muted">Drag a value to move it. Arrow keys move the chosen one a little (hold Shift for more). The example text is not saved. Easiest on a computer.</p>
+        <div className="mb-2 flex gap-1 text-xs" role="radiogroup" aria-label="Which copy">
+          {([["print", "Printed copy"], ["online", "Online copy"]] as const).map(([v, l]) => (
+            <button key={v} type="button" role="radio" aria-checked={view === v} onClick={() => setView(v)}
+              className={`rounded-md border px-3 py-1 font-semibold ${view === v ? "border-primary bg-primary-soft text-ink" : "border-border text-ink-muted"}`}>{l}</button>
+          ))}
+        </div>
+        <div tabIndex={0} className="rounded-md border border-border outline-none focus-visible:ring-2 focus-visible:ring-primary">
+          <DesignedCertificate copy={view} imageUrl={view === "online" && onlineUrl ? onlineUrl : imageUrl} aspect={aspect} layout={layout} values={values} qr={qr} code="7K3MQ-9TXWA"
+            editing={{ selected, onSelect: setSelected, onMove: (k, x, y) => setElement(k, { x: round(x), y: round(y) }) }} />
+        </div>
+        <p className="mt-2 text-xs text-ink-muted">Drag anything to move it. Arrow keys move the chosen one a little (hold Shift for more). The student values are examples and are not saved. Easiest on a computer.</p>
       </div>
 
       <div className="grid content-start gap-4">
         {sel && selected && (
           <fieldset className="card grid gap-3 p-4">
-            <legend className="px-1 text-sm font-semibold">{FIELD_LABELS[selected]}</legend>
+            <legend className="px-1 text-sm font-semibold">{text ? "Text" : FIELD_LABELS[selected as FieldKey]}</legend>
+            {text && (
+              <>
+                <div>
+                  <label className="label" htmlFor="text-value">Text</label>
+                  <textarea id="text-value" className="input" rows={2} maxLength={200} value={text.text} dir="auto"
+                    onChange={(e) => setElement(selected, { text: e.target.value.replace(/\s*\n\s*/g, " ") })} />
+                </div>
+                <Choice label="Show on" value={text.show} options={[["both", "Both"], ["print", "Printed only"], ["online", "Online only"]]}
+                  onChange={(v) => setElement(selected, { show: v })} />
+                <label className="flex items-center gap-2 text-sm">
+                  <input type="checkbox" checked={text.lineAbove} onChange={(e) => setElement(selected, { lineAbove: e.target.checked })} />
+                  Signature line above (as wide as the box)
+                </label>
+              </>
+            )}
             <label className="flex items-center gap-2 text-sm">
-              <input type="checkbox" checked={!sel.hidden} onChange={(e) => setField(selected, { hidden: !e.target.checked })} />
+              <input type="checkbox" checked={!sel.hidden} onChange={(e) => setElement(selected, { hidden: !e.target.checked })} />
               Show on the certificate
             </label>
             {selected === "qr" ? (
-              <Range label="Size" value={sel.w * 100} min={4} max={30} step={0.5} unit="%" onChange={(v) => setField("qr", { w: round(v / 100) })} />
+              <Range label="Size" value={sel.w * 100} min={4} max={30} step={0.5} unit="%" onChange={(v) => setElement("qr", { w: round(v / 100) })} />
             ) : (
-              <TextSettings f={sel as TextField} onChange={(p) => setField(selected, p)} />
+              <TextSettings f={sel as TextField} onChange={(p) => setElement(selected, p)} />
             )}
             {selected === "name" && (
               <div>
@@ -137,6 +195,11 @@ export function DesignEditor({ designId, imageUrl, onlineUrl, aspect, initial, q
                 </select>
               </div>
             )}
+            {text && (
+              <button type="button" className="btn-danger justify-self-start" onClick={() => deleteText(selected)}>
+                <Icon name="trash" size={18} />Delete this text
+              </button>
+            )}
           </fieldset>
         )}
 
@@ -147,14 +210,24 @@ export function DesignEditor({ designId, imageUrl, onlineUrl, aspect, initial, q
           {state?.ok && !dirty && <p role="status" className="text-sm text-success">{state.ok}</p>}
           {dirty && <p className="text-sm text-warning">Changes not saved yet.</p>}
           <div className="flex flex-wrap gap-2">
-            <button className="btn-primary" disabled={pending || !dirty}><Icon name="check" size={18} />{pending ? "Saving…" : "Save places"}</button>
+            <button className="btn-primary" disabled={pending || !dirty}><Icon name="check" size={18} />{pending ? "Saving…" : "Save"}</button>
             <a href="/admin/certificate-design/preview" className="btn-ghost" target="_blank" rel="noopener"><Icon name="print" size={18} />Test print</a>
           </div>
-          <button type="button" className="text-start text-xs text-secondary underline"
-            onClick={() => { if (window.confirm("Put every value back in its starting place?")) setLayout(DEFAULT_LAYOUT); }}>
-            Put everything back to the starting places
-          </button>
-          <p className="text-xs text-ink-muted">Test print uses the <b>saved</b> places: save first. Certificates already issued never change.</p>
+          <p className="text-xs text-ink-muted">Test print uses what is <b>saved</b>: save first. Certificates already issued never change.</p>
+          <details className="text-xs">
+            <summary className="cursor-pointer font-semibold text-secondary">Layout file and starting places</summary>
+            <div className="mt-2 grid gap-2">
+              <p className="text-ink-muted">A layout file holds every place and text, to copy this layout to another school (it does not hold the picture).</p>
+              <button type="button" className="btn-ghost justify-self-start" onClick={downloadLayout}><Icon name="download" size={18} />Save layout file</button>
+              <label className="label mb-0" htmlFor="layout-file">Load layout file</label>
+              <input id="layout-file" type="file" accept="application/json,.json" className="input" onChange={(e) => { void loadLayout(e.target.files?.[0]); e.target.value = ""; }} />
+              {fileError && <p role="alert" className="text-danger">{fileError}</p>}
+              <button type="button" className="justify-self-start text-secondary underline"
+                onClick={() => { if (window.confirm("Put every value back in its starting place and remove all your texts?")) setLayout(DEFAULT_LAYOUT); }}>
+                Start again from the starting places
+              </button>
+            </div>
+          </details>
         </form>
       </div>
     </div>
@@ -169,11 +242,13 @@ function TextSettings({ f, onChange }: { f: TextField; onChange: (p: Partial<Tex
       <div className="flex items-center gap-3">
         <label className="label mb-0" htmlFor="field-color">Colour</label>
         <input id="field-color" type="color" value={f.color} onChange={(e) => onChange({ color: e.target.value })} className="h-9 w-14 cursor-pointer rounded border border-border bg-surface" />
-        <button type="button" className="text-xs text-secondary underline" onClick={() => onChange({ color: "#25255e" })}>Dark blue</button>
-        <button type="button" className="text-xs text-secondary underline" onClick={() => onChange({ color: "#1c1c1c" })}>Black</button>
+        <button type="button" className="text-xs text-secondary underline" onClick={() => onChange({ color: "#262261" })}>Dark blue</button>
+        <button type="button" className="text-xs text-secondary underline" onClick={() => onChange({ color: "#231f20" })}>Black</button>
+        <button type="button" className="text-xs text-secondary underline" onClick={() => onChange({ color: "#ffffff" })}>White</button>
       </div>
+      <Range label="Letter spacing" value={f.spacing * 100} min={0} max={60} step={1} unit="%" onChange={(v) => onChange({ spacing: Math.round(v) / 100 })} />
       <Choice label="Line up" value={f.align} options={[["left", "Left"], ["center", "Centre"], ["right", "Right"]]} onChange={(v) => onChange({ align: v })} />
-      <Choice label="Letters" value={f.font} options={[["sans", "Plain"], ["serif", "Classic"]]} onChange={(v) => onChange({ font: v })} />
+      <Choice label="Letters" value={f.font} options={[["sans", "Plain"], ["arial", "Arial"], ["serif", "Classic"]]} onChange={(v) => onChange({ font: v })} />
       <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm">
         <label className="flex items-center gap-2"><input type="checkbox" checked={f.bold} onChange={(e) => onChange({ bold: e.target.checked })} />Bold</label>
         <label className="flex items-center gap-2"><input type="checkbox" checked={f.upper} onChange={(e) => onChange({ upper: e.target.checked })} />CAPITALS</label>

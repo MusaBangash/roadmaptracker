@@ -50,10 +50,10 @@ export default async function CertificateDesignPage({ searchParams }: { searchPa
             aspect={design.width / design.height} initial={design.layout} qr={sampleQr} />
 
           <section className="card mt-8 p-4 sm:p-5" aria-labelledby="online-h">
-            <h2 id="online-h" className="h2 mb-1">Online version (students&apos; PDF)</h2>
+            <h2 id="online-h" className="h2 mb-1">Second picture for the online copy (optional)</h2>
             <p className="mb-3 max-w-3xl text-sm text-ink-muted">
-              The printed copy is signed by hand, so it needs the signature lines; the online copy has no ink signatures, and the
-              QR code proves it is genuine. Upload the same design without the signature lines and students&apos; PDFs use it.
+              Usually not needed: mark texts such as the signatures &ldquo;Printed only&rdquo; and &ldquo;Digitally issued&rdquo; &ldquo;Online only&rdquo;
+              above. Only if the <b>picture itself</b> must differ online (e.g. signature lines drawn into it), upload the same design without them here.
             </p>
             {design.onlineUpdatedAt ? (
               <div className="grid gap-4 md:grid-cols-2">
@@ -69,7 +69,7 @@ export default async function CertificateDesignPage({ searchParams }: { searchPa
               </div>
             ) : (
               <>
-                <p className="mb-3 text-sm"><b>None yet:</b> students&apos; PDFs use the print version, with its empty signature lines.</p>
+                <p className="mb-3 text-sm"><b>None yet:</b> both copies use the same picture.</p>
                 <DesignUploadForm replacing={false} online />
               </>
             )}

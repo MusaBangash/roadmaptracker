@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   askedFields, boxOf, checkCertExtras, courseWeeks, DEFAULT_LAYOUT, designProblem, durationText, formatCertDate,
-  imageInfo, nextRegNo, onlineProblem, pakistanDay, parseLayout, sessionText, type CertLayout,
+  hasTwoCopies, imageInfo, newText, nextRegNo, onlineProblem, pakistanDay, showsOn, parseLayout, sessionText, type CertLayout,
 } from "./certificate-design-core";
 
 function pngHeader(width: number, height: number) {
@@ -76,6 +76,40 @@ describe("parseLayout", () => {
     expect(parseLayout({ ...DEFAULT_LAYOUT, extra: 1 })).toBeNull();
     expect(parseLayout("{not json")).toBeNull();
     expect(parseLayout(null)).toBeNull();
+  });
+});
+
+describe("school texts", () => {
+  const withTexts = (texts: unknown[]) => ({ ...DEFAULT_LAYOUT, texts });
+  const sig = { ...newText("sig1"), text: "Syed Kashif Hussain", show: "print" as const, lineAbove: true };
+  it("a layout saved before texts existed still opens (no texts, no letter spacing)", () => {
+    const old = JSON.parse(JSON.stringify(DEFAULT_LAYOUT));
+    delete old.texts;
+    for (const f of Object.values(old.fields) as Record<string, unknown>[]) delete f.spacing;
+    const parsed = parseLayout(old)!;
+    expect(parsed.texts).toEqual([]);
+    expect(parsed.fields.name.spacing).toBe(0);
+  });
+  it("keeps the school's texts, and refuses bad ones", () => {
+    expect(parseLayout(withTexts([sig]))?.texts[0]).toEqual(sig);
+    expect(parseLayout(withTexts([{ ...sig, text: "x".repeat(201) }]))).toBeNull();
+    expect(parseLayout(withTexts([sig, sig]))).toBeNull(); // the same id twice
+    expect(parseLayout(withTexts([{ ...sig, id: "<script>" }]))).toBeNull();
+    expect(parseLayout(withTexts([{ ...sig, show: "never" }]))).toBeNull();
+    expect(parseLayout(withTexts(Array.from({ length: 31 }, (_, i) => ({ ...sig, id: `t${i}` }))))).toBeNull();
+  });
+  it("print-only texts are on the printed copy, online-only on the online one, hidden on neither", () => {
+    const online = { ...sig, id: "on", show: "online" as const };
+    expect([showsOn(sig, "print"), showsOn(sig, "online")]).toEqual([true, false]);
+    expect([showsOn(online, "print"), showsOn(online, "online")]).toEqual([false, true]);
+    expect(showsOn({ ...sig, hidden: true }, "print")).toBe(false);
+    expect(showsOn(newText("both"), "online")).toBe(true);
+  });
+  it("offers 'Print for signing' only when the two copies differ", () => {
+    expect(hasTwoCopies(DEFAULT_LAYOUT, false)).toBe(false);
+    expect(hasTwoCopies(DEFAULT_LAYOUT, true)).toBe(true);
+    expect(hasTwoCopies(parseLayout(withTexts([sig]))!, false)).toBe(true);
+    expect(hasTwoCopies(parseLayout(withTexts([{ ...sig, hidden: true }]))!, false)).toBe(false);
   });
 });
 

@@ -17,7 +17,7 @@ export default async function DesignPreviewPage({ searchParams }: { searchParams
   const design = await currentDesign(ctx.org.id);
   if (!design) redirect("/admin/certificate-design");
   const qr = await qrSvg(`${await baseUrl()}/verify/7K3MQ-9TXWA`);
-  const online = (await searchParams).copy === "online" && !!design.onlineUpdatedAt;
+  const online = (await searchParams).copy === "online";
   return (
     <>
       <style>{"@page { size: A4 landscape; margin: 0; }"}</style>
@@ -26,12 +26,12 @@ export default async function DesignPreviewPage({ searchParams }: { searchParams
           back={{ href: "/admin/certificate-design", label: "Certificate design" }}
           actions={<>
             <PrintButton label="Print" />
-            {design.onlineUpdatedAt && (online
+            {(online
               ? <Link href="/admin/certificate-design/preview" className="btn-ghost">Show print version</Link>
               : <Link href="/admin/certificate-design/preview?copy=online" className="btn-ghost">Show online version</Link>)}
           </>} />
       </div>
-      <DesignedCertificate imageUrl={designImageUrl(design.id, online ? design.onlineUpdatedAt : null)} aspect={design.width / design.height} layout={design.layout} qr={qr} code="7K3MQ-9TXWA"
+      <DesignedCertificate copy={online ? "online" : "print"} imageUrl={designImageUrl(design.id, online ? design.onlineUpdatedAt : null)} aspect={design.width / design.height} layout={design.layout} qr={qr} code="7K3MQ-9TXWA"
         values={{
           name: "Hafiza Maryam Munir", regNo: "B5-AI-011", date: formatCertDate(pakistanDay(new Date()), design.layout.dateFormat),
           course: "Artificial Intelligence", duration: "12 Weeks", session: "Jun 2026 – Aug 2026", level: "Foundation",

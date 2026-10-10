@@ -10,7 +10,7 @@ import { baseUrl } from "@/lib/url";
 import { Certificate } from "@/components/certificate";
 import { DesignedCertificate } from "@/components/designed-certificate";
 import { designImageUrl } from "@/lib/certificate-designs";
-import { formatCertDate, pakistanDay, parseLayout } from "@/lib/certificate-design-core";
+import { formatCertDate, hasTwoCopies, pakistanDay, parseLayout } from "@/lib/certificate-design-core";
 import { PrintButton, RevokeCertificateForm } from "@/components/certificate-tools";
 import { CopyButton } from "@/components/copy-button";
 import { PageHeader } from "@/components/ui";
@@ -43,8 +43,8 @@ export default async function CertificatePage({ params, searchParams }: { params
     : null;
   // Option B: the online version (no signature lines) for everyone; the cohort's teachers and admins can
   // switch to the print version to print and sign by hand.
-  const printCopy = !!design && teaches && (await searchParams).copy === "print";
-  const hasOnline = !!design?.onlineUpdatedAt;
+  const hasOnline = !!design && !!layout && hasTwoCopies(layout, !!design.onlineUpdatedAt);
+  const printCopy = hasOnline && teaches && (await searchParams).copy === "print";
   const back = own ? { href: `/learn/${enrollment.id}`, label: t("cert.myRoadmap") } : { href: `/cohorts/${cohort.id}/students/${enrollment.id}`, label: cert.nameOnCertificate };
   return (
     <>
@@ -78,7 +78,7 @@ export default async function CertificatePage({ params, searchParams }: { params
       </div>
       <div className={cert.revokedAt ? "opacity-50 print:hidden" : ""}>
         {design && layout ? (
-          <DesignedCertificate imageUrl={designImageUrl(design.id, printCopy ? null : design.onlineUpdatedAt)} aspect={design.width / design.height} layout={layout} qr={await qrSvg(checkUrl)} code={cert.code}
+          <DesignedCertificate copy={printCopy ? "print" : "online"} imageUrl={designImageUrl(design.id, printCopy ? null : design.onlineUpdatedAt)} aspect={design.width / design.height} layout={layout} qr={await qrSvg(checkUrl)} code={cert.code}
             values={{
               name: cert.nameOnCertificate, regNo: cert.regNo ?? "", date: formatCertDate(pakistanDay(cert.issuedAt), layout.dateFormat),
               course: cert.courseTitle ?? cert.trackTitle, duration: cert.duration ?? "", session: cert.session ?? "", level: cert.level ?? "",

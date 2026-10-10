@@ -86,9 +86,23 @@ const frac = z.number().finite().min(0).max(1);
  */
 const textField = z.object({
   x: frac, y: frac, w: z.number().finite().min(0.03).max(1), size: z.number().finite().min(0.5).max(8),
-  color: hex, align: z.enum(["left", "center", "right"]), font: z.enum(["sans", "serif"]),
+  color: hex, align: z.enum(["left", "center", "right"]), font: z.enum(["sans", "arial", "serif"]),
   bold: z.boolean(), upper: z.boolean(), underline: z.boolean(), hidden: z.boolean(),
+  /** Extra space between letters, in letter-sizes (0.15 = wide, like "O f  C o m p l e t i o n"). */
+  spacing: z.number().finite().min(0).max(0.6).default(0),
 }).strict();
+/**
+ * A fixed text of the school's own (college name, "CERTIFICATE", a signatory…), so everything but the
+ * picture can be edited. `show`: on both copies, only the printed one (e.g. a name signed by hand) or
+ * only the online one (e.g. "Digitally issued"). `lineAbove`: a signature line as wide as the box.
+ */
+const textItem = textField.extend({
+  id: z.string().regex(/^[a-z0-9]{1,16}$/),
+  text: z.string().max(200),
+  show: z.enum(["both", "print", "online"]),
+  lineAbove: z.boolean(),
+}).strict();
+export const MAX_TEXTS = 30;
 /** The QR code: `x`/`y` its middle, `w` its width; the check code is printed under it. */
 const qrField = z.object({ x: frac, y: frac, w: z.number().finite().min(0.04).max(0.3), hidden: z.boolean() }).strict();
 
@@ -99,10 +113,14 @@ const layoutSchema = z.object({
     name: textField, regNo: textField, date: textField, course: textField, duration: textField,
     session: textField, level: textField, qr: qrField,
   }).strict(),
+  texts: z.array(textItem).max(MAX_TEXTS).default([])
+    .refine((list) => new Set(list.map((x) => x.id)).size === list.length, "duplicate text id"),
 }).strict();
 
 export type TextField = z.infer<typeof textField>;
 export type QrField = z.infer<typeof qrField>;
+export type TextItem = z.infer<typeof textItem>;
+export type Copy = "print" | "online";
 export type CertLayout = z.infer<typeof layoutSchema>;
 
 /** A layout from the editor or the database, or null if anything about it is wrong. */
@@ -117,7 +135,7 @@ function safeJson(s: string): unknown {
 const NAVY = "#25255e";
 const INK = "#1c1c1c";
 const t = (x: number, y: number, w: number, size: number, more: Partial<TextField> = {}): TextField => ({
-  x, y, w, size, color: INK, align: "left", font: "sans", bold: true, upper: false, underline: false, hidden: false, ...more,
+  x, y, w, size, color: INK, align: "left", font: "sans", bold: true, upper: false, underline: false, hidden: false, spacing: 0, ...more,
 });
 
 /**
@@ -137,7 +155,23 @@ export const DEFAULT_LAYOUT: CertLayout = {
     level: t(0.7555, 0.615, 0.13, 1.75, { underline: true }),
     qr: { x: 0.5, y: 0.775, w: 0.085, hidden: false },
   },
+  texts: [],
 };
+
+/** Is this text on this copy? */
+export function showsOn(item: TextItem, copy: Copy) {
+  return !item.hidden && (item.show === "both" || item.show === copy);
+}
+
+/** Does the certificate look different printed than online (so "Print for signing" is worth offering)? */
+export function hasTwoCopies(layout: CertLayout, onlinePicture: boolean) {
+  return onlinePicture || layout.texts.some((x) => !x.hidden && x.show !== "both");
+}
+
+/** A new text in the middle of the design, ready to be typed over and dragged. */
+export function newText(id: string): TextItem {
+  return { ...t(0.5, 0.5, 0.4, 2, { align: "center" }), id, text: "New text", show: "both", lineAbove: false };
+}
 
 /** Where the box of a text value starts and how wide it is (fractions of the picture's width). */
 export function boxOf(f: TextField) {
