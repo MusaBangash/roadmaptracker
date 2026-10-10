@@ -8,6 +8,9 @@ import { normalizeCode } from "@/lib/certificate-core";
 import { qrSvg } from "@/lib/certificates";
 import { baseUrl } from "@/lib/url";
 import { Certificate } from "@/components/certificate";
+import { DesignedCertificate } from "@/components/designed-certificate";
+import { designImageUrl } from "@/lib/certificate-designs";
+import { formatCertDate, pakistanDay, parseLayout } from "@/lib/certificate-design-core";
 import { PrintButton, RevokeCertificateForm } from "@/components/certificate-tools";
 import { CopyButton } from "@/components/copy-button";
 import { PageHeader } from "@/components/ui";
@@ -33,6 +36,11 @@ export default async function CertificatePage({ params }: { params: Promise<{ co
   if (!own && !teaches) notFound();
 
   const checkUrl = `${await baseUrl()}/verify/${code}`;
+  // Printed on the school's own design (Certificate design, Story 4), with the places it was issued with.
+  const layout = cert.layout && parseLayout(cert.layout);
+  const design = cert.designId && layout
+    ? await db.query.certificateDesigns.findFirst({ where: eq(schema.certificateDesigns.id, cert.designId), columns: { id: true, width: true, height: true } })
+    : null;
   const back = own ? { href: `/learn/${enrollment.id}`, label: t("cert.myRoadmap") } : { href: `/cohorts/${cohort.id}/students/${enrollment.id}`, label: cert.nameOnCertificate };
   return (
     <>
@@ -57,7 +65,15 @@ export default async function CertificatePage({ params }: { params: Promise<{ co
         )}
       </div>
       <div className={cert.revokedAt ? "opacity-50 print:hidden" : ""}>
-        <Certificate c={cert} qr={await qrSvg(checkUrl)} checkUrl={checkUrl} />
+        {design && layout ? (
+          <DesignedCertificate imageUrl={designImageUrl(design.id)} aspect={design.width / design.height} layout={layout} qr={await qrSvg(checkUrl)} code={cert.code}
+            values={{
+              name: cert.nameOnCertificate, regNo: cert.regNo ?? "", date: formatCertDate(pakistanDay(cert.issuedAt), layout.dateFormat),
+              course: cert.courseTitle ?? cert.trackTitle, duration: cert.duration ?? "", session: cert.session ?? "", level: cert.level ?? "",
+            }} />
+        ) : (
+          <Certificate c={cert} qr={await qrSvg(checkUrl)} checkUrl={checkUrl} />
+        )}
       </div>
       {ctx.role === "ADMIN" && ctx.org?.id === cert.orgId && !cert.revokedAt && (
         <details className="card mt-8 p-4 print:hidden">

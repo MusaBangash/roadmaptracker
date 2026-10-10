@@ -28,6 +28,7 @@ export default async function MembersPage({ searchParams }: { searchParams: Prom
       <PageHeader title="People" sub={`${ctx.org.name} · ${plural(counts.ADMIN ?? 0, "admin")} · ${plural(counts.INSTRUCTOR ?? 0, "instructor")} · ${plural(counts.STUDENT ?? 0, "student")}`}
         actions={<>
           <Link href="/admin/activity" className="btn-ghost"><Icon name="clock" size={18} />Activity</Link>
+          <Link href="/admin/certificate-design" className="btn-ghost"><Icon name="star" size={18} />Certificate design</Link>
           <a href="/admin/backup" className="btn-ghost"><Icon name="download" size={18} />Download school backup</a>
         </>} />
 

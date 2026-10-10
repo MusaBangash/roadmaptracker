@@ -16,8 +16,21 @@ export function PrintButton() {
   );
 }
 
-/** Story 2: check the printed name, then issue. */
-export function IssueCertificateForm({ enrollmentId, defaultName }: { enrollmentId: string; defaultName: string }) {
+export type IssueExtras = {
+  asked: string[];
+  defaults: { regNo: string; courseTitle: string; duration: string; session: string; level: string };
+};
+const EXTRA_BOXES: { key: keyof IssueExtras["defaults"]; label: string; max: number; hint?: string; placeholder?: string }[] = [
+  { key: "regNo", label: "Reg No", max: 30, hint: "Suggested from the last certificate of this cohort. Must not be on another certificate of the school.", placeholder: "e.g. B5-AI-001" },
+  { key: "courseTitle", label: "Course", max: 80 },
+  { key: "duration", label: "Duration", max: 40, placeholder: "e.g. 12 Weeks" },
+  { key: "session", label: "Session", max: 40, placeholder: "e.g. Jun 2026 – Aug 2026" },
+  { key: "level", label: "Level", max: 40, placeholder: "e.g. Foundation" },
+];
+
+/** Story 2: check the printed name, then issue. With a school design (Certificate design, Story 3)
+ *  also the Reg No, course, duration, session and level the design shows. */
+export function IssueCertificateForm({ enrollmentId, defaultName, extras }: { enrollmentId: string; defaultName: string; extras?: IssueExtras | null }) {
   const [state, action, pending] = useActionState(issueCertificateAction, undefined);
   return (
     <form action={action} className="grid gap-3">
@@ -27,6 +40,18 @@ export function IssueCertificateForm({ enrollmentId, defaultName }: { enrollment
         <input id="cert-name" name="name" required maxLength={80} defaultValue={defaultName} dir="auto" className="input" />
         <p className="mt-1 text-xs text-ink-muted">Check the spelling with the student. It can&apos;t be changed after the certificate is issued.</p>
       </div>
+      {extras && (
+        <div className="grid gap-3 sm:grid-cols-2">
+          {EXTRA_BOXES.filter((b) => extras.asked.includes(b.key)).map((b) => (
+            <div key={b.key} className={b.key === "courseTitle" ? "sm:col-span-2" : ""}>
+              <label className="label" htmlFor={`cert-${b.key}`}>{b.label}</label>
+              <input id={`cert-${b.key}`} name={b.key} required maxLength={b.max} defaultValue={extras.defaults[b.key]} placeholder={b.placeholder} dir="auto" className="input" />
+              {b.hint && <p className="mt-1 text-xs text-ink-muted">{b.hint}</p>}
+            </div>
+          ))}
+          <p className="text-xs text-ink-muted sm:col-span-2">Course, duration, session and level are remembered for the next student of this cohort.</p>
+        </div>
+      )}
       <FormError message={state?.error} />
       <div><button className="btn-primary" disabled={pending}><Icon name="star" size={18} />{pending ? "Issuing…" : "Issue certificate"}</button></div>
     </form>

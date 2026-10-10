@@ -1,11 +1,13 @@
 // NoorAI Tracks — multi-school progress tracking for roadmaps and courses.
 import { sql } from "drizzle-orm";
-import { pgTable, pgEnum, text, timestamp, integer, boolean, jsonb, real, date, primaryKey, uniqueIndex, index } from "drizzle-orm/pg-core";
+import { pgTable, pgEnum, text, timestamp, integer, boolean, jsonb, real, date, primaryKey, uniqueIndex, index, customType } from "drizzle-orm/pg-core";
 import type { AdapterAccountType } from "next-auth/adapters";
 import type { TrackDoc } from "@/lib/roadmap-core";
+import type { CertLayout } from "@/lib/certificate-design-core";
 
 const id = () => text("id").primaryKey().$defaultFn(() => crypto.randomUUID());
 const created = () => timestamp("created_at", { mode: "date" }).notNull().defaultNow();
+const bytea = customType<{ data: Buffer; driverData: Buffer }>({ dataType: () => "bytea" });
 
 // ---------- Auth.js tables (names required by @auth/drizzle-adapter) ----------
 export const users = pgTable("user", {
@@ -136,6 +138,9 @@ export const cohorts = pgTable("cohort", {
   name: text("name").notNull(),
   startDate: date("start_date", { mode: "date" }).notNull(),
   archived: boolean("archived").notNull().default(false),
+  /** What was last typed when issuing a certificate here (course title, duration, session, level),
+   *  offered again for the next student of this cohort. */
+  certDefaults: jsonb("cert_defaults").$type<{ courseTitle?: string; duration?: string; session?: string; level?: string }>(),
   createdAt: created(),
 }, (t) => [index("cohort_org").on(t.orgId)]);
 
@@ -300,6 +305,15 @@ export const certificates = pgTable("certificate", {
   completedOn: date("completed_on", { mode: "string" }).notNull(),
   issuedById: text("issued_by_id").references(() => users.id, { onDelete: "set null" }),
   issuedByName: text("issued_by_name").notNull(),
+  /** The school's design it was printed on, and the layout at that moment (copied, so moving fields
+   *  later never changes it). Null = the plain NoorAI certificate. */
+  designId: text("design_id").references(() => certificateDesigns.id, { onDelete: "set null" }),
+  layout: jsonb("layout").$type<CertLayout>(),
+  regNo: text("reg_no"),
+  courseTitle: text("course_title"),
+  duration: text("duration"),
+  session: text("session"),
+  level: text("level"),
   issuedAt: created(),
   revokedAt: timestamp("revoked_at", { mode: "date" }),
   revokedById: text("revoked_by_id").references(() => users.id, { onDelete: "set null" }),
@@ -307,6 +321,27 @@ export const certificates = pgTable("certificate", {
 }, (t) => [
   index("certificate_enrollment").on(t.enrollmentId),
   uniqueIndex("certificate_one_valid").on(t.enrollmentId).where(sql`"revoked_at" is null`),
+  /** A Reg No is on at most one valid certificate in a school (any letter case). */
+  uniqueIndex("certificate_reg_no").on(t.orgId, sql`upper("reg_no")`).where(sql`"reg_no" is not null and "revoked_at" is null`),
+]);
+
+/** A school's own certificate design: an A4 landscape picture with empty spaces, plus where each value
+ *  is printed on it. Uploading a new picture adds a row (the old one stays for the certificates printed
+ *  on it); `current` marks the one used for new certificates (at most one per school). */
+export const certificateDesigns = pgTable("certificate_design", {
+  id: id(),
+  orgId: text("org_id").notNull().references(() => organizations.id, { onDelete: "cascade" }),
+  image: bytea("image").notNull(),
+  mime: text("mime").notNull(),
+  width: integer("width").notNull(),
+  height: integer("height").notNull(),
+  layout: jsonb("layout").$type<CertLayout>().notNull(),
+  current: boolean("current").notNull().default(true),
+  createdById: text("created_by_id").references(() => users.id, { onDelete: "set null" }),
+  createdAt: created(),
+}, (t) => [
+  index("certificate_design_org").on(t.orgId),
+  uniqueIndex("certificate_design_current").on(t.orgId).where(sql`"current"`),
 ]);
 
 export const commentKindEnum = pgEnum("comment_kind", ["COMMENT", "VERIFIED", "NEEDS_WORK", "RESUBMIT"]);

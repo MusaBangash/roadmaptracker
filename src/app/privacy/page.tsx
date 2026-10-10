@@ -1,12 +1,11 @@
 import Link from "next/link";
 import { Logo } from "@/components/logo";
-import { LanguageSwitch } from "@/components/language-switch";
 import { getT } from "@/i18n/server";
 import type { MessageKey } from "@/i18n/en";
 
 export const metadata = { title: "Privacy notice" };
 
-/** Story 7: what NoorAI Tracks stores, why, who sees it, and how to get it deleted. Public page, English or Urdu. */
+/** Story 7: what NoorAI Tracks stores, why, who sees it, and how to get it deleted. Public page. */
 export default async function PrivacyPage() {
   const t = await getT();
   const b = (s: string) => <b>{s}</b>;
@@ -17,7 +16,6 @@ export default async function PrivacyPage() {
     <main className="mx-auto max-w-2xl px-4 py-10">
       <div className="mb-8 flex flex-wrap items-center justify-between gap-3">
         <Link href="/" className="inline-block"><Logo size={36} product="Tracks" /></Link>
-        <LanguageSwitch />
       </div>
       <h1 className="h1 mb-2">{t("privacy.title")}</h1>
       <p className="mb-8 text-ink-muted">{t("privacy.intro")}</p>

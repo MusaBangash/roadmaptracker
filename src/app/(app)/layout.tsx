@@ -7,7 +7,6 @@ import { Logo } from "@/components/logo";
 import { initials } from "@/lib/utils";
 import { savedTheme } from "@/lib/theme-server";
 import { ThemeSwitch } from "@/components/theme-switch";
-import { LanguageSwitch } from "@/components/language-switch";
 import { getT } from "@/i18n/server";
 import type { MessageKey } from "@/i18n/en";
 
@@ -37,7 +36,6 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           {memberships.length > 1 && (
             <div className="hidden sm:block"><OrgSwitcher orgs={memberships.map((m) => m.org)} current={org?.id} /></div>
           )}
-          <div className="hidden shrink-0 md:block"><LanguageSwitch /></div>
           <div className="hidden shrink-0 xl:block"><ThemeSwitch initial={theme} /></div>
           <details className="relative">
             <summary className="flex h-9 w-9 cursor-pointer list-none items-center justify-center rounded-full bg-primary text-xs font-bold text-on-primary" aria-label={t("account.menu")}>
@@ -50,7 +48,6 @@ export default async function AppLayout({ children }: { children: React.ReactNod
               {memberships.length > 1 && (
                 <div className="mt-3 sm:hidden"><OrgSwitcher orgs={memberships.map((m) => m.org)} current={org?.id} /></div>
               )}
-              <div className="mt-3 md:hidden"><LanguageSwitch /></div>
               <div className="mt-3 xl:hidden"><ThemeSwitch initial={theme} /></div>
               <Link href="/join" className="mt-3 block text-sm text-primary">{t("account.join")}</Link>
               <Link href="/privacy" className="mt-2 block text-sm text-primary">{t("account.privacy")}</Link>

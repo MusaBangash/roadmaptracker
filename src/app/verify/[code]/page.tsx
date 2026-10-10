@@ -4,7 +4,6 @@ import { db, schema } from "@/db";
 import { normalizeCode } from "@/lib/certificate-core";
 import { getT } from "@/i18n/server";
 import { hasUrdu } from "@/lib/comment-core";
-import { LanguageSwitch } from "@/components/language-switch";
 import { Logo } from "@/components/logo";
 import { Badge } from "@/components/ui";
 
@@ -38,7 +37,14 @@ export default async function VerifyPage({ params }: { params: Promise<{ code: s
               <div><dt className="text-ink-muted">{t("verify.awardedTo")}</dt>
                 <dd lang={urdu(cert.nameOnCertificate) ? "ur" : "en"} dir="auto" className={`text-xl font-bold text-primary ${urdu(cert.nameOnCertificate) ? "leading-[2.2] [font-family:var(--font-urdu)]" : ""}`}>{cert.nameOnCertificate}</dd></div>
               <div><dt className="text-ink-muted">{t("verify.forCompleting")}</dt>
-                <dd className="font-semibold" lang="en" dir="auto">{cert.trackTitle}{cert.trackEdition ? ` · ${cert.trackEdition.replace(/\s+-\s+/g, " · ")}` : ""}</dd></div>
+                <dd className="font-semibold" lang="en" dir="auto">{cert.courseTitle ?? cert.trackTitle}</dd>
+                {(cert.courseTitle || cert.trackEdition) && (
+                  <dd className="text-ink-muted" lang="en" dir="auto">{[cert.courseTitle && cert.courseTitle !== cert.trackTitle ? `Roadmap: ${cert.trackTitle}` : "", cert.trackEdition.replace(/\s+-\s+/g, " · ")].filter(Boolean).join(" · ")}</dd>
+                )}
+                {(cert.duration || cert.session || cert.level) && (
+                  <dd className="text-ink-muted">{[cert.duration, cert.session, cert.level].filter(Boolean).join(" · ")}</dd>
+                )}</div>
+              {cert.regNo && <div><dt className="text-ink-muted">Reg No</dt><dd className="font-mono font-semibold">{cert.regNo}</dd></div>}
               <div><dt className="text-ink-muted">{t("verify.at")}</dt><dd className="font-semibold" dir="auto">{cert.schoolName}</dd></div>
               <div><dt className="text-ink-muted">{t("verify.completedOn")}</dt><dd className="font-semibold">{t.date(cert.completedOn)}</dd></div>
             </dl>
@@ -47,7 +53,6 @@ export default async function VerifyPage({ params }: { params: Promise<{ code: s
         )}
       </div>
       <p className="mt-6 text-center text-xs text-ink-muted">{t("verify.footer")} <Link href="/privacy" className="underline">{t("account.privacy")}</Link></p>
-      <div className="mt-4 self-center"><LanguageSwitch /></div>
     </main>
   );
 }

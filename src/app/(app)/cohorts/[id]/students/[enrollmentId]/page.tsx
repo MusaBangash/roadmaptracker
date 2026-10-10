@@ -13,6 +13,8 @@ import { Icon } from "@/components/icon";
 import Link from "next/link";
 import { readinessOf, validCertificate } from "@/lib/certificates";
 import { IssueCertificateForm } from "@/components/certificate-tools";
+import { currentDesign, issueDefaults } from "@/lib/certificate-designs";
+import { askedFields } from "@/lib/certificate-design-core";
 import { byThread, loadComments, toViews, unreadFor } from "@/lib/comments";
 import { CommentThread } from "@/components/comment-thread";
 import { getT } from "@/i18n/server";
@@ -39,7 +41,7 @@ export default async function StudentPage({ params }: { params: Promise<{ id: st
     db.query.weeklyLogs.findMany({ where: eq(schema.weeklyLogs.enrollmentId, enrollment.id), orderBy: desc(schema.weeklyLogs.weekStart), limit: 8 }),
   ]);
   const rubric = track.rubric?.length ? track.rubric : DEFAULT_RUBRIC;
-  const [cert, readiness, comments] = await Promise.all([validCertificate(enrollment.id), readinessOf(enrollment.id, cohort.trackId), loadComments([enrollment.id])]);
+  const [cert, readiness, comments, design] = await Promise.all([validCertificate(enrollment.id), readinessOf(enrollment.id, cohort.trackId), loadComments([enrollment.id]), currentDesign(cohort.orgId)]);
   const threads = byThread(comments);
   const viewer = { id: user.id, admin: role === "ADMIN" };
   const t = await getT();
@@ -87,7 +89,9 @@ export default async function StudentPage({ params }: { params: Promise<{ id: st
           own ? <p className="text-sm text-ink-muted">Ready for a certificate. Another teacher or an admin has to issue it.</p> : (
             <>
               <p className="mb-3"><Badge tone="success" icon="check">Ready for a certificate</Badge> <span className="text-sm text-ink-muted">Every required stage is passed.</span></p>
-              <IssueCertificateForm enrollmentId={enrollment.id} defaultName={student.name ?? ""} />
+              <IssueCertificateForm enrollmentId={enrollment.id} defaultName={student.name ?? ""} extras={design && {
+                asked: askedFields(design.layout), defaults: await issueDefaults(cohort.orgId, cohort, track.title),
+              }} />
             </>
           )
         ) : (
