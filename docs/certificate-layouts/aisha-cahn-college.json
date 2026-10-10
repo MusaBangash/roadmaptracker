@@ -409,27 +409,9 @@
       "color": "#262261",
       "id": "on1",
       "text": "Digitally issued by Muslim Hands Aisha Cahn College",
-      "x": 0.21,
-      "y": 0.82,
-      "w": 0.33,
-      "size": 1.45
-    },
-    {
-      "align": "center",
-      "font": "arial",
-      "bold": true,
-      "upper": false,
-      "underline": false,
-      "hidden": false,
-      "spacing": 0,
-      "show": "online",
-      "lineAbove": false,
-      "color": "#262261",
-      "id": "on2",
-      "text": "Scan the QR code to check it is genuine",
-      "x": 0.79,
-      "y": 0.82,
-      "w": 0.33,
+      "x": 0.5,
+      "y": 0.868,
+      "w": 0.5,
       "size": 1.45
     }
   ]
