@@ -1,7 +1,9 @@
 import { and, eq, inArray } from "drizzle-orm";
 import { db, schema } from "@/db";
 import { requireTeachableCohort } from "@/lib/access";
+import Link from "next/link";
 import { PageHeader, Empty } from "@/components/ui";
+import { Icon } from "@/components/icon";
 import { AttendanceForm } from "@/components/attendance-form";
 
 export const metadata = { title: "Attendance" };
@@ -21,7 +23,8 @@ export default async function AttendancePage({ params, searchParams }: { params:
   const byE = new Map(recs.map((r) => [r.enrollmentId, r.present]));
   return (
     <>
-      <PageHeader title="Attendance" sub={cohort.name} back={{ href: `/cohorts/${cohort.id}`, label: cohort.name }} />
+      <PageHeader title="Attendance" sub={cohort.name} back={{ href: `/cohorts/${cohort.id}`, label: cohort.name }}
+        actions={<Link href={`/cohorts/${cohort.id}/attendance/register`} className="btn-ghost"><Icon name="calendar" size={18} />Monthly register</Link>} />
       {rows.length === 0 ? <Empty title="No active students">Invite students to this cohort first.</Empty> : (
         <AttendanceForm key={date} cohortId={cohort.id} date={date}
           students={rows.map((r) => ({ enrollmentId: r.e.id, name: r.name ?? r.email ?? "Student", present: byE.has(r.e.id) ? byE.get(r.e.id)! : null }))} />
