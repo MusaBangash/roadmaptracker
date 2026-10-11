@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { canJudgeWork, canResetPassword, deleteScope, loginLock, roleAfterInvite, type Admin, type Person } from "./security-core";
+import { canJudgeWork, canResetPassword, deleteScope, inviteCodeFromNext, inviteUsable, loginLock, roleAfterInvite, type Admin, type Person } from "./security-core";
 import { actionLabel, actionsIn, cleanDetail } from "./audit-core";
 
 const now = new Date("2026-10-10T10:00:00Z");
@@ -59,6 +59,24 @@ describe("deleteScope", () => {
     expect(deleteScope(admin, person({ memberships: [{ orgId: "a", role: "ADMIN" }] }), "a", 2)).toBe("account");
   });
   it("only for an admin of that school", () => expect(deleteScope({ id: "me", adminOf: ["b"] }, person(), "a", 1)).toBeNull());
+});
+
+describe("sign-up by invite only", () => {
+  it("finds the invite code only in a /join/<code> address", () => {
+    expect(inviteCodeFromNext("/join/K7mx2pq9ta")).toBe("k7mx2pq9ta");
+    expect(inviteCodeFromNext("/dashboard")).toBeNull();
+    expect(inviteCodeFromNext("/join")).toBeNull();
+    expect(inviteCodeFromNext("/join/abc/../x")).toBeNull();
+    expect(inviteCodeFromNext("https://evil.example/join/k7mx2pq9ta")).toBeNull();
+  });
+  it("an invite is usable only before it expires and while uses are left", () => {
+    const now = new Date("2026-10-11T12:00:00Z");
+    expect(inviteUsable({ expiresAt: new Date("2026-10-20"), uses: 0, maxUses: 1 }, now)).toBe(true);
+    expect(inviteUsable({ expiresAt: null, uses: 4, maxUses: 5 }, now)).toBe(true);
+    expect(inviteUsable({ expiresAt: new Date("2026-10-01"), uses: 0, maxUses: 1 }, now)).toBe(false);
+    expect(inviteUsable({ expiresAt: null, uses: 1, maxUses: 1 }, now)).toBe(false);
+    expect(inviteUsable(null, now)).toBe(false);
+  });
 });
 
 describe("canJudgeWork", () => {

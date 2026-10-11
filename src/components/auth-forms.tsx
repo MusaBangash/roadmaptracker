@@ -47,7 +47,10 @@ export function LoginForm({ next, google }: { next: string; google: boolean }) {
         <button className="btn-primary w-full" disabled={pending}>{pending ? t("auth.signingIn") : t("auth.signIn")}</button>
       </form>
       <p className="mt-4 text-center text-sm text-ink-muted">
-        {t("auth.newHere")} <Link className="font-semibold text-primary" href={`/register?next=${encodeURIComponent(next)}`}>{t("auth.createAccount")}</Link>
+        {/* Sign-up is by invite only: offered only on the way back to an invite link. */}
+        {/^\/join\/[a-z0-9]+$/i.test(next)
+          ? <>{t("auth.newHere")} <Link className="font-semibold text-primary" href={`/register?next=${encodeURIComponent(next)}`}>{t("auth.createAccount")}</Link></>
+          : t("auth.newHereInvite")}
       </p>
     </div>
   );

@@ -61,3 +61,14 @@ export function deleteScope(admin: Admin, target: Person, orgId: string, adminsI
 export function canJudgeWork(viewerId: string, enrollmentUserId: string) {
   return viewerId !== enrollmentUserId;
 }
+
+/** Joining is by invite only: the invite code inside a "/join/<code>" address, or null. */
+export function inviteCodeFromNext(next: string): string | null {
+  const m = /^\/join\/([a-z0-9]{4,40})$/i.exec(next);
+  return m ? m[1].toLowerCase() : null;
+}
+
+/** An invite that can still be used: not expired and with a use left. */
+export function inviteUsable(invite: { expiresAt: Date | null; uses: number; maxUses: number } | null | undefined, now: Date) {
+  return !!invite && (!invite.expiresAt || invite.expiresAt > now) && invite.uses < invite.maxUses;
+}

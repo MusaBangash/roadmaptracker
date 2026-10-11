@@ -13,6 +13,8 @@ import { getT, issueText } from "@/i18n/server";
 import { roleAfterInvite } from "@/lib/security-core";
 import { audit } from "@/lib/audit";
 import { hashToken } from "@/lib/reset";
+import { INVITE_COOKIE, signupInvite } from "@/lib/invites";
+import { inviteCodeFromNext } from "@/lib/security-core";
 import { db, schema } from "@/db";
 import { requireUser, ORG_COOKIE } from "@/lib/access";
 
@@ -44,7 +46,12 @@ export async function loginAction(_: FormState, form: FormData): Promise<FormSta
 }
 
 export async function googleAction(form: FormData) {
-  await signIn("google", { redirectTo: safeNext(form.get("next")) });
+  const next = safeNext(form.get("next"));
+  // Google sign-up is by invite only too: the invite goes through Google's page in a short cookie,
+  // checked in the signIn callback (src/auth.ts) when the Google email has no account yet.
+  const code = inviteCodeFromNext(next);
+  if (code) (await cookies()).set(INVITE_COOKIE, code, { httpOnly: true, sameSite: "lax", path: "/", maxAge: 60 * 15 });
+  await signIn("google", { redirectTo: next });
 }
 
 const registerSchema = z.object({
@@ -58,6 +65,8 @@ export async function registerAction(_: FormState, form: FormData): Promise<Form
   const parsed = registerSchema.safeParse({ name: form.get("name"), email: form.get("email"), password: form.get("password") });
   if (!parsed.success) return { error: issueText(t, parsed.error.issues[0].message) };
   if (form.get("consent") !== "on") return { error: t("err.agreePrivacy") };
+  // Sign-up is by invite only: checked again here, so posting the form directly can't skip it.
+  if (!(await signupInvite(safeNext(form.get("next"))))) return { error: t("err.inviteOnly") };
   const { name, email, password } = parsed.data;
   const existing = await db.query.users.findFirst({ where: eq(schema.users.email, email) });
   if (existing) return { error: t("err.emailTaken") };

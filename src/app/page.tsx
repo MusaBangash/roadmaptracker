@@ -22,9 +22,9 @@ export default async function Home() {
           Students tick what they&apos;ve learned and attach proof. Instructors verify projects, sign off stages and score defenses.
           Schools see every cohort at a glance — and who needs help.
         </p>
-        <div className="mt-8 flex flex-wrap gap-3">
-          <Link href="/register" className="btn-primary">Create an account</Link>
-          <Link href="/login" className="btn-ghost">Sign in</Link>
+        <div className="mt-8 flex flex-wrap items-center gap-3">
+          <Link href="/login" className="btn-primary">Sign in</Link>
+          <span className="text-sm text-ink-muted">New here? Open the invite link your school sent you.</span>
         </div>
       </section>
       <footer className="flex flex-wrap items-center justify-between gap-3 text-xs text-ink-muted">NoorAI — learning for everyone.<ThemeSwitch initial={await savedTheme()} /></footer>

@@ -6,7 +6,9 @@ import bcrypt from "bcryptjs";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
 import { db, schema } from "@/db";
+import { cookies } from "next/headers";
 import { clientIp, loginLockFor, recordLogin } from "@/lib/login-guard";
+import { INVITE_COOKIE, signupInvite } from "@/lib/invites";
 
 /** Thrown when too many wrong passwords were tried; loginAction shows the wait time. */
 export class LoginLocked extends CredentialsSignin {
@@ -52,6 +54,15 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     }),
   ],
   callbacks: {
+    // Sign-up is by invite only: a Google email with no account yet needs the invite it came from
+    // (googleAction puts it in a short cookie); existing accounts sign in with Google as before.
+    async signIn({ account, user }) {
+      if (account?.provider !== "google") return true;
+      const email = user.email?.toLowerCase().trim();
+      if (email && await db.query.users.findFirst({ where: eq(schema.users.email, email), columns: { id: true } })) return true;
+      const code = (await cookies()).get(INVITE_COOKIE)?.value ?? "";
+      return (await signupInvite(`/join/${code}`)) ? true : "/login?error=invite";
+    },
     async jwt({ token, user }) {
       if (user?.id) {
         token.uid = user.id;
