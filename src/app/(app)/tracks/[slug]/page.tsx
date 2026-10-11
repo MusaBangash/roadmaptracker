@@ -3,12 +3,13 @@ import { requireVisibleTrack } from "@/lib/access";
 import { canCopyTrack, canEditTrack } from "@/lib/access-core";
 import { copyRoadmapAction } from "@/app/actions/roadmap";
 import { loadTrackTree, stageWindows } from "@/lib/progress";
-import { schoolTrackStages, myTrackProgress } from "@/lib/cohort-stats";
+import { schoolTrackStages, myTrackProgress, cohortsUsingTrack } from "@/lib/cohort-stats";
 import { ClassStageList, SegmentBar } from "@/components/progress";
 import { Icon } from "@/components/icon";
 import { pct, plural } from "@/lib/utils";
 import Link from "next/link";
-import { PageHeader, LevelPill, KindPill, Badge } from "@/components/ui";
+import { PageHeader, Badge } from "@/components/ui";
+import { RoadmapOutline } from "@/components/roadmap-outline";
 
 export const metadata = { title: "Track" };
 
@@ -21,11 +22,18 @@ export default async function TrackPage({ params }: { params: Promise<{ slug: st
   // A school roadmap never published has nothing to show yet: its admins go to the builder.
   if (track.status === "DRAFT") redirect(`/tracks/${track.slug}/edit`);
   const tree = await loadTrackTree(track.id);
-  const { total: weeks } = stageWindows(tree);
+  const { windows, total: weeks } = stageWindows(tree);
   const staff = ctx.role === "ADMIN" || ctx.role === "INSTRUCTOR";
-  const [school, mine] = ctx.org
-    ? await Promise.all([staff ? schoolTrackStages(ctx.org.id, tree, track.id) : null, myTrackProgress(ctx.org.id, ctx.user.id)])
-    : [null, new Map<string, { enrollmentId: string; pct: number }>()];
+  const [school, mine, cohorts] = ctx.org
+    ? await Promise.all([staff ? schoolTrackStages(ctx.org.id, tree, track.id) : null, myTrackProgress(ctx.org.id, ctx.user.id),
+      staff ? cohortsUsingTrack(ctx.org.id, track.id) : null])
+    : [null, new Map<string, { enrollmentId: string; pct: number }>(), null];
+  const items = tree.flatMap((s) => s.items);
+  const lessons = items.filter((i) => i.kind === "LESSON").length;
+  const summary: [string, number][] = [
+    ["Stages", tree.length], ["Weeks", weeks], ["Lessons", lessons], ["Work to check", items.length - lessons],
+    ...(cohorts !== null ? [["Cohorts using it", cohorts] as [string, number]] : []),
+  ];
   const me = mine.get(track.id);
   return (
     <>
@@ -50,6 +58,14 @@ export default async function TrackPage({ params }: { params: Promise<{ slug: st
       {ctx.role === "ADMIN" && !track.ownerOrgId && (
         <p className="mb-6 text-sm text-ink-muted">This is an official NoorAI roadmap, kept the same for every school. To change it for your school, press <b>Copy to my school</b> and edit the copy.</p>
       )}
+      <dl className={`card mb-6 grid grid-cols-2 gap-px overflow-hidden bg-border ${summary.length > 4 ? "sm:grid-cols-5" : "sm:grid-cols-4"}`}>
+        {summary.map(([label, n]) => (
+          <div key={label} className="bg-surface-raised p-3 last:odd:col-span-2 sm:p-4 sm:last:odd:col-span-1">
+            <dt className="text-sm font-semibold text-ink-muted">{label}</dt>
+            <dd className="mt-0.5 text-2xl font-bold text-ink">{n}</dd>
+          </div>
+        ))}
+      </dl>
       {me && <div className="card mb-6 p-4"><SegmentBar label="Your progress" value={me.pct} strong /></div>}
       {school && school.students > 0 && (
         <section className="mb-8">
@@ -70,23 +86,11 @@ export default async function TrackPage({ params }: { params: Promise<{ slug: st
           </div>
         </section>
       )}
-      <div className="space-y-3">
-        {tree.map((s, i) => (
-          <details key={s.id} className="card">
-            <summary className="flex cursor-pointer list-none flex-wrap items-center gap-2 p-4">
-              <span className="font-semibold">{i + 1}. {s.title}</span><LevelPill level={s.level} />
-              <span className="ml-auto text-sm text-ink-muted">{s.items.length} items{s.weeks ? ` · ~${s.weeks} wk` : ""}</span>
-            </summary>
-            <div className="border-t border-border p-4 text-sm">
-              {s.benchmark && <p><b className="text-ink-muted">Benchmark:</b> {s.benchmark}</p>}
-              {s.doneWhen && <p className="mt-1"><b className="text-highlight-text">Done when:</b> {s.doneWhen}</p>}
-              <ul className="mt-3 space-y-1">
-                {s.items.map((it) => <li key={it.id}><span className="font-medium">{it.title}</span> <KindPill kind={it.kind} />{it.detail && <span className="text-ink-muted"> — {it.detail}</span>}</li>)}
-              </ul>
-            </div>
-          </details>
-        ))}
-      </div>
+      <RoadmapOutline stages={tree.map((s, i) => ({
+        id: s.id, title: s.title, level: s.level, weeks: s.weeks, optional: s.optional, choiceGroup: s.choiceGroup,
+        benchmark: s.benchmark, doneWhen: s.doneWhen, start: windows[i].start,
+        items: s.items.map((it) => ({ id: it.id, title: it.title, detail: it.detail, kind: it.kind, optional: it.optional })),
+      }))} />
     </>
   );
 }

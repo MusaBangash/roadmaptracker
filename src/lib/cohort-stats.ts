@@ -137,3 +137,10 @@ export async function myTrackProgress(orgId: string, userId: string) {
   }
   return out;
 }
+
+/** How many open cohorts of this school follow this roadmap (the roadmap page's summary). */
+export async function cohortsUsingTrack(orgId: string, trackId: string) {
+  const [r] = await db.select({ n: sql<number>`count(*)::int` }).from(schema.cohorts)
+    .where(and(eq(schema.cohorts.orgId, orgId), eq(schema.cohorts.trackId, trackId), eq(schema.cohorts.archived, false)));
+  return r.n;
+}

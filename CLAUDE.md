@@ -124,6 +124,9 @@ src/components/              ui.tsx (ProgressBar, Badge, Tag, Stat, PageHeader�
                              progress.tsx (SegmentBar, StageLine, GroupBar, KindBars, ClassStageList),
                              roadmap-view.tsx (student view, shared with /tracks/[slug]/preview), teach-controls.tsx
                              (Teaching plan date/present toolbar + Mark taught buttons), roadmap-editor.tsx (builder forms),
+                             main-nav.tsx (top menu: one line from md/lg, current page highlighted, "Menu" list on phones;
+                             theme + school switcher live in the account menu), roadmap-outline.tsx (roadmap page: summary strip,
+                             stage timeline with week ranges and kind counts, item icons, Open all / Close all),
                              member-tools.tsx (reset link, delete person), certificate.tsx + certificate-tools.tsx, designed-certificate.tsx + certificate-design-editor.tsx, comment-thread.tsx, charts.tsx, fold.tsx (details that stay open across refreshes), ui-labels.tsx + badge.tsx (status labels), forms
 scripts/demo.ts              npm run demo:seed / demo:remove — "Demo School" with fake students (slug demo-school,
                              emails @demo.noorai.invalid, no passwords); never touches other schools
@@ -146,6 +149,9 @@ npm run lint
 npm run typecheck
 npm test               # Vitest: progress maths (src/**/*.test.ts)
 npm run demo:seed      # create/refresh Demo School to see progress screens; npm run demo:remove deletes it
+npm run fresh-start    # WIPE for real use after testing: shows the database + counts, needs typed FRESH START;
+                       # keeps platform admins + official roadmaps, deletes every school/other account/log, then runs sync
+                       # (one transaction). Make a copy first (Neon branch / R730 deploy/backup.sh). Never a button in the app.
 npm run build
 npm run db:generate    # after editing src/db/schema.ts → creates a new migration file in drizzle/
 ```

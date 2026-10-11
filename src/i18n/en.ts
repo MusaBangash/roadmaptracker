@@ -12,6 +12,7 @@ export const en = {
   "nav.tracks": "Tracks",
   "nav.schools": "Schools",
   "nav.main": "Main",
+  "nav.menu": "Menu",
   "account.menu": "Account",
   "account.join": "Join with a code",
   "account.privacy": "Privacy notice",

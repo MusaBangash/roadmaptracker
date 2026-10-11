@@ -14,6 +14,7 @@
     "db:sync": "tsx scripts/sync.ts",
     "demo:seed": "tsx scripts/demo.ts seed",
     "demo:remove": "tsx scripts/demo.ts remove",
+    "fresh-start": "tsx scripts/fresh-start.ts",
     "vercel-build": "drizzle-kit migrate && tsx scripts/sync.ts && next build"
   },
   "dependencies": {
