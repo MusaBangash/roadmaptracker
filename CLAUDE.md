@@ -18,7 +18,7 @@ Read this first. It is the full context for this project: what it is, who it is 
 
 Owner's decisions (already made — don't re-ask):
 - Placement: **NoorAI multi-school product**
-- Hosting: **the school's own Dell R730** (decided 2026-10-10; replaces Vercel + Neon), Docker Compose like NoorAI Lab Studio. Phase 1 = inside the school only (http, email + password); phase 2 (later) = home access for Tracks **and** Lab Studio through a Cloudflare Tunnel with https and Google sign-in. Neon stays as a spare copy until the move is done.
+- Hosting: **for now (2026-10-11) Vercel + Neon production** for the first real use (see section 7). Later **the school's own Dell R730** (decided 2026-10-10; replaces Vercel + Neon), Docker Compose like NoorAI Lab Studio. Phase 1 = inside the school only (http, email + password); phase 2 (later) = home access for Tracks **and** Lab Studio through a Cloudflare Tunnel with https and Google sign-in. Neon stays as a spare copy until the move is done.
 - Login: **Email + password and Google sign-in**
 
 ### Roles and what each can do
@@ -177,26 +177,13 @@ Vercel runs `vercel-build` automatically: `drizzle-kit migrate && tsx scripts/sy
 
 **Never commit `.env`** (it is gitignored; `.env.example` is the committed template). **Never print, echo or paste secret values** back into chat, commit messages, logs or docs.
 
-## 7. Current status (as of 2026-10-08)
+## 7. Current status (as of 2026-10-12)
 
-Done:
-- [x] App built; production build passes lint + typecheck; Playwright E2E 26/26 (admin, student on mobile, instructor, access control)
-- [x] Code pushed to GitHub `MusaBangash/roadmaptracker` (branch `main`)
-- [x] Neon project created: **roadmaptracker**, id `proud-pond-59719479`, branch `production`, region **AWS ap-southeast-1 (Singapore)**, database `neondb`, role `neondb_owner`
-- [x] Neon CLI installed on his PC, `neon login` done, `neon link --project-id proud-pond-59719479 --branch production` done
-- [x] `neon.ts` + `@neon/config`/`@neon/env` + Neon skills committed
-- [x] `.env` created on his PC with DATABASE_URL, DIRECT_URL, AUTH_SECRET, AUTH_TRUST_HOST, SEED_* lines
-
-Next, in this order (one step at a time, confirm each):
-1. [ ] `npm install` in the project folder (was in progress)
-2. [ ] `neon mcp -y`, then `neon deploy` (failed earlier only because `npm install` hadn't been run → "Cannot find module '@neon/config/v1'"). `neon deploy` may also pull Neon env vars into `.env` — check it didn't overwrite his lines.
-3. [ ] `npm run db:migrate` → expect "migrations applied successfully"
-4. [ ] `npm run db:sync` → expect "Synced 9 tracks · 152 stages · 1423 items" and "Created platform admin …"
-5. [ ] `npm run dev` → open http://localhost:3000 → sign in with the SEED admin → check Tracks shows 9
-6. [ ] Vercel: import the GitHub repo, add the same env vars, deploy, set Function Region to **Singapore (sin1)**, redeploy
-7. [ ] Google OAuth client (Google Cloud Console) with the Vercel URL; **Publish app** on the consent screen; add the two Google env vars; redeploy
-8. [ ] First real use: create a cohort, send instructor + student invite links
-9. [ ] After first successful sign-in on production, remove `SEED_ADMIN_PASSWORD` from Vercel
+**Live on Vercel + Neon, ready for a first pilot class.** The R730 move comes later.
+- Vercel project (Function Region **Singapore, sin1**) builds every push to `main` (`vercel-build`). Its `DATABASE_URL`/`DIRECT_URL` point at Neon **`production`** (project `proud-pond-59719479`, endpoint `ep-icy-night-…`, the same database as Musa's `.env`). No `SEED_*` variables on Vercel (the admin already exists). Google sign-in not set up yet.
+- 2026-10-11: production was wiped with `npm run fresh-start` → one school, Musa as platform admin, the 9 official roadmaps. Musa then added his real data (e.g. the two AI Based Web Designing roadmaps from `docs/roadmaps/`, a cohort, teacher and test student). The `vercel-test` branch was deleted. Safety copy: Neon branch **`before-wipe-2026-10-11`** (old test data) — remind Musa to delete it in the Neon console around **2026-10-18**.
+- Sign-up is invite-only. Outlines from teachers (PDF/Word) become roadmaps with `docs/roadmaps/HOW-TO-CONVERT-AN-OUTLINE.md` (Claude chat → .json → Tracks → New roadmap → Upload); no in-app AI import (paid API declined; a free local model on the R730 is the later plan).
+- Checked 2026-10-12: every page as admin / teacher / student / visitor and every download work on a demo copy; 238 unit tests.
 
 **R730 (current plan):** `docs/DEPLOY-R730.md` (step-by-step for Musa) and `deploy/`: `docker-compose.yml` (app + its own PostgreSQL 18, the same major as Neon; app on port 3100; db not exposed), `.env.example` (deploy/.env holds the secrets, never committed), `move-from-neon.sh` (pg_dump from Neon → restore here → `scripts/compare-db.ts` counts every table on both sides, must say "All … tables match"), `backup.sh` (nightly by cron, checked with pg_restore --list, 14 days, Sunday copy to OFFSITE_DIR, optional label), `restore.sh` (types RESTORE, safety backup first, works from a copy of the file), `update.sh` (backup, keep image as :previous, git pull, build, restart, wait healthy) / `rollback.sh`, `wait-healthy.sh`, `Caddyfile.example`. The image (root `Dockerfile`) runs `scripts/docker-start.sh` on every start: drizzle-kit migrate → sync → next start. All of it was tested on Musa's PC with Docker Desktop (move: 26/26 tables matched; backup → delete → restore; update → rollback). Set `APP_URL` (links in invites/reset/certificates); `*.sh` are LF (`.gitattributes`).
 
@@ -206,9 +193,10 @@ Next, in this order (one step at a time, confirm each):
 
 ## 8. Known gaps / feature backlog (owner may ask for these)
 
-Not built yet: password reset by email (admin reset links exist) · notifications (email/WhatsApp) · public student portfolio page.
-Discussed, not approved yet (2026-10-10): fees (only for Special Technician's own courses, with an Accounts role; Musa hasn't said which), a "learn on my own" mode for individuals (needs phase 2 internet access). Students' practical lab reports: Musa said no (teachers only).
-Owner was advised to deploy first and let one cohort use it before adding features — but follow his call.
+Advice given (2026-10-12): run the pilot class for 2–3 weeks first, then build what teachers and students ask for.
+Suggested next, not approved yet: student report card (PDF) · cohort notice board · quizzes (per stage, auto-marked) · class timetable · Google sign-in (≈15 min setup) · AI outline import (free local model, after the R730 move).
+Not built: password reset by email (admin reset links + WhatsApp exist) · public student portfolio page.
+Waiting for Musa: fees (only for Special Technician's own courses, with an Accounts role, or the school's). A "learn on my own" mode for individuals (needs internet access, i.e. Vercel now or phase 2 on the R730). Students' practical lab reports: Musa said no (teachers only).
 
 ## 9. Rules for changes
 
