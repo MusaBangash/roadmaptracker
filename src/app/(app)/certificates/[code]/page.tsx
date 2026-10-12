@@ -13,6 +13,8 @@ import { designImageUrl } from "@/lib/certificate-designs";
 import { formatCertDate, hasTwoCopies, pakistanDay, parseLayout } from "@/lib/certificate-design-core";
 import { PrintButton, RevokeCertificateForm } from "@/components/certificate-tools";
 import { CopyButton } from "@/components/copy-button";
+import { WhatsAppButton } from "@/components/whatsapp-button";
+import { certificateMessage } from "@/lib/whatsapp";
 import { PageHeader } from "@/components/ui";
 import { Icon } from "@/components/icon";
 import { getT } from "@/i18n/server";
@@ -57,6 +59,7 @@ export default async function CertificatePage({ params, searchParams }: { params
               ? <Link href={`/certificates/${code}`} className="btn-ghost">Online copy</Link>
               : <Link href={`/certificates/${code}?copy=print`} className="btn-ghost"><Icon name="print" size={18} />Print for signing</Link>)}
             <CopyButton text={checkUrl} label={t("cert.copyCheck")} />
+            <WhatsAppButton label="Share on WhatsApp" text={certificateMessage({ name: cert.nameOnCertificate, course: cert.courseTitle ?? cert.trackTitle, school: cert.schoolName, link: checkUrl })} />
           </>} />
         {printCopy && hasOnline && !cert.revokedAt && (
           <p className="mb-4 flex items-start gap-2 rounded-md bg-info-soft px-4 py-3 text-sm text-info">

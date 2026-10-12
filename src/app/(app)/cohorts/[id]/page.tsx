@@ -8,6 +8,8 @@ import { Icon } from "@/components/icon";
 import { ClassStageList, PlanLineNote } from "@/components/progress";
 import { currentStageIndex } from "@/lib/progress";
 import { CopyButton } from "@/components/copy-button";
+import { WhatsAppButton } from "@/components/whatsapp-button";
+import { inviteMessage } from "@/lib/whatsapp";
 import { createInviteAction, deleteInviteAction, setCohortInstructorAction, archiveCohortAction } from "@/app/actions/admin";
 import { baseUrl } from "@/lib/url";
 import { pct, fmtDate, daysAgo } from "@/lib/utils";
@@ -171,6 +173,7 @@ export default async function CohortPage({ params }: { params: Promise<{ id: str
                   <code className="min-w-0 flex-1 truncate font-mono text-xs">{link}</code>
                   <span className={`text-xs ${expired ? "text-danger" : "text-ink-muted"}`}>{inv.uses}/{inv.maxUses} used · {expired ? "expired" : `until ${fmtDate(inv.expiresAt)}`}</span>
                   <CopyButton text={link} />
+                  {!expired && <WhatsAppButton text={inviteMessage({ school: ctx.org.name, role: inv.role, cohort: cohort.name, link, until: inv.expiresAt ? fmtDate(inv.expiresAt) : null })} />}
                   <form action={deleteInviteAction}><input type="hidden" name="inviteId" value={inv.id} /><button className="text-xs text-danger">Delete</button></form>
                 </div>
               );

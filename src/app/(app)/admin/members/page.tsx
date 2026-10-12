@@ -4,6 +4,8 @@ import { requireRole } from "@/lib/access";
 import { setMemberRoleAction, removeMemberAction, createInviteAction, deleteInviteAction } from "@/app/actions/admin";
 import { PageHeader, Tag, sentence } from "@/components/ui";
 import { CopyButton } from "@/components/copy-button";
+import { WhatsAppButton } from "@/components/whatsapp-button";
+import { inviteMessage } from "@/lib/whatsapp";
 import { DeletePersonForm, ResetLinkForm } from "@/components/member-tools";
 import { Icon } from "@/components/icon";
 import { SchoolNameForm } from "@/components/school-name-form";
@@ -53,6 +55,7 @@ export default async function MembersPage({ searchParams }: { searchParams: Prom
                 <code className="min-w-0 flex-1 truncate font-mono text-xs">{link}</code>
                 <span className="text-xs text-ink-muted">{inv.uses}/{inv.maxUses} used · until {fmtDate(inv.expiresAt)}</span>
                 <CopyButton text={link} />
+                <WhatsAppButton text={inviteMessage({ school: ctx.org.name, role: inv.role, link, until: inv.expiresAt ? fmtDate(inv.expiresAt) : null })} />
                 <form action={deleteInviteAction}><input type="hidden" name="inviteId" value={inv.id} /><button className="text-xs text-danger">Delete</button></form>
               </div>
             );

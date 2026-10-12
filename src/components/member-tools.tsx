@@ -3,6 +3,8 @@
 import { useActionState } from "react";
 import { createResetLinkAction, deletePersonAction } from "@/app/actions/admin";
 import { CopyButton } from "@/components/copy-button";
+import { WhatsAppButton } from "@/components/whatsapp-button";
+import { resetMessage } from "@/lib/whatsapp";
 import { FormError } from "@/components/ui";
 import { Icon } from "@/components/icon";
 
@@ -17,7 +19,7 @@ export function ResetLinkForm({ userId, name }: { userId: string; name: string }
         <div className="grid gap-2 rounded-md bg-success-soft p-3 text-sm">
           <span className="font-semibold text-success">Send this link to {name} (for example on WhatsApp). It is shown only now.</span>
           <code className="break-all font-mono text-xs">{state.ok}</code>
-          <div><CopyButton text={state.ok} /></div>
+          <div className="flex flex-wrap gap-2"><CopyButton text={state.ok} /><WhatsAppButton text={resetMessage(state.ok)} /></div>
         </div>
       ) : (
         <div><button className="btn-ghost" disabled={pending}><Icon name="key" size={18} />{pending ? "Making link…" : "Make reset link"}</button></div>

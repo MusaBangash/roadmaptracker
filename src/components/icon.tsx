@@ -6,6 +6,7 @@ import {
   IconArrowUp,
   IconArrowsMove,
   IconBook,
+  IconBrandWhatsapp,
   IconCalendar,
   IconCheck,
   IconChevronDown,
@@ -96,6 +97,7 @@ const icons = {
   tool: IconTool,
   file: IconFileText,
   flag: IconFlag,
+  whatsapp: IconBrandWhatsapp,
 };
 
 export type IconName = keyof typeof icons;

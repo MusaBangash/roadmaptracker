@@ -4,6 +4,8 @@ import { useActionState, useState } from "react";
 import { importStudentsAction, previewImportAction, type ImportPreview, type ImportResult } from "@/app/actions/import";
 import { csvFile, STUDENTS_TEMPLATE_CSV as TEMPLATE_CSV } from "@/lib/csv";
 import { CopyButton } from "@/components/copy-button";
+import { WhatsAppButton } from "@/components/whatsapp-button";
+import { welcomeMessage } from "@/lib/whatsapp";
 import { Badge, FormError } from "@/components/ui";
 import { Icon } from "@/components/icon";
 import { plural } from "@/lib/utils";
@@ -56,7 +58,8 @@ export function ImportStudents({ cohortId, cohortName }: { cohortId: string; coh
               {links.map((l) => (
                 <li key={l.email} className="flex flex-wrap items-center gap-2 p-3 text-sm">
                   <span className="min-w-0 flex-1"><b>{l.name}</b> <span className="text-ink-muted">· {l.email}</span></span>
-                  <CopyButton text={`Assalam o Alaikum ${l.name}! Set your NoorAI Tracks password here (works once, for 14 days): ${l.link}`} label="Copy message" />
+                  <CopyButton text={welcomeMessage({ name: l.name, cohort: cohortName, link: l.link, days: 14 })} label="Copy message" />
+                  <WhatsAppButton text={welcomeMessage({ name: l.name, cohort: cohortName, link: l.link, days: 14 })} />
                 </li>
               ))}
             </ul>
