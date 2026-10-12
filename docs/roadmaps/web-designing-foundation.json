@@ -1,0 +1,349 @@
+{
+  "title": "AI Based Web Designing – Foundation",
+  "kind": "COURSE",
+  "edition": "2026",
+  "subtitle": "3 months · 12 weeks · Foundation / Beginner",
+  "summary": "Build your Web Designing and UI/UX foundation from scratch: Figma, design principles, typography, colour, wireframing, UI components, landing pages, website UI design and a first portfolio.",
+  "expert": "At the end you can design a complete, structured website interface in Figma, explain your design choices, and present it professionally on Behance.",
+  "benchmarks": [
+    {
+      "title": "Fundamentals",
+      "detail": "Understand the fundamentals of Web Designing and UI/UX."
+    },
+    {
+      "title": "Figma",
+      "detail": "Work confidently with Figma and its core design tools."
+    },
+    {
+      "title": "Visual design",
+      "detail": "Apply typography, colour, spacing, grids and basic design principles."
+    },
+    {
+      "title": "Structure",
+      "detail": "Create wireframes, user flows and structured website layouts."
+    },
+    {
+      "title": "Interfaces",
+      "detail": "Design landing pages and complete website interfaces with buttons, forms and cards."
+    },
+    {
+      "title": "Portfolio",
+      "detail": "Analyse design inspiration, present design work professionally and build the foundation of a UI/UX portfolio."
+    }
+  ],
+  "stages": [
+    {
+      "key": "web-design-ui-ux-fundamentals",
+      "title": "Web Design & UI/UX Fundamentals",
+      "level": "Foundation",
+      "weeks": 3,
+      "goal": "Understand how websites are planned and how users interact with them, and get comfortable in Figma.",
+      "doneWhen": "You can explain UI vs UX with real examples, work in Figma frames and layers, and have a mood board for your own website idea.",
+      "items": [
+        {
+          "key": "web-designing-fundamentals",
+          "title": "Web Designing fundamentals",
+          "detail": "How websites are planned and built, and what a web designer does",
+          "kind": "LESSON",
+          "group": "Week 1 · Fundamentals"
+        },
+        {
+          "key": "ui-ux-fundamentals",
+          "title": "UI & UX fundamentals",
+          "detail": "The difference between user interface and user experience",
+          "kind": "LESSON",
+          "group": "Week 1 · Fundamentals"
+        },
+        {
+          "key": "interface-user-experience",
+          "title": "Interface & user experience",
+          "detail": "How people use digital products and what makes them easy or hard",
+          "kind": "LESSON",
+          "group": "Week 1 · Fundamentals"
+        },
+        {
+          "key": "pixels-screen-resolution",
+          "title": "Pixels & screen resolution",
+          "detail": "Screen sizes, pixel density and designing for real devices",
+          "kind": "LESSON",
+          "group": "Week 1 · Fundamentals"
+        },
+        {
+          "key": "responsive-design-basics",
+          "title": "Responsive design basics",
+          "detail": "Designing for phone, tablet and desktop",
+          "kind": "LESSON",
+          "group": "Week 2 · Design principles & Figma"
+        },
+        {
+          "key": "design-principles",
+          "title": "Design principles",
+          "detail": "Hierarchy, contrast, alignment, proximity, repetition and balance",
+          "kind": "LESSON",
+          "group": "Week 2 · Design principles & Figma"
+        },
+        {
+          "key": "figma-workspace-tools",
+          "title": "Figma workspace & tools",
+          "detail": "Canvas, frames, tools and panels",
+          "kind": "LESSON",
+          "group": "Week 2 · Design principles & Figma"
+        },
+        {
+          "key": "figma-shortcuts",
+          "title": "Figma shortcuts",
+          "detail": "Working fast with keyboard shortcuts",
+          "kind": "LESSON",
+          "group": "Week 2 · Design principles & Figma"
+        },
+        {
+          "key": "frames-layers-components",
+          "title": "Frames, layers & components",
+          "detail": "Organising a design file the professional way",
+          "kind": "LESSON",
+          "group": "Week 3 · Inspiration & research"
+        },
+        {
+          "key": "design-inspiration",
+          "title": "Design inspiration",
+          "detail": "Finding and analysing good design",
+          "kind": "LESSON",
+          "group": "Week 3 · Inspiration & research"
+        },
+        {
+          "key": "dribbble-behance",
+          "title": "Dribbble & Behance",
+          "detail": "Using design communities for research and inspiration",
+          "kind": "LESSON",
+          "group": "Week 3 · Inspiration & research"
+        },
+        {
+          "key": "mood-boards",
+          "title": "Mood boards",
+          "detail": "Collecting colours, type and images into a visual direction",
+          "kind": "LESSON",
+          "group": "Week 3 · Inspiration & research"
+        },
+        {
+          "key": "mood-board-for-your-website-idea",
+          "title": "Mood board for your website idea",
+          "detail": "A Figma or FigJam mood board with colours, fonts, images and 3 reference sites, with a short note on why you chose them",
+          "kind": "DELIVERABLE",
+          "group": "Week 3 · Inspiration & research"
+        }
+      ]
+    },
+    {
+      "key": "visual-design-in-figma",
+      "title": "Visual Design in Figma",
+      "level": "Foundation",
+      "weeks": 3,
+      "goal": "Use typography, colour, spacing and grids to make clean, consistent layouts.",
+      "doneWhen": "You have a style guide (type scale, colour palette, spacing, icons) and one page laid out on a grid with Auto Layout.",
+      "items": [
+        {
+          "key": "typography-font-pairing",
+          "title": "Typography & font pairing",
+          "detail": "Type scale, readability and choosing fonts that work together",
+          "kind": "LESSON",
+          "group": "Week 4 · Typography & colour"
+        },
+        {
+          "key": "colour-theory-colour-psychology",
+          "title": "Colour theory & colour psychology",
+          "detail": "How colour carries meaning and emotion",
+          "kind": "LESSON",
+          "group": "Week 4 · Typography & colour"
+        },
+        {
+          "key": "colour-combinations",
+          "title": "Colour combinations",
+          "detail": "Building a palette with enough contrast",
+          "kind": "LESSON",
+          "group": "Week 4 · Typography & colour"
+        },
+        {
+          "key": "iconography",
+          "title": "Iconography",
+          "detail": "Choosing and using icons consistently",
+          "kind": "LESSON",
+          "group": "Week 5 · Visual elements"
+        },
+        {
+          "key": "shapes-visual-elements",
+          "title": "Shapes & visual elements",
+          "detail": "Using shapes, images and illustrations",
+          "kind": "LESSON",
+          "group": "Week 5 · Visual elements"
+        },
+        {
+          "key": "spacing-whitespace",
+          "title": "Spacing & whitespace",
+          "detail": "Giving content room so it is easy to read",
+          "kind": "LESSON",
+          "group": "Week 5 · Visual elements"
+        },
+        {
+          "key": "grids-layouts",
+          "title": "Grids & layouts",
+          "detail": "Column grids for web pages",
+          "kind": "LESSON",
+          "group": "Week 6 · Layout"
+        },
+        {
+          "key": "auto-layout-basics",
+          "title": "Auto Layout basics",
+          "detail": "Layouts that resize and stay tidy",
+          "kind": "LESSON",
+          "group": "Week 6 · Layout"
+        },
+        {
+          "key": "constraints",
+          "title": "Constraints",
+          "detail": "How elements behave when the frame changes size",
+          "kind": "LESSON",
+          "group": "Week 6 · Layout"
+        },
+        {
+          "key": "style-guide",
+          "title": "Style guide",
+          "detail": "Type scale, colour palette, spacing values and an icon set for your website idea, in Figma",
+          "kind": "DELIVERABLE",
+          "group": "Week 6 · Layout"
+        }
+      ]
+    },
+    {
+      "key": "components-wireframes-user-flows",
+      "title": "Components, Wireframes & User Flows",
+      "level": "Foundation",
+      "weeks": 3,
+      "goal": "Build reusable UI components and plan pages with wireframes and user flows.",
+      "doneWhen": "You have a small component set (buttons, forms, cards, navigation) and low-fidelity wireframes with a user flow for your website.",
+      "items": [
+        {
+          "key": "ui-components",
+          "title": "UI components",
+          "detail": "Reusable parts and variants in Figma",
+          "kind": "LESSON",
+          "group": "Week 7 · UI components"
+        },
+        {
+          "key": "buttons-forms",
+          "title": "Buttons & forms",
+          "detail": "States, labels and errors",
+          "kind": "LESSON",
+          "group": "Week 7 · UI components"
+        },
+        {
+          "key": "cards-navigation",
+          "title": "Cards & navigation",
+          "detail": "Organising content and helping users move around",
+          "kind": "LESSON",
+          "group": "Week 7 · UI components"
+        },
+        {
+          "key": "ui-component-set",
+          "title": "UI component set",
+          "detail": "Buttons (with states), form fields, cards and a navigation bar as Figma components",
+          "kind": "PROJECT",
+          "group": "Week 7 · UI components"
+        },
+        {
+          "key": "low-fidelity-wireframes",
+          "title": "Low-fidelity wireframes",
+          "detail": "Planning the structure of a page before visual design",
+          "kind": "LESSON",
+          "group": "Week 8 · Wireframes & flows"
+        },
+        {
+          "key": "user-flows",
+          "title": "User flows",
+          "detail": "Mapping the steps a user takes to finish a task",
+          "kind": "LESSON",
+          "group": "Week 8 · Wireframes & flows"
+        },
+        {
+          "key": "accessibility-basics",
+          "title": "Accessibility basics",
+          "detail": "Contrast, text size, labels and designing for everyone",
+          "kind": "LESSON",
+          "group": "Week 9 · Website UI design"
+        },
+        {
+          "key": "wireframes-and-user-flow",
+          "title": "Wireframes and user flow",
+          "detail": "Low-fidelity wireframes for at least 3 pages of your website and one user flow",
+          "kind": "DELIVERABLE",
+          "group": "Week 9 · Website UI design"
+        }
+      ]
+    },
+    {
+      "key": "landing-pages-portfolio-final-project",
+      "title": "Landing Pages, Portfolio & Final Project",
+      "level": "Foundation",
+      "weeks": 3,
+      "goal": "Design full pages, follow a real-world workflow and present your work.",
+      "doneWhen": "Your final website project is designed in Figma and presented on Behance, and your instructor has checked it.",
+      "items": [
+        {
+          "key": "landing-page-design",
+          "title": "Landing page design",
+          "detail": "Structure of a landing page that turns visitors into users",
+          "kind": "LESSON",
+          "group": "Week 10 · Landing pages"
+        },
+        {
+          "key": "landing-page",
+          "title": "Landing page",
+          "detail": "A complete landing page design in Figma for desktop and phone",
+          "kind": "PROJECT",
+          "group": "Week 10 · Landing pages"
+        },
+        {
+          "key": "website-homepage-design",
+          "title": "Website homepage design",
+          "detail": "Designing a full homepage from your wireframes",
+          "kind": "LESSON",
+          "group": "Week 11 · Website UI"
+        },
+        {
+          "key": "real-world-design-workflow",
+          "title": "Real-world design workflow",
+          "detail": "From brief to research, wireframes, design, feedback and handoff",
+          "kind": "LESSON",
+          "group": "Week 11 · Website UI"
+        },
+        {
+          "key": "portfolio-development",
+          "title": "Portfolio development",
+          "detail": "Choosing and explaining your best work",
+          "kind": "LESSON",
+          "group": "Week 12 · Portfolio & final project"
+        },
+        {
+          "key": "behance-presentation",
+          "title": "Behance presentation",
+          "detail": "Presenting a project professionally",
+          "kind": "LESSON",
+          "group": "Week 12 · Portfolio & final project"
+        },
+        {
+          "key": "final-website-project",
+          "title": "Final website project",
+          "detail": "A complete website UI (homepage and inner pages, desktop and phone) using your style guide and components",
+          "kind": "MILESTONE",
+          "group": "Week 12 · Portfolio & final project"
+        },
+        {
+          "key": "behance-portfolio",
+          "title": "Behance portfolio",
+          "detail": "Your final website project published on Behance with a short write-up of the process",
+          "kind": "DELIVERABLE",
+          "group": "Week 12 · Portfolio & final project"
+        }
+      ]
+    }
+  ]
+}

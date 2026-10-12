@@ -1,0 +1,358 @@
+{
+  "title": "AI Based Web Designing – Professional",
+  "kind": "COURSE",
+  "edition": "2026",
+  "subtitle": "6 months · 24 weeks · Professional / Advanced",
+  "summary": "Develop professional UX research, UI design and real-world project skills: user research, interviews, personas, information architecture, usability studies, high-fidelity design, prototyping, accessibility and professional case studies.",
+  "expert": "At the end you can run a complete UX/UI process, from research to a tested high-fidelity prototype, and present it as a professional case study.",
+  "benchmarks": [
+    {
+      "title": "Research",
+      "detail": "Plan and conduct UX research, conduct user interviews and develop personas."
+    },
+    {
+      "title": "Structure",
+      "detail": "Create information architecture, sitemaps and user flows."
+    },
+    {
+      "title": "Testing",
+      "detail": "Conduct usability studies and synthesise findings with affinity mapping."
+    },
+    {
+      "title": "Design",
+      "detail": "Create high-fidelity UI designs and interactive prototypes, applying accessibility and ethical design."
+    },
+    {
+      "title": "Portfolio",
+      "detail": "Develop professional UX/UI case studies and portfolio projects."
+    }
+  ],
+  "stages": [
+    {
+      "key": "foundations-of-ux-user-centred-design",
+      "title": "Foundations of UX & User-Centred Design",
+      "level": "Professional",
+      "weeks": 4,
+      "goal": "Understand user-centred design and the main research methods.",
+      "doneWhen": "You can choose a research method for a question and explain how bias can affect your findings.",
+      "items": [
+        {
+          "key": "foundations-of-ux-design",
+          "title": "Foundations of UX design",
+          "detail": "What UX designers do and the UX design process",
+          "kind": "LESSON",
+          "group": "Week 1 · User-centred design"
+        },
+        {
+          "key": "user-centred-design",
+          "title": "User-centred design",
+          "detail": "Putting users at the centre of every decision",
+          "kind": "LESSON",
+          "group": "Week 1 · User-centred design"
+        },
+        {
+          "key": "primary-secondary-research",
+          "title": "Primary & secondary research",
+          "detail": "Collecting your own data vs using existing sources",
+          "kind": "LESSON",
+          "group": "Week 2 · Research methods"
+        },
+        {
+          "key": "qualitative-quantitative-research",
+          "title": "Qualitative & quantitative research",
+          "detail": "When to use each and what they tell you",
+          "kind": "LESSON",
+          "group": "Week 2 · Research methods"
+        },
+        {
+          "key": "empathy-user-needs",
+          "title": "Empathy & user needs",
+          "detail": "Understanding the people you design for",
+          "kind": "LESSON",
+          "group": "Week 3 · Empathy & bias"
+        },
+        {
+          "key": "bias-empathetic-design",
+          "title": "Bias & empathetic design",
+          "detail": "Recognising your own assumptions",
+          "kind": "LESSON",
+          "group": "Week 3 · Empathy & bias"
+        },
+        {
+          "key": "research-summary",
+          "title": "Research summary",
+          "detail": "Primary and secondary research for a chosen project: what you found and what users need",
+          "kind": "DELIVERABLE",
+          "group": "Week 4 · Empathy & bias"
+        }
+      ]
+    },
+    {
+      "key": "user-interviews-personas-design-sprints",
+      "title": "User Interviews, Personas & Design Sprints",
+      "level": "Professional",
+      "weeks": 4,
+      "goal": "Talk to real users and turn what you learn into personas.",
+      "doneWhen": "You have interviewed at least 3 people and built personas and a problem statement from what they said.",
+      "items": [
+        {
+          "key": "user-interviews",
+          "title": "User interviews",
+          "detail": "Planning, asking good questions and taking notes",
+          "kind": "LESSON",
+          "group": "Week 5 · Interviews"
+        },
+        {
+          "key": "interview-guide-and-notes",
+          "title": "Interview guide and notes",
+          "detail": "An interview guide and notes from at least 3 user interviews",
+          "kind": "DELIVERABLE",
+          "group": "Week 6 · Interviews"
+        },
+        {
+          "key": "user-personas",
+          "title": "User personas",
+          "detail": "Building personas from real interview data",
+          "kind": "LESSON",
+          "group": "Week 6 · Personas"
+        },
+        {
+          "key": "design-sprints",
+          "title": "Design sprints",
+          "detail": "Solving a problem in a focused five-day process",
+          "kind": "LESSON",
+          "group": "Week 7 · Design sprints"
+        },
+        {
+          "key": "portfolio-case-study-development",
+          "title": "Portfolio & case study development",
+          "detail": "Documenting your process from the start",
+          "kind": "LESSON",
+          "group": "Week 8 · Case study"
+        },
+        {
+          "key": "personas-and-problem-statement",
+          "title": "Personas and problem statement",
+          "detail": "2 personas and a clear problem statement for your project",
+          "kind": "DELIVERABLE",
+          "group": "Week 8 · Case study"
+        }
+      ]
+    },
+    {
+      "key": "information-architecture-flows-prototyping",
+      "title": "Information Architecture, Flows & Prototyping",
+      "level": "Professional",
+      "weeks": 4,
+      "goal": "Structure content and plan the journey of the user before designing screens.",
+      "doneWhen": "You have a sitemap, user flows, a storyboard and digital wireframes for your project.",
+      "items": [
+        {
+          "key": "information-architecture",
+          "title": "Information architecture",
+          "detail": "Organising and labelling content so users find it",
+          "kind": "LESSON",
+          "group": "Week 9 · Information architecture"
+        },
+        {
+          "key": "sitemaps",
+          "title": "Sitemaps",
+          "detail": "Showing the structure of a website",
+          "kind": "LESSON",
+          "group": "Week 9 · Information architecture"
+        },
+        {
+          "key": "user-flows",
+          "title": "User flows",
+          "detail": "Step-by-step paths through the product",
+          "kind": "LESSON",
+          "group": "Week 10 · Flows"
+        },
+        {
+          "key": "storyboarding",
+          "title": "Storyboarding",
+          "detail": "Telling the story of the user before designing",
+          "kind": "LESSON",
+          "group": "Week 10 · Flows"
+        },
+        {
+          "key": "figma-digital-wireframing",
+          "title": "Figma digital wireframing",
+          "detail": "Turning paper ideas into digital wireframes",
+          "kind": "LESSON",
+          "group": "Week 11 · Wireframes & prototypes"
+        },
+        {
+          "key": "prototyping",
+          "title": "Prototyping",
+          "detail": "Linking screens into a clickable prototype",
+          "kind": "LESSON",
+          "group": "Week 12 · Wireframes & prototypes"
+        },
+        {
+          "key": "sitemap-flows-and-low-fidelity-prototype",
+          "title": "Sitemap, flows and low-fidelity prototype",
+          "detail": "Sitemap, user flows, a storyboard and a clickable low-fidelity prototype in Figma",
+          "kind": "PROJECT",
+          "group": "Week 12 · Wireframes & prototypes"
+        }
+      ]
+    },
+    {
+      "key": "usability-studies-research-insights",
+      "title": "Usability Studies & Research Insights",
+      "level": "Professional",
+      "weeks": 4,
+      "goal": "Test designs with users and turn results into clear improvements.",
+      "doneWhen": "You have run a usability study and written a report with insights, KPIs and the changes you will make.",
+      "items": [
+        {
+          "key": "research-plans",
+          "title": "Research plans",
+          "detail": "Goals, questions, participants and method",
+          "kind": "LESSON",
+          "group": "Week 13 · Planning a study"
+        },
+        {
+          "key": "kpis",
+          "title": "KPIs",
+          "detail": "Measuring whether a design works",
+          "kind": "LESSON",
+          "group": "Week 13 · Planning a study"
+        },
+        {
+          "key": "usability-testing",
+          "title": "Usability testing",
+          "detail": "Running moderated and unmoderated tests",
+          "kind": "LESSON",
+          "group": "Week 14 · Usability testing"
+        },
+        {
+          "key": "affinity-diagrams",
+          "title": "Affinity diagrams",
+          "detail": "Grouping observations to find patterns",
+          "kind": "LESSON",
+          "group": "Week 15 · Insights"
+        },
+        {
+          "key": "research-insights",
+          "title": "Research insights",
+          "detail": "Turning patterns into clear, actionable insights",
+          "kind": "LESSON",
+          "group": "Week 15 · Insights"
+        },
+        {
+          "key": "ethical-inclusive-design",
+          "title": "Ethical & inclusive design",
+          "detail": "Designing for everyone without harm",
+          "kind": "LESSON",
+          "group": "Week 16 · Ethics"
+        },
+        {
+          "key": "bias-mitigation",
+          "title": "Bias mitigation",
+          "detail": "Reducing bias in research and design",
+          "kind": "LESSON",
+          "group": "Week 16 · Ethics"
+        },
+        {
+          "key": "usability-study-report",
+          "title": "Usability study report",
+          "detail": "Research plan, test with at least 5 users, affinity diagram and prioritised insights",
+          "kind": "DELIVERABLE",
+          "group": "Week 16 · Ethics"
+        }
+      ]
+    },
+    {
+      "key": "high-fidelity-design-accessibility",
+      "title": "High-Fidelity Design & Accessibility",
+      "level": "Professional",
+      "weeks": 4,
+      "goal": "Turn tested wireframes into polished, accessible designs.",
+      "doneWhen": "Your high-fidelity, interactive prototype meets contrast and text-size guidelines.",
+      "items": [
+        {
+          "key": "high-fidelity-figma-mockups",
+          "title": "High-fidelity Figma mockups",
+          "detail": "From wireframes to final visual design",
+          "kind": "LESSON",
+          "group": "Week 17 · High fidelity"
+        },
+        {
+          "key": "advanced-typography-constraints",
+          "title": "Advanced typography & constraints",
+          "detail": "Type systems and responsive constraints",
+          "kind": "LESSON",
+          "group": "Week 18 · Systems"
+        },
+        {
+          "key": "colour-systems",
+          "title": "Colour systems",
+          "detail": "Building a colour system with roles and states",
+          "kind": "LESSON",
+          "group": "Week 18 · Systems"
+        },
+        {
+          "key": "accessibility",
+          "title": "Accessibility",
+          "detail": "Contrast, focus, text size and inclusive patterns",
+          "kind": "LESSON",
+          "group": "Week 19 · Accessibility"
+        },
+        {
+          "key": "iconography",
+          "title": "Iconography",
+          "detail": "A consistent icon style across a product",
+          "kind": "LESSON",
+          "group": "Week 19 · Accessibility"
+        },
+        {
+          "key": "high-fidelity-interactive-prototype",
+          "title": "High-fidelity interactive prototype",
+          "detail": "Your project as a polished, accessible, clickable prototype in Figma",
+          "kind": "PROJECT",
+          "group": "Week 20 · Accessibility"
+        }
+      ]
+    },
+    {
+      "key": "professional-projects-case-studies",
+      "title": "Professional Projects & Case Studies",
+      "level": "Professional",
+      "weeks": 4,
+      "goal": "Complete real-world UX/UI projects and present them as case studies.",
+      "doneWhen": "You have a finished professional case study and an updated portfolio, checked by your instructor.",
+      "items": [
+        {
+          "key": "professional-ux-ui-projects",
+          "title": "Professional UX/UI projects",
+          "detail": "Working through a complete, real-world brief",
+          "kind": "LESSON",
+          "group": "Week 21 · Professional project"
+        },
+        {
+          "key": "professional-ux-ui-case-studies",
+          "title": "Professional UX/UI case studies",
+          "detail": "Writing up problem, research, decisions and results",
+          "kind": "LESSON",
+          "group": "Week 22 · Case studies"
+        },
+        {
+          "key": "professional-ux-ui-case-study",
+          "title": "Professional UX/UI case study",
+          "detail": "A complete project from research to tested prototype, written up as a case study",
+          "kind": "MILESTONE",
+          "group": "Week 23 · Case studies"
+        },
+        {
+          "key": "advanced-portfolio",
+          "title": "Advanced portfolio",
+          "detail": "Portfolio with your case studies, published on Behance",
+          "kind": "DELIVERABLE",
+          "group": "Week 24 · Portfolio"
+        }
+      ]
+    }
+  ]
+}
