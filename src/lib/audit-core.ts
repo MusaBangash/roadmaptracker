@@ -40,7 +40,9 @@ export const AUDIT_ACTIONS = {
   "roadmap.delete": { group: "roadmaps", label: "Deleted a draft roadmap" },
   "track.toggle": { group: "roadmaps", label: "Turned a track on or off" },
   "cohort.create": { group: "school", label: "Created a cohort" },
+  "cohort.update": { group: "school", label: "Changed a cohort's name, start date or roadmap" },
   "cohort.archive": { group: "school", label: "Archived or reopened a cohort" },
+  "school.rename": { group: "school", label: "Renamed the school" },
   "cohort.instructor": { group: "school", label: "Changed a cohort's instructors" },
   "school.export": { group: "school", label: "Downloaded the school backup" },
   "certificate.design": { group: "school", label: "Uploaded a certificate design" },
@@ -55,6 +57,7 @@ export const AUDIT_ACTIONS = {
   "lab.fix": { group: "labs", label: "Marked a lab problem fixed" },
   "password.reset_link": { group: "account", label: "Made a password reset link" },
   "password.reset": { group: "account", label: "Set a new password with a reset link" },
+  "password.change": { group: "account", label: "Changed their own password" },
 } as const satisfies Record<string, { group: AuditGroup; label: string }>;
 
 export type AuditAction = keyof typeof AUDIT_ACTIONS;

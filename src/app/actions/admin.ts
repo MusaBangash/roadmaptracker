@@ -8,6 +8,7 @@ import { db, schema } from "@/db";
 import { requireRole, requireTeachableCohort, requireUser } from "@/lib/access";
 import { canUseTrack } from "@/lib/access-core";
 import { canResetPassword, deleteScope, type Person } from "@/lib/security-core";
+import { canChangeTrack, cohortChanges } from "@/lib/cohort-core";
 import { audit } from "@/lib/audit";
 import { hashToken, newResetToken, RESET_HOURS } from "@/lib/reset";
 import { baseUrl } from "@/lib/url";
@@ -38,6 +39,61 @@ export async function createCohortAction(_: FormState, form: FormData): Promise<
   }
   await audit({ orgId: ctx.org.id, actorId: ctx.user.id, action: "cohort.create", detail: cohort.name });
   redirect(`/cohorts/${cohort.id}`);
+}
+
+/** Fix a cohort's name, start date or (while nobody is enrolled) roadmap. Admins and its teachers. */
+export async function updateCohortAction(_: FormState, form: FormData): Promise<FormState> {
+  const ctx = await requireTeachableCohort(String(form.get("cohortId") ?? ""));
+  const p = cohortSchema.safeParse({ name: form.get("name"), trackId: form.get("trackId") || ctx.cohort.trackId, startDate: form.get("startDate") });
+  if (!p.success) return { error: p.error.issues[0].message };
+  const after = p.data;
+  const result = await db.transaction(async (tx) => {
+    // Locked, so a student joining at the same moment can't slip in while the roadmap changes.
+    const [cohort] = await tx.select().from(schema.cohorts).where(eq(schema.cohorts.id, ctx.cohort.id)).for("update");
+    const before = { name: cohort.name, startDate: cohort.startDate.toISOString().slice(0, 10), trackId: cohort.trackId };
+    if (after.trackId !== before.trackId) {
+      const [{ n }] = await tx.select({ n: sql<number>`count(*)::int` }).from(schema.enrollments).where(eq(schema.enrollments.cohortId, cohort.id));
+      if (!canChangeTrack(n)) return { error: "The roadmap can't change any more: students have joined, and their ticks belong to this roadmap's lessons." };
+      const enabled = await tx.query.orgTracks.findFirst({ where: and(eq(schema.orgTracks.orgId, ctx.org.id), eq(schema.orgTracks.trackId, after.trackId)) });
+      const track = await tx.query.tracks.findFirst({ where: eq(schema.tracks.id, after.trackId) });
+      if (!enabled || !track || !canUseTrack(ctx.org.id, track)) return { error: "That track isn't enabled for your school." };
+      // Lessons marked taught belong to the old roadmap.
+      await tx.delete(schema.cohortCoverage).where(eq(schema.cohortCoverage.cohortId, cohort.id));
+    }
+    const titles = await tx.select({ id: schema.tracks.id, title: schema.tracks.title }).from(schema.tracks)
+      .where(inArray(schema.tracks.id, [before.trackId, after.trackId]));
+    const detail = cohortChanges(before, after, (id) => titles.find((t) => t.id === id)?.title ?? "Unknown roadmap");
+    if (!detail) return { ok: "Nothing changed." };
+    await tx.update(schema.cohorts).set({ name: after.name, startDate: new Date(after.startDate), trackId: after.trackId }).where(eq(schema.cohorts.id, cohort.id));
+    await audit({ orgId: ctx.org.id, actorId: ctx.user.id, action: "cohort.update", detail }, tx);
+    return null;
+  });
+  if (result) return result;
+  revalidatePath("/cohorts");
+  redirect(`/cohorts/${ctx.cohort.id}`);
+}
+
+const schoolNameSchema = z.string().trim().min(2, "Type the school's name (2 to 120 characters).").max(120, "Type the school's name (2 to 120 characters).");
+
+/**
+ * Rename a school: its admins rename the active school; the platform admin any school (orgId in the
+ * form). The slug stays, and certificates already issued keep the name printed on them.
+ */
+export async function renameSchoolAction(_: FormState, form: FormData): Promise<FormState> {
+  const asked = String(form.get("orgId") ?? "");
+  const user = await requireUser();
+  let orgId: string;
+  if (asked && user.isSuperAdmin) orgId = asked;
+  else orgId = (await requireRole(["ADMIN"])).org.id;
+  const p = schoolNameSchema.safeParse(form.get("name"));
+  if (!p.success) return { error: p.error.issues[0].message };
+  const org = await db.query.organizations.findFirst({ where: eq(schema.organizations.id, orgId) });
+  if (!org) return { error: "That school doesn't exist." };
+  if (org.name === p.data) return { ok: "Nothing changed." };
+  await db.update(schema.organizations).set({ name: p.data }).where(eq(schema.organizations.id, orgId));
+  await audit({ orgId, actorId: user.id, action: "school.rename", detail: `${org.name} → ${p.data}` });
+  revalidatePath("/", "layout");
+  return { ok: `Saved. The school is now called ${p.data}.` };
 }
 
 export async function setCohortInstructorAction(form: FormData) {

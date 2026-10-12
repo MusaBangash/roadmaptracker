@@ -4,6 +4,7 @@ import { db, schema } from "@/db";
 import { requireUser } from "@/lib/access";
 import { PageHeader } from "@/components/ui";
 import { OrgForm } from "@/components/org-form";
+import { SchoolNameForm } from "@/components/school-name-form";
 import { fmtDate } from "@/lib/utils";
 
 export const metadata = { title: "Schools" };
@@ -22,11 +23,11 @@ export default async function PlatformPage() {
       <PageHeader title="Schools" sub="Every school on this NoorAI Tracks installation. Each school's data is kept separate." />
       <OrgForm />
       <div className="card mt-6 overflow-x-auto">
-        <table className="w-full min-w-[520px] text-sm">
+        <table className="w-full min-w-[640px] text-sm">
           <thead className="border-b border-border text-left text-sm font-semibold text-ink-muted"><tr><th className="p-3">School</th><th className="p-3">Members</th><th className="p-3">Students</th><th className="p-3">Cohorts</th><th className="p-3">Created</th></tr></thead>
           <tbody className="divide-y divide-border">
             {orgs.map(({ o, members, students, cohorts }) => (
-              <tr key={o.id}><td className="p-3 font-semibold">{o.name}</td><td className="p-3">{Number(members)}</td><td className="p-3">{Number(students)}</td><td className="p-3">{Number(cohorts)}</td><td className="p-3 text-ink-muted">{fmtDate(o.createdAt)}</td></tr>
+              <tr key={o.id}><td className="min-w-64 p-3"><SchoolNameForm name={o.name} orgId={o.id} compact /></td><td className="p-3">{Number(members)}</td><td className="p-3">{Number(students)}</td><td className="p-3">{Number(cohorts)}</td><td className="p-3 text-ink-muted">{fmtDate(o.createdAt)}</td></tr>
             ))}
           </tbody>
         </table>

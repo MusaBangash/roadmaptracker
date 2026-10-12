@@ -40,7 +40,8 @@ export default async function AppLayout({ children }: { children: React.ReactNod
                 <div className="mt-3"><OrgSwitcher orgs={memberships.map((m) => m.org)} current={org?.id} /></div>
               )}
               <div className="mt-3"><ThemeSwitch initial={theme} /></div>
-              <Link href="/join" className="mt-3 block text-sm text-primary">{t("account.join")}</Link>
+              <Link href="/account" className="mt-3 block text-sm text-primary">{t("account.mine")}</Link>
+              <Link href="/join" className="mt-2 block text-sm text-primary">{t("account.join")}</Link>
               <Link href="/privacy" className="mt-2 block text-sm text-primary">{t("account.privacy")}</Link>
               <form action={logoutAction} className="mt-3"><button className="btn-ghost w-full">{t("account.signOut")}</button></form>
             </div>

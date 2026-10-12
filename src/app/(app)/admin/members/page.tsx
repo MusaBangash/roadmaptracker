@@ -6,6 +6,7 @@ import { PageHeader, Tag, sentence } from "@/components/ui";
 import { CopyButton } from "@/components/copy-button";
 import { DeletePersonForm, ResetLinkForm } from "@/components/member-tools";
 import { Icon } from "@/components/icon";
+import { SchoolNameForm } from "@/components/school-name-form";
 import Link from "next/link";
 import { baseUrl } from "@/lib/url";
 import { fmtDate, plural } from "@/lib/utils";
@@ -31,6 +32,8 @@ export default async function MembersPage({ searchParams }: { searchParams: Prom
           <Link href="/admin/certificate-design" className="btn-ghost"><Icon name="star" size={18} />Certificate design</Link>
           <a href="/admin/backup" className="btn-ghost"><Icon name="download" size={18} />Download school backup</a>
         </>} />
+
+      <div className="mb-8 max-w-xl"><SchoolNameForm name={ctx.org.name} /></div>
 
       {deleted && (
         <p role="status" className="mb-6 flex items-center gap-2 rounded-md bg-success-soft px-4 py-3 text-sm text-success">

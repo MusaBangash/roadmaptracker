@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
-import { createCohortAction } from "@/app/actions/admin";
+import { createCohortAction, updateCohortAction } from "@/app/actions/admin";
 import { FormError } from "@/components/ui";
 
 export function CohortForm({ tracks, staff, today }: {
@@ -36,6 +36,47 @@ export function CohortForm({ tracks, staff, today }: {
       )}
       <FormError message={state?.error} />
       <div><button className="btn-primary" disabled={pending}>{pending ? "Creating…" : "Create cohort"}</button></div>
+    </form>
+  );
+}
+
+/** Fix a cohort's name and start date; its roadmap only while nobody has joined. */
+export function EditCohortForm({ cohort, tracks, trackLocked }: {
+  cohort: { id: string; name: string; startDate: string; trackId: string };
+  tracks: { id: string; title: string; edition: string }[];
+  trackLocked: boolean;
+}) {
+  const [state, action, pending] = useActionState(updateCohortAction, undefined);
+  const current = tracks.find((t) => t.id === cohort.trackId);
+  return (
+    <form action={action} className="card grid max-w-2xl gap-4 p-6">
+      <input type="hidden" name="cohortId" value={cohort.id} />
+      <div><label className="label" htmlFor="name">Cohort name</label><input id="name" name="name" required defaultValue={cohort.name} className="input" /></div>
+      <div>
+        <label className="label" htmlFor="startDate">Start date</label>
+        <input id="startDate" name="startDate" type="date" required defaultValue={cohort.startDate} className="input" />
+        <p className="mt-1 text-xs text-ink-muted">The plan, the &ldquo;behind&rdquo; warnings and the teaching plan follow this date.</p>
+      </div>
+      <div>
+        <label className="label" htmlFor="trackId">Track</label>
+        {trackLocked ? (
+          <>
+            <p className="input bg-surface-sunken">{current?.title ?? "This cohort's roadmap"}</p>
+            <p className="mt-1 text-xs text-ink-muted">Students have joined, so the roadmap can&apos;t change: their ticks belong to its lessons.</p>
+          </>
+        ) : (
+          <>
+            <select id="trackId" name="trackId" required className="input" defaultValue={cohort.trackId}>
+              {!current && <option value={cohort.trackId}>This cohort&apos;s roadmap</option>}
+              {tracks.map((t) => <option key={t.id} value={t.id}>{t.title}{t.edition ? ` (${t.edition.replace(/\s+-\s+/g, " · ")})` : ""}</option>)}
+            </select>
+            <p className="mt-1 text-xs text-ink-muted">You can change the roadmap until the first student joins.</p>
+          </>
+        )}
+      </div>
+      <FormError message={state?.error} />
+      {state?.ok && <p role="status" className="text-sm text-ink-muted">{state.ok}</p>}
+      <div><button className="btn-primary" disabled={pending}>{pending ? "Saving…" : "Save changes"}</button></div>
     </form>
   );
 }

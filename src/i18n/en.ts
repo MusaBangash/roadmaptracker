@@ -14,6 +14,7 @@ export const en = {
   "nav.main": "Main",
   "nav.menu": "Menu",
   "account.menu": "Account",
+  "account.mine": "My account (name and password)",
   "account.join": "Join with a code",
   "account.privacy": "Privacy notice",
   "account.signOut": "Sign out",

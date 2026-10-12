@@ -74,6 +74,7 @@ export default async function CohortPage({ params }: { params: Promise<{ id: str
           <Link href={`/cohorts/${cohort.id}/teach`} className="btn-ghost">Teaching plan</Link>
           <Link href={`/cohorts/${cohort.id}/attendance`} className="btn-ghost">Attendance</Link>
           <a href={`/cohorts/${cohort.id}/export`} className="btn-ghost">Export CSV</a>
+          <Link href={`/cohorts/${cohort.id}/edit`} className="btn-ghost"><Icon name="edit" size={18} />Edit</Link>
         </>}
       />
 
