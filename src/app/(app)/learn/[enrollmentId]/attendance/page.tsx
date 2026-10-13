@@ -20,25 +20,33 @@ export default async function MyAttendancePage({ params, searchParams }: { param
   const t = await getT();
   const [cohort, records] = await Promise.all([
     db.query.cohorts.findFirst({ where: eq(schema.cohorts.id, enrollment.cohortId) }).then((c) => c!),
-    db.select({ date: schema.attendance.date, present: schema.attendance.present }).from(schema.attendance)
+    db.select({ date: schema.attendance.date, status: schema.attendance.status }).from(schema.attendance)
       .where(eq(schema.attendance.enrollmentId, enrollment.id)).orderBy(asc(schema.attendance.date)),
   ]);
   const all = attendanceSummary(records);
   // Open on the newest month with class days (or this month before any).
   const month = parseMonth((await searchParams).month, monthsWithRecords(records)[0] ?? monthOf(new Date().toISOString()));
-  const byDay = new Map(records.filter((r) => monthOf(r.date) === month).map((r) => [r.date, r.present]));
-  const inMonth = attendanceSummary([...byDay.values()].map((present) => ({ present })));
+  const byDay = new Map(records.filter((r) => monthOf(r.date) === month).map((r) => [r.date, r.status]));
+  const inMonth = attendanceSummary([...byDay.values()].map((status) => ({ status })));
+  // Each mark: its word, colour and icon (shape and word as well as colour).
+  const look = {
+    PRESENT: { word: t("att.present"), cls: "bg-success-soft text-success", icon: "check" },
+    LATE: { word: t("att.late"), cls: "bg-warning-soft text-warning", icon: "clock" },
+    LEAVE: { word: t("att.leave"), cls: "bg-surface-sunken text-ink-muted", icon: "minus" },
+    ABSENT: { word: t("att.absent"), cls: "bg-danger-soft text-danger", icon: "x" },
+  } as const;
   const days = daysOfMonth(month);
   const lead = weekdayOf(days[0]);
-  const absentDays = records.filter((r) => !r.present).map((r) => r.date).reverse();
+  const absentDays = records.filter((r) => r.status === "ABSENT").map((r) => r.date).reverse();
   const href = (m: string) => `/learn/${enrollment.id}/attendance?month=${m}`;
 
   return (
     <>
       <PageHeader title={t("att.title")} sub={cohort.name} back={{ href: `/learn/${enrollment.id}`, label: t("log.myTrack") }} />
-      {all.total === 0 ? <Empty title={t("att.none")}>{t("att.noneSub")}</Empty> : (
+      {all.pct === null ? <Empty title={t("att.none")}>{t("att.noneSub")}</Empty> : (
         <>
-          <p className="mb-6 text-lg">{t.rich("att.summary", { b: (s) => <b>{s}</b> }, { pct: pct(all.pct!), present: all.present, total: all.total })}</p>
+          <p className="mb-6 text-lg">{t.rich("att.summary", { b: (s) => <b>{s}</b> }, { pct: pct(all.pct!), present: all.present, total: all.counted })}</p>
+          {(all.late > 0 || all.leave > 0) && <p className="-mt-4 mb-6 text-sm text-ink-muted">{t("att.extra", { late: all.late, leave: all.leave })}</p>}
 
           <section className="card mb-6 max-w-md p-4" aria-labelledby="month-h">
             <div className="mb-3 flex items-center justify-between gap-2">
@@ -53,22 +61,23 @@ export default async function MyAttendancePage({ params, searchParams }: { param
                 const v = byDay.get(d);
                 const n = Number(d.slice(8));
                 if (v === undefined) return <div key={d} className="rounded-md py-2 text-ink-muted" role="cell">{n}</div>;
+                const l = look[v];
                 return (
-                  <div key={d} role="cell" title={v ? t("att.present") : t("att.absent")}
-                    className={`flex flex-col items-center rounded-md py-1 font-semibold ${v ? "bg-success-soft text-success" : "bg-danger-soft text-danger"}`}>
+                  <div key={d} role="cell" title={l.word} className={`flex flex-col items-center rounded-md py-1 font-semibold ${l.cls}`}>
                     {n}
-                    <Icon name={v ? "check" : "x"} size={14} />
-                    <span className="sr-only">{v ? t("att.present") : t("att.absent")}</span>
+                    <Icon name={l.icon} size={14} />
+                    <span className="sr-only">{l.word}</span>
                   </div>
                 );
               })}
             </div>
             <p className="mt-3 text-sm text-ink-muted">
-              {inMonth.total ? t("att.monthSummary", { month: monthLabel(month), present: inMonth.present, total: inMonth.total }) : t("att.monthNone", { month: monthLabel(month) })}
+              {inMonth.total ? t("att.monthSummary", { month: monthLabel(month), present: inMonth.present, total: inMonth.counted }) : t("att.monthNone", { month: monthLabel(month) })}
             </p>
-            <p className="mt-2 flex gap-4 text-xs text-ink-muted">
-              <span className="flex items-center gap-1"><span className="text-success"><Icon name="check" size={14} /></span>{t("att.present")}</span>
-              <span className="flex items-center gap-1"><span className="text-danger"><Icon name="x" size={14} /></span>{t("att.absent")}</span>
+            <p className="mt-2 flex flex-wrap gap-4 text-xs text-ink-muted">
+              {(["PRESENT", "LATE", "LEAVE", "ABSENT"] as const).map((s) => (
+                <span key={s} className="flex items-center gap-1"><span className={look[s].cls.split(" ")[1]}><Icon name={look[s].icon} size={14} /></span>{look[s].word}</span>
+              ))}
             </p>
           </section>
 

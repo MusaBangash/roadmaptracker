@@ -5,6 +5,8 @@ import { loadTrackTree, loadCells, loadSignoffs, summarizeCells, expectedPct, ex
 
 import { loadCoverage, taughtDates, coverageOf } from "@/lib/coverage";
 import { waitingSql } from "@/lib/comments";
+import { marksByStudent } from "@/lib/attendance";
+import { attendanceFlag, attendanceSummary } from "@/lib/attendance-core";
 
 type Cohort = typeof schema.cohorts.$inferSelect;
 
@@ -34,22 +36,25 @@ export async function cohortRows(cohort: Cohort, tree?: StageNode[]) {
       ? db.select({ e: schema.weeklyLogs.enrollmentId, h: sql<number>`coalesce(sum(${schema.weeklyLogs.hours}),0)` })
           .from(schema.weeklyLogs).where(inArray(schema.weeklyLogs.enrollmentId, ids)).groupBy(schema.weeklyLogs.enrollmentId)
       : Promise.resolve([]),
-    ids.length
-      ? db.select({ e: schema.attendance.enrollmentId, total: sql<number>`count(*)`, present: sql<number>`count(*) filter (where ${schema.attendance.present})` })
-          .from(schema.attendance).where(inArray(schema.attendance.enrollmentId, ids)).groupBy(schema.attendance.enrollmentId)
-      : Promise.resolve([]),
+    marksByStudent(ids),
     loadCoverage(cohort.id),
   ]);
   const signBy = byEnrollment(signoffs);
   const expected = expectedPct(tree, cohort.startDate);
   const hoursBy = new Map(hours.map((h) => [h.e, Number(h.h)]));
-  const attBy = new Map(att.map((a) => [a.e, { total: Number(a.total), present: Number(a.present) }]));
+
   const out = rows.map(({ e, u }) => {
     const sum = summarizeCells(tree!, cells.get(e.id) ?? [], signBy.get(e.id) ?? []);
     const lastAt = last.get(e.id);
+    // Attendance: Late counts as present; Leave is left out (total = the days that count).
+    const marks = att.get(e.id) ?? [];
+    const a = attendanceSummary(marks.map((status) => ({ status })));
     return {
-      enrollment: e, user: u, sum, last: lastAt, hours: hoursBy.get(e.id) ?? 0, attendance: attBy.get(e.id) ?? null,
+      enrollment: e, user: u, sum, last: lastAt, hours: hoursBy.get(e.id) ?? 0,
+      attendance: a.counted ? { present: a.present, total: a.counted, late: a.late, leave: a.leave, absent: a.absent } : null,
       risk: e.status === "ACTIVE" ? riskOf(sum, expected, lastAt, e.createdAt) : null,
+      /** Keeps missing class (3 absences in a row, or below 75%): only for active students. */
+      attFlag: e.status === "ACTIVE" ? attendanceFlag(marks) : null,
     };
   });
   const active = out.filter((r) => r.enrollment.status === "ACTIVE");

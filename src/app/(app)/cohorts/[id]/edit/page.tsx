@@ -20,7 +20,7 @@ export default async function EditCohortPage({ params }: { params: Promise<{ id:
     <>
       <PageHeader title="Edit cohort" sub={cohort.name} back={{ href: `/cohorts/${cohort.id}`, label: cohort.name }} />
       <EditCohortForm tracks={tracks} trackLocked={!canChangeTrack(n)}
-        cohort={{ id: cohort.id, name: cohort.name, startDate: cohort.startDate.toISOString().slice(0, 10), trackId: cohort.trackId }} />
+        cohort={{ id: cohort.id, name: cohort.name, startDate: cohort.startDate.toISOString().slice(0, 10), trackId: cohort.trackId, classDays: cohort.classDays }} />
     </>
   );
 }

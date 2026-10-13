@@ -11,6 +11,9 @@ import { pct, fmtDate, plural } from "@/lib/utils";
 import { unreadForStudents } from "@/lib/comments";
 import { getT } from "@/i18n/server";
 import { inClass } from "@/lib/cohort-core";
+import { recentAttendance } from "@/lib/attendance";
+import { isClassDay, missedClassDays, remindFrom } from "@/lib/attendance-core";
+import { schoolToday } from "@/lib/utils";
 
 export const metadata = { title: "Dashboard" };
 
@@ -60,7 +63,8 @@ export default async function Dashboard() {
       .innerJoin(schema.tracks, eq(schema.cohorts.trackId, schema.tracks.id))
       .where(and(eq(schema.cohortInstructors.userId, ctx.user.id), eq(schema.cohorts.orgId, ctx.org.id), eq(schema.cohorts.archived, false)));
   }
-  const pending = await pendingReviewCount(teach.map((x) => x.c.id));
+  const today = schoolToday();
+  const [pending, recent] = await Promise.all([pendingReviewCount(teach.map((x) => x.c.id)), recentAttendance(teach.map((x) => x.c.id), today)]);
   const teachCards = await Promise.all(teach.map(async ({ c, t }) => {
     const { rows, expected, tree, coverage } = await cohortRows(c);
     const n = coverage.next;
@@ -68,7 +72,15 @@ export default async function Dashboard() {
     const active = rows.filter((r) => r.enrollment.status === "ACTIVE");
     const avg = active.length ? active.reduce((a, r) => a + r.sum.pct, 0) / active.length : 0;
     const waiting = rows.filter((r) => r.enrollment.status === "PENDING").length;
-    return { c, t, students: active.length, avg, expected, atRisk: active.filter((r) => r.risk).length, pending: pending.get(c.id) ?? 0, waiting, nextToTeach, behind: coverage.behind };
+    // Attendance today, and class days in the last month with none saved.
+    const days = recent.get(c.id) ?? new Map();
+    const att = {
+      today: days.get(today) ?? null,
+      due: isClassDay(c.classDays, today) && !days.has(today),
+      daysSet: !!c.classDays?.length,
+      missed: missedClassDays(c.classDays, new Set(days.keys()), remindFrom(c.startDate.toISOString().slice(0, 10), c.classDaysSince), today).length,
+    };
+    return { c, t, students: active.length, avg, expected, atRisk: active.filter((r) => r.risk || r.attFlag).length, pending: pending.get(c.id) ?? 0, waiting, nextToTeach, behind: coverage.behind, att };
   }));
 
   let counts: Record<string, number> = {};
@@ -87,8 +99,30 @@ export default async function Dashboard() {
           <Stat label="Students" value={counts.STUDENT ?? 0} />
           <Stat label="Instructors" value={counts.INSTRUCTOR ?? 0} />
           <Stat label="Active cohorts" value={teachCards.length} />
-          <Stat label="Need attention" value={teachCards.reduce((a, x) => a + x.atRisk, 0)} sub="inactive or behind pace" />
+          <Stat label="Need attention" value={teachCards.reduce((a, x) => a + x.atRisk, 0)} sub="inactive, behind pace or missing class" />
         </div>
+      )}
+
+      {(ctx.role === "ADMIN" || ctx.role === "INSTRUCTOR") && teachCards.length > 0 && (
+        <section className="mb-8">
+          <h2 className="h2 mb-3">Today&apos;s attendance</h2>
+          <ul className="card divide-y divide-border text-sm">
+            {teachCards.map((x) => (
+              <li key={x.c.id}>
+                <Link href={`/cohorts/${x.c.id}/attendance`} className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 hover:bg-surface-sunken">
+                  <span className="font-semibold">{x.c.name}</span>
+                  {x.att.today ? (
+                    <span><b>{x.att.today.present} of {x.att.today.marked} present</b>{x.att.today.absent ? ` · ${x.att.today.absent} absent` : ""}{x.att.today.late ? ` · ${x.att.today.late} late` : ""}{x.att.today.leave ? ` · ${x.att.today.leave} on leave` : ""}</span>
+                  ) : x.att.due ? (
+                    <Badge tone="warning" icon="clock">Not taken yet</Badge>
+                  ) : (
+                    <span className="text-ink-muted">{x.att.daysSet ? "No class today" : "Class days not set"}</span>
+                  )}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
       )}
 
       {(ctx.role === "ADMIN" || ctx.role === "INSTRUCTOR") && (
@@ -103,12 +137,14 @@ export default async function Dashboard() {
             <div className="grid gap-3 md:grid-cols-2">
               {teachCards.map((x) => (
                 <Link key={x.c.id} href={`/cohorts/${x.c.id}`} className="card block p-4 hover:border-primary">
-                  <div className="flex items-start justify-between gap-2">
+                  <div className="flex flex-wrap items-start justify-between gap-2">
                     <div>
                       <div className="font-semibold">{x.c.name}</div>
                       <div className="text-sm text-ink-muted">{x.t.title} · started {fmtDate(x.c.startDate)}</div>
                     </div>
-                    <div className="flex flex-col items-end gap-1">
+                    <div className="flex flex-col items-start gap-1 sm:items-end">
+                      {x.att.due && <Badge tone="warning" icon="calendar">Attendance not taken today</Badge>}
+                      {x.att.missed > 0 && <Badge tone="warning" icon="calendar">{plural(x.att.missed, "class day")} without attendance</Badge>}
                       {x.waiting > 0 && <Badge tone="info" icon="addPerson">{plural(x.waiting, "student")} waiting to join</Badge>}
                       {x.pending > 0 && <Badge tone="warning" icon="clock">{x.pending} to review</Badge>}
                     </div>

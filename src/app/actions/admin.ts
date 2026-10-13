@@ -13,6 +13,7 @@ import { audit } from "@/lib/audit";
 import { hashToken, newResetToken, RESET_HOURS } from "@/lib/reset";
 import { baseUrl } from "@/lib/url";
 import { randomCode, schoolToday } from "@/lib/utils";
+import { parseClassDays } from "@/lib/attendance-core";
 import type { FormState } from "./auth";
 
 const cohortSchema = z.object({
@@ -46,11 +47,13 @@ export async function updateCohortAction(_: FormState, form: FormData): Promise<
   const ctx = await requireTeachableCohort(String(form.get("cohortId") ?? ""));
   const p = cohortSchema.safeParse({ name: form.get("name"), trackId: form.get("trackId") || ctx.cohort.trackId, startDate: form.get("startDate") });
   if (!p.success) return { error: p.error.issues[0].message };
-  const after = p.data;
+  // Class days for attendance reminders (none ticked = not set).
+  const days = parseClassDays(form.getAll("classDays"));
+  const after = { ...p.data, classDays: days.length ? days : null };
   const result = await db.transaction(async (tx) => {
     // Locked, so a student joining at the same moment can't slip in while the roadmap changes.
     const [cohort] = await tx.select().from(schema.cohorts).where(eq(schema.cohorts.id, ctx.cohort.id)).for("update");
-    const before = { name: cohort.name, startDate: cohort.startDate.toISOString().slice(0, 10), trackId: cohort.trackId };
+    const before = { name: cohort.name, startDate: cohort.startDate.toISOString().slice(0, 10), trackId: cohort.trackId, classDays: cohort.classDays };
     if (after.trackId !== before.trackId) {
       const [{ n }] = await tx.select({ n: sql<number>`count(*)::int` }).from(schema.enrollments).where(eq(schema.enrollments.cohortId, cohort.id));
       if (!canChangeTrack(n)) return { error: "The roadmap can't change any more: students have joined, and their ticks belong to this roadmap's lessons." };
@@ -64,7 +67,11 @@ export async function updateCohortAction(_: FormState, form: FormData): Promise<
       .where(inArray(schema.tracks.id, [before.trackId, after.trackId]));
     const detail = cohortChanges(before, after, (id) => titles.find((t) => t.id === id)?.title ?? "Unknown roadmap");
     if (!detail) return { ok: "Nothing changed." };
-    await tx.update(schema.cohorts).set({ name: after.name, startDate: new Date(after.startDate), trackId: after.trackId }).where(eq(schema.cohorts.id, cohort.id));
+    await tx.update(schema.cohorts).set({
+      name: after.name, startDate: new Date(after.startDate), trackId: after.trackId, classDays: after.classDays,
+      // New class days count from today: earlier days were never meant to be class days.
+      ...(JSON.stringify(before.classDays ?? null) !== JSON.stringify(after.classDays) ? { classDaysSince: schoolToday() } : {}),
+    }).where(eq(schema.cohorts.id, cohort.id));
     await audit({ orgId: ctx.org.id, actorId: ctx.user.id, action: "cohort.update", detail }, tx);
     return null;
   });

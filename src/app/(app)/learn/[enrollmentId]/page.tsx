@@ -42,7 +42,7 @@ export default async function LearnPage({ params }: { params: Promise<{ enrollme
     loadCoverage(cohort.id),
     validCertificate(enrollment.id),
     loadComments([enrollment.id]),
-    db.select({ present: schema.attendance.present }).from(schema.attendance).where(eq(schema.attendance.enrollmentId, enrollment.id)),
+    db.select({ status: schema.attendance.status }).from(schema.attendance).where(eq(schema.attendance.enrollmentId, enrollment.id)),
   ]);
   const att = attendanceSummary(attendance);
   // Comments (feature 3): each item's thread, and what the teachers wrote since the student last looked.
@@ -70,7 +70,7 @@ export default async function LearnPage({ params }: { params: Promise<{ enrollme
         <p className="mb-6 text-sm">
           <Link href={`/learn/${enrollment.id}/attendance`} className="inline-flex items-center gap-2 rounded-md bg-surface-sunken px-3 py-2 hover:underline">
             <Icon name="calendar" size={18} />
-            <span>{t.rich("learn.attendanceLine", { b: (s) => <b>{s}</b> }, { pct: pct(att.pct), present: att.present, total: att.total })}</span>
+            <span>{t.rich("learn.attendanceLine", { b: (s) => <b>{s}</b> }, { pct: pct(att.pct), present: att.present, total: att.counted })}{att.late || att.leave ? ` · ${t("att.extra", { late: att.late, leave: att.leave })}` : ""}</span>
           </Link>
         </p>
       )}

@@ -10,6 +10,7 @@ import { presentToMark } from "@/lib/coverage-core";
 import { canJudgeWork } from "@/lib/security-core";
 import { canApply, inClass, leaveDetails, leaveWords, OP_STATUS, type ClassListOp, type EnrollmentStatus } from "@/lib/cohort-core";
 import { schoolToday } from "@/lib/utils";
+import { ATTENDANCE_STATUSES, type AttendanceStatus } from "@/lib/attendance-core";
 import { audit } from "@/lib/audit";
 
 const OWN_WORK = "This is your own work. Another teacher or an admin has to check it.";
@@ -120,19 +121,31 @@ export async function saveAttendanceAction(_: FormState, form: FormData): Promis
   const date = String(form.get("date") ?? "");
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return { error: "Choose a date." };
   const ctx = await requireTeachableCohort(cohortId);
+  if (date > schoolToday()) return { error: "You can't take attendance for a day that hasn't come yet." };
   // Only the students on the attendance list (active and paused): never people who left, finished or are waiting to join.
   const enrolls = await db.query.enrollments.findMany({
     where: and(eq(schema.enrollments.cohortId, cohortId), inArray(schema.enrollments.status, ["ACTIVE", "PAUSED"])),
   });
   if (enrolls.length) {
-    const rows = enrolls.map((e) => ({ enrollmentId: e.id, date, present: form.get(`p_${e.id}`) === "on" }));
+    // Each student on the list has one of Present / Absent / Late / Leave; a student who joined the list
+    // after the page was opened isn't on the form and is left unmarked.
+    const rows = enrolls.flatMap((e) => {
+      const v = form.get(`s_${e.id}`);
+      return typeof v === "string" && (ATTENDANCE_STATUSES as readonly string[]).includes(v)
+        ? [{ enrollmentId: e.id, date, status: v as AttendanceStatus, markedById: ctx.user.id, markedAt: sql`now()` }] : [];
+    });
+    if (!rows.length) return { error: "Choose Present, Absent, Late or Leave for the students first." };
     await db.insert(schema.attendance).values(rows)
-      .onConflictDoUpdate({ target: [schema.attendance.enrollmentId, schema.attendance.date], set: { present: sql.raw(`excluded."present"`) } });
+      .onConflictDoUpdate({ target: [schema.attendance.enrollmentId, schema.attendance.date],
+        set: { status: sql.raw(`excluded."status"`), markedById: sql.raw(`excluded."marked_by_id"`), markedAt: sql`now()` } });
+    const n = (st: AttendanceStatus) => rows.filter((r) => r.status === st).length;
     await audit({ orgId: ctx.org.id, actorId: ctx.user.id, action: "attendance.save",
-      detail: `${ctx.cohort.name}, ${date}: ${rows.filter((r) => r.present).length} of ${rows.length} present` });
+      detail: `${ctx.cohort.name}, ${date}: ${n("PRESENT") + n("LATE")} of ${rows.length} present (${n("LATE")} late), ${n("ABSENT")} absent, ${n("LEAVE")} on leave` });
+    revalidatePath(`/cohorts/${cohortId}`, "layout");
+    revalidatePath("/dashboard");
+    return { ok: `Saved for ${rows.length} students.` };
   }
-  revalidatePath(`/cohorts/${cohortId}`, "layout");
-  return { ok: `Attendance saved for ${enrolls.length} students.` };
+  return { error: "There are no students on the list." };
 }
 
 const statusSchema = z.enum(["ACTIVE", "PAUSED", "COMPLETED", "WITHDRAWN"]);
@@ -255,7 +268,7 @@ export async function markTaughtAction(input: z.input<typeof taughtSchema>): Pro
       .from(schema.enrollments).where(eq(schema.enrollments.cohortId, cohortId));
     const present = enrolls.length
       ? await db.select({ e: schema.attendance.enrollmentId }).from(schema.attendance)
-          .where(and(inArray(schema.attendance.enrollmentId, enrolls.map((e) => e.id)), eq(schema.attendance.date, date), eq(schema.attendance.present, true)))
+          .where(and(inArray(schema.attendance.enrollmentId, enrolls.map((e) => e.id)), eq(schema.attendance.date, date), inArray(schema.attendance.status, ["PRESENT", "LATE"])))
       : [];
     if (!present.length) return { error: `No one is marked present on ${date}. Take attendance for that day first, or untick "mark done for present students".` };
     const presentIds = new Set(present.map((r) => r.e));

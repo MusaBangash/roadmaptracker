@@ -1,33 +1,80 @@
-import { and, eq, inArray } from "drizzle-orm";
-import { db, schema } from "@/db";
-import { requireTeachableCohort } from "@/lib/access";
 import Link from "next/link";
+import { requireTeachableCohort } from "@/lib/access";
 import { PageHeader, Empty } from "@/components/ui";
 import { Icon } from "@/components/icon";
 import { AttendanceForm } from "@/components/attendance-form";
+import { WhatsAppButton } from "@/components/whatsapp-button";
+import { CopyButton } from "@/components/copy-button";
+import { loadDay, recentAttendance } from "@/lib/attendance";
+import { classDaysLabel, dayLabel, isClassDay, missedClassDays, remindFrom } from "@/lib/attendance-core";
+import { absentListMessage } from "@/lib/whatsapp";
+import { SCHOOL_TZ, schoolToday } from "@/lib/utils";
 
 export const metadata = { title: "Attendance" };
+
+const timeOf = (d: Date) => new Intl.DateTimeFormat("en-GB", { timeZone: SCHOOL_TZ, hour: "numeric", minute: "2-digit", hour12: true, day: "numeric", month: "short" }).format(d);
 
 export default async function AttendancePage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ date?: string }> }) {
   const { id } = await params;
   const { date: qd } = await searchParams;
   const { cohort } = await requireTeachableCohort(id);
-  const date = qd && /^\d{4}-\d{2}-\d{2}$/.test(qd) ? qd : new Date().toISOString().slice(0, 10);
-  const rows = await db.select({ e: schema.enrollments, name: schema.users.name, email: schema.users.email })
-    .from(schema.enrollments).innerJoin(schema.users, eq(schema.enrollments.userId, schema.users.id))
-    .where(and(eq(schema.enrollments.cohortId, cohort.id), inArray(schema.enrollments.status, ["ACTIVE", "PAUSED"])))
-    .orderBy(schema.users.name);
-  const recs = rows.length
-    ? await db.select().from(schema.attendance).where(and(inArray(schema.attendance.enrollmentId, rows.map((r) => r.e.id)), eq(schema.attendance.date, date)))
-    : [];
-  const byE = new Map(recs.map((r) => [r.enrollmentId, r.present]));
+  const today = schoolToday();
+  const date = qd && /^\d{4}-\d{2}-\d{2}$/.test(qd) && qd <= today ? qd : today;
+  const [{ students, saved }, recent] = await Promise.all([loadDay(cohort.id, date), recentAttendance([cohort.id], today)]);
+  const days = cohort.classDays;
+  const missed = missedClassDays(days, new Set(recent.get(cohort.id)?.keys() ?? []), remindFrom(cohort.startDate.toISOString().slice(0, 10), cohort.classDaysSince), today);
+  const href = (d: string) => `/cohorts/${cohort.id}/attendance?date=${d}`;
+
+  // The saved day, as a message for a parents' group or the principal.
+  const names = (st: string) => students.filter((s) => s.status === st).map((s) => s.name);
+  const marked = students.filter((s) => s.status !== null);
+  const message = saved && absentListMessage({
+    cohort: cohort.name, day: dayLabel(date), total: marked.length,
+    present: marked.filter((s) => s.status === "PRESENT" || s.status === "LATE").length,
+    absent: names("ABSENT"), late: names("LATE"), leave: names("LEAVE"),
+  });
+
   return (
     <>
       <PageHeader title="Attendance" sub={cohort.name} back={{ href: `/cohorts/${cohort.id}`, label: cohort.name }}
         actions={<Link href={`/cohorts/${cohort.id}/attendance/register`} className="btn-ghost"><Icon name="calendar" size={18} />Monthly register</Link>} />
-      {rows.length === 0 ? <Empty title="No active students">Invite students to this cohort first.</Empty> : (
-        <AttendanceForm key={date} cohortId={cohort.id} date={date}
-          students={rows.map((r) => ({ enrollmentId: r.e.id, name: r.name ?? r.email ?? "Student", present: byE.has(r.e.id) ? byE.get(r.e.id)! : null }))} />
+
+      <div className="mb-4 grid gap-2 text-sm">
+        <p>
+          {days?.length
+            ? <>Class days: <b>{classDaysLabel(days)}</b> · <Link href={`/cohorts/${cohort.id}/edit`} className="text-secondary underline">change</Link></>
+            : <>Class days are not set. <Link href={`/cohorts/${cohort.id}/edit`} className="text-secondary underline">Set them</Link> so the dashboard reminds you when attendance isn&apos;t taken.</>}
+        </p>
+        {days?.length && !isClassDay(days, date) ? <p className="text-ink-muted">{dayLabel(date)} is not one of this class&apos;s days. You can still take attendance for it.</p> : null}
+        {missed.length > 0 && (
+          <div role="status" className="rounded-md bg-warning-soft px-3 py-2 text-warning">
+            <p className="font-semibold">Attendance not taken on {missed.length === 1 ? "this class day" : `these ${missed.length} class days`}:</p>
+            <p className="mt-1 flex flex-wrap gap-x-3 gap-y-1">
+              {missed.slice(0, 10).map((d) => <Link key={d} href={href(d)} className="underline">{dayLabel(d)}</Link>)}
+            </p>
+          </div>
+        )}
+      </div>
+
+      {students.length === 0 ? <Empty title="No students on the list">Accept students waiting to join, or invite students to this cohort first.</Empty> : (
+        <>
+          {saved && (
+            <p className="mb-3 text-sm text-ink-muted">
+              Saved for {dayLabel(date)}{saved.by ? <> by <b className="text-ink">{saved.by}</b></> : null}{saved.at ? ` at ${timeOf(saved.at)}` : ""}. You can change it and save again.
+            </p>
+          )}
+          <AttendanceForm key={date} cohortId={cohort.id} date={date} today={today} students={students} />
+          {message && (
+            <section className="card mt-4 p-4">
+              <h2 className="font-semibold">Share {dayLabel(date)} on WhatsApp</h2>
+              <p className="mt-1 whitespace-pre-line text-sm text-ink-muted" dir="auto">{message}</p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <WhatsAppButton text={message} label="Send on WhatsApp" />
+                <CopyButton text={message} label="Copy message" />
+              </div>
+            </section>
+          )}
+        </>
       )}
     </>
   );

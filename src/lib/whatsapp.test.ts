@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { certificateMessage, inviteMessage, resetMessage, welcomeMessage, whatsappUrl } from "./whatsapp";
+import { absentListMessage, certificateMessage, inviteMessage, resetMessage, welcomeMessage, whatsappUrl } from "./whatsapp";
 
 describe("whatsapp", () => {
   it("puts the whole message, safely encoded, into a wa.me link", () => {
@@ -18,5 +18,16 @@ describe("whatsapp", () => {
     expect(welcomeMessage({ name: "Ayesha", cohort: "Batch 1", link: "L", days: 14 })).toContain("Welcome to Batch 1");
     expect(certificateMessage({ name: "Ayesha Khan", course: "Web Designing", school: "ACC", link: "L" }))
       .toBe("Ayesha Khan completed Web Designing at ACC. Check it is genuine: L");
+  });
+});
+
+describe("absentListMessage", () => {
+  it("lists absent, late and on-leave students", () => {
+    expect(absentListMessage({ cohort: "Web Design A", day: "Tue 13 Oct 2026", present: 3, total: 5, absent: ["Ahmed Khan", "Sara Ali"], late: ["Bilal"], leave: [] }))
+      .toBe("Attendance, Web Design A, Tue 13 Oct 2026: 3 of 5 present.\nAbsent (2): Ahmed Khan, Sara Ali\nLate (1): Bilal");
+  });
+  it("says so when everyone came", () => {
+    expect(absentListMessage({ cohort: "A", day: "Mon 12 Oct 2026", present: 4, total: 4, absent: [], late: [], leave: [] }))
+      .toBe("Attendance, A, Mon 12 Oct 2026: 4 of 4 present. Everyone was present.");
   });
 });

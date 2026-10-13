@@ -141,6 +141,10 @@ export const cohorts = pgTable("cohort", {
   /** What was last typed when issuing a certificate here (course title, duration, session, level),
    *  offered again for the next student of this cohort. */
   certDefaults: jsonb("cert_defaults").$type<{ courseTitle?: string; duration?: string; session?: string; level?: string }>(),
+  /** The weekdays the class meets, 0 = Monday … 6 = Sunday (null = not set: no "attendance not taken" reminders). */
+  classDays: jsonb("class_days").$type<number[]>(),
+  /** The day the class days were last set: days before it are never "attendance not taken". */
+  classDaysSince: date("class_days_since", { mode: "string" }),
   createdAt: created(),
 }, (t) => [index("cohort_org").on(t.orgId)]);
 
@@ -233,11 +237,17 @@ export const weeklyLogs = pgTable("weekly_log", {
   updatedAt: timestamp("updated_at", { mode: "date" }).notNull().defaultNow(),
 }, (t) => [uniqueIndex("weekly_enrollment_week").on(t.enrollmentId, t.weekStart)]);
 
+/** Late counts as present; Leave (permission given) doesn't count against the student. */
+export const attendanceStatusEnum = pgEnum("attendance_status", ["PRESENT", "ABSENT", "LATE", "LEAVE"]);
+
 export const attendance = pgTable("attendance", {
   id: id(),
   enrollmentId: text("enrollment_id").notNull().references(() => enrollments.id, { onDelete: "cascade" }),
   date: date("date", { mode: "string" }).notNull(),
-  present: boolean("present").notNull(),
+  status: attendanceStatusEnum("status").notNull(),
+  /** Who saved it and when (null for marks saved before 2026-10-13). */
+  markedById: text("marked_by_id").references(() => users.id, { onDelete: "set null" }),
+  markedAt: timestamp("marked_at"),
 }, (t) => [uniqueIndex("attendance_enrollment_date").on(t.enrollmentId, t.date)]);
 
 // ---------- Teaching plan ----------

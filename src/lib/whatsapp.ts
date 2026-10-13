@@ -25,3 +25,12 @@ export function welcomeMessage(w: { name: string; cohort: string; link: string; 
 export function certificateMessage(c: { name: string; course: string; school: string; link: string }) {
   return `${c.name} completed ${c.course} at ${c.school}. Check it is genuine: ${c.link}`;
 }
+
+/** The day's attendance for a parents' group or the principal: who was absent, late or on leave. */
+export function absentListMessage(a: { cohort: string; day: string; present: number; total: number; absent: string[]; late: string[]; leave: string[] }) {
+  const line = (label: string, names: string[]) => (names.length ? `
+${label} (${names.length}): ${names.join(", ")}` : "");
+  const head = `Attendance, ${a.cohort}, ${a.day}: ${a.present} of ${a.total} present.`;
+  const rest = line("Absent", a.absent) + line("Late", a.late) + line("On leave", a.leave);
+  return rest ? head + rest : `${head} Everyone was present.`;
+}

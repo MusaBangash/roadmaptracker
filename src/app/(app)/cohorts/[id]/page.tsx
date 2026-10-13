@@ -3,7 +3,9 @@ import { and, eq, inArray } from "drizzle-orm";
 import { db, schema } from "@/db";
 import { requireTeachableCohort } from "@/lib/access";
 import { cohortRows, pendingReviewCount } from "@/lib/cohort-stats";
-import { PageHeader, ProgressBar, Stat, RiskPill, Empty, EnrollmentBadge, Tag, sentence } from "@/components/ui";
+import { PageHeader, ProgressBar, Stat, RiskPill, Empty, EnrollmentBadge, Tag, Badge, sentence } from "@/components/ui";
+import { flagWords, isClassDay } from "@/lib/attendance-core";
+import { recentAttendance } from "@/lib/attendance";
 import { Icon } from "@/components/icon";
 import { ClassStageList, PlanLineNote } from "@/components/progress";
 import { currentStageIndex } from "@/lib/progress";
@@ -40,7 +42,8 @@ export default async function CohortPage({ params }: { params: Promise<{ id: str
   const ctx = await requireTeachableCohort(id);
   const { cohort } = ctx;
   // Independent queries run together: each trip to the database costs time.
-  const [track, { tree, rows, expected, expectedStages, stages, coverage }, pendingBy, invites, url, instructors, staff] = await Promise.all([
+  const today = schoolToday();
+  const [track, { tree, rows, expected, expectedStages, stages, coverage }, pendingBy, invites, url, instructors, staff, recent] = await Promise.all([
     db.query.tracks.findFirst({ where: eq(schema.tracks.id, cohort.trackId) }).then((t) => t!),
     cohortRows(cohort),
     pendingReviewCount([cohort.id]),
@@ -54,7 +57,10 @@ export default async function CohortPage({ params }: { params: Promise<{ id: str
           .from(schema.memberships).innerJoin(schema.users, eq(schema.memberships.userId, schema.users.id))
           .where(and(eq(schema.memberships.orgId, ctx.org.id), inArray(schema.memberships.role, ["ADMIN", "INSTRUCTOR"])))
       : Promise.resolve([]),
+    recentAttendance([cohort.id], today),
   ]);
+  // A class day with no attendance saved yet: the Attendance button asks for it.
+  const takeToday = isClassDay(cohort.classDays, today) && !recent.get(cohort.id)?.has(today) && !cohort.archived;
   const pending = pendingBy.get(cohort.id) ?? 0;
   // The waiting list (joined with the link, not accepted yet) and turned-away people are not in the class.
   const waiting = rows.filter((r) => r.enrollment.status === "PENDING");
@@ -83,7 +89,7 @@ export default async function CohortPage({ params }: { params: Promise<{ id: str
         actions={<>
           <Link href={`/cohorts/${cohort.id}/review`} className={pending ? "btn-primary" : "btn-ghost"}>Review{pending ? ` (${pending})` : ""}</Link>
           <Link href={`/cohorts/${cohort.id}/teach`} className="btn-ghost">Teaching plan</Link>
-          <Link href={`/cohorts/${cohort.id}/attendance`} className="btn-ghost">Attendance</Link>
+          <Link href={`/cohorts/${cohort.id}/attendance`} className={takeToday ? "btn-primary" : "btn-ghost"}>{takeToday ? "Take today's attendance" : "Attendance"}</Link>
           <a href={`/cohorts/${cohort.id}/export`} className="btn-ghost">Export CSV</a>
           <Link href={`/cohorts/${cohort.id}/edit`} className="btn-ghost"><Icon name="edit" size={18} />Edit</Link>
         </>}
@@ -97,7 +103,7 @@ export default async function CohortPage({ params }: { params: Promise<{ id: str
           <div className="mt-2"><ProgressBar value={avg} expected={expected} /></div>
           <div className="mt-1 text-xs text-ink-muted">plan expects {pct(expected)} by today</div>
         </div>
-        <Stat label="Need attention" value={active.filter((r) => r.risk).length} sub="inactive 14+ days or behind pace" />
+        <Stat label="Need attention" value={active.filter((r) => r.risk || r.attFlag).length} sub="inactive 14+ days, behind pace or missing class" />
         <Stat label="Waiting for review" value={pending} sub="projects, deliverables, milestones" />
       </div>
 
@@ -162,7 +168,12 @@ export default async function CohortPage({ params }: { params: Promise<{ id: str
                     <td className="p-3">{r.hours}</td>
                     <td className="p-3">{r.attendance ? pct(r.attendance.present / r.attendance.total) : "—"}</td>
                     <td className="p-3 text-ink-muted">{daysAgo(r.last)}</td>
-                    <td className="p-3">{r.enrollment.status === "ACTIVE" ? <RiskPill risk={r.risk} /> : <EnrollmentBadge status={r.enrollment.status} />}</td>
+                    <td className="p-3">
+                      <div className="flex flex-col items-start gap-1">
+                        {r.enrollment.status === "ACTIVE" ? <RiskPill risk={r.risk} /> : <EnrollmentBadge status={r.enrollment.status} />}
+                        {r.attFlag && <Badge tone="danger" icon="calendar">{flagWords(r.attFlag)}</Badge>}
+                      </div>
+                    </td>
                   </tr>
                 ))}
               </tbody>

@@ -1,25 +1,14 @@
 "use client";
 
-import { startTransition, useActionState, useEffect, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { classListAction, setEnrollmentStatusAction } from "@/app/actions/teach";
 import { FormError } from "@/components/ui";
+import { keepFields } from "@/components/keep-fields";
 import { CHOOSABLE_REASONS, LEAVE_NOTE_MAX, LEAVE_REASONS } from "@/lib/cohort-core";
 
 export type ClassListButton = { op: "accept" | "accept-all" | "decline" | "withdraw"; label: string; primary?: boolean; danger?: boolean; confirm?: string };
 
 const DONE_EVENT = "class-list-done";
-
-/**
- * Submit without React's automatic form reset: a refused save (e.g. "choose why they left") must keep
- * what the teacher picked and typed, and the ticked students. The pressed button's name/value is kept.
- */
-function keepFields(dispatch: (form: FormData) => void) {
-  return (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const form = new FormData(e.currentTarget, (e.nativeEvent as SubmitEvent).submitter);
-    startTransition(() => dispatch(form));
-  };
-}
 
 const boxes = (formId: string) =>
   [...document.querySelectorAll<HTMLInputElement>(`input[type="checkbox"][name="enrollmentId"][form="${formId}"]`)];

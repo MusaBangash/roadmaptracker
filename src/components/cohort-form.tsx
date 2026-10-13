@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 import { createCohortAction, updateCohortAction } from "@/app/actions/admin";
 import { FormError } from "@/components/ui";
+import { keepFields } from "@/components/keep-fields";
 
 export function CohortForm({ tracks, staff, today }: {
   tracks: { id: string; title: string; edition: string }[];
@@ -41,15 +42,17 @@ export function CohortForm({ tracks, staff, today }: {
 }
 
 /** Fix a cohort's name and start date; its roadmap only while nobody has joined. */
+const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+
 export function EditCohortForm({ cohort, tracks, trackLocked }: {
-  cohort: { id: string; name: string; startDate: string; trackId: string };
+  cohort: { id: string; name: string; startDate: string; trackId: string; classDays: number[] | null };
   tracks: { id: string; title: string; edition: string }[];
   trackLocked: boolean;
 }) {
   const [state, action, pending] = useActionState(updateCohortAction, undefined);
   const current = tracks.find((t) => t.id === cohort.trackId);
   return (
-    <form action={action} className="card grid max-w-2xl gap-4 p-6">
+    <form onSubmit={keepFields(action)} className="card grid max-w-2xl gap-4 p-6">
       <input type="hidden" name="cohortId" value={cohort.id} />
       <div><label className="label" htmlFor="name">Cohort name</label><input id="name" name="name" required defaultValue={cohort.name} className="input" /></div>
       <div>
@@ -74,6 +77,17 @@ export function EditCohortForm({ cohort, tracks, trackLocked }: {
           </>
         )}
       </div>
+      <fieldset>
+        <legend className="label">Class days</legend>
+        <div className="flex flex-wrap gap-2">
+          {WEEKDAYS.map((d, i) => (
+            <label key={d} className="flex min-h-11 cursor-pointer items-center gap-2 rounded-md border border-border px-3 text-sm has-checked:border-primary has-checked:bg-primary-soft">
+              <input type="checkbox" name="classDays" value={i} defaultChecked={cohort.classDays?.includes(i)} className="size-4 accent-primary" />{d}
+            </label>
+          ))}
+        </div>
+        <p className="mt-1 text-xs text-ink-muted">The days this class meets. On these days the dashboard reminds teachers when attendance isn&apos;t taken.</p>
+      </fieldset>
       <FormError message={state?.error} />
       {state?.ok && <p role="status" className="text-sm text-ink-muted">{state.ok}</p>}
       <div><button className="btn-primary" disabled={pending}>{pending ? "Saving…" : "Save changes"}</button></div>

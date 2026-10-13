@@ -78,7 +78,7 @@ export async function GET() {
         signoffs: (sign.get(e.id) ?? []).map(({ s, stageKey }) => ({ stage: stageKey, passed: s.passed, notes: s.notes, signedById: s.signedById, signedAt: s.signedAt })),
         assessments: (asmt.get(e.id) ?? []).map((a) => ({ title: a.title, date: a.date, scores: a.scores, average: a.average, passed: a.passed, notes: a.notes, assessorId: a.assessorId, createdAt: a.createdAt })),
         weeklyLogs: (log.get(e.id) ?? []).map((l) => ({ weekStart: l.weekStart, hours: l.hours, finished: l.finished, stuck: l.stuck, updatedAt: l.updatedAt })),
-        attendance: (att.get(e.id) ?? []).map((a) => ({ date: a.date, present: a.present })),
+        attendance: (att.get(e.id) ?? []).map((a) => ({ date: a.date, status: a.status, present: a.status === "PRESENT" || a.status === "LATE" })),
         comments: (talk.get(e.id) ?? []).map(({ c, stageKey, itemKey }) => ({
           stage: stageKey, item: itemKey, authorId: c.authorId, authorRole: c.authorRole, kind: c.kind, body: c.body,
           createdAt: c.createdAt, editedAt: c.editedAt, hiddenAt: c.hiddenAt, hiddenById: c.hiddenById,

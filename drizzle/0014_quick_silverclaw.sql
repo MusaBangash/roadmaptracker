@@ -1,0 +1,1 @@
+ALTER TABLE "cohort" ADD COLUMN "class_days_since" date;

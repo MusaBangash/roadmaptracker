@@ -20,7 +20,10 @@ export default async function RegisterPage({ params, searchParams }: { params: P
   const reg = await loadRegister(cohort.id, month);
   const href = (m: string) => `/cohorts/${cohort.id}/attendance/register?month=${m}`;
   const avg = reg.rows.filter((r) => r.pct !== null);
-  const classPct = avg.length ? avg.reduce((a, r) => a + r.present, 0) / avg.reduce((a, r) => a + r.total, 0) : null;
+  const classPct = avg.length ? avg.reduce((a, r) => a + r.present, 0) / avg.reduce((a, r) => a + r.counted, 0) : null;
+  const cellLook: Record<string, string> = {
+    A: "bg-danger-soft text-danger", P: "text-success", L: "bg-warning-soft text-warning", Lv: "text-ink-muted",
+  };
 
   return (
     <>
@@ -62,7 +65,7 @@ export default async function RegisterPage({ params, searchParams }: { params: P
           <p className="mb-3 text-sm text-ink-muted print:text-black">
             {reg.days.length} class {reg.days.length === 1 ? "day" : "days"} · {reg.rows.length} students
             {classPct !== null && <> · class attendance <b className="text-ink">{pct(classPct)}</b></>}
-            <span className="ms-3">P = present, A = absent, blank = not marked</span>
+            <span className="ms-3">P = present, L = late (counts as present), Lv = leave (doesn&apos;t count), A = absent, blank = not marked</span>
           </p>
           <div className="card overflow-x-auto print:overflow-visible print:rounded-none print:border-0 print:bg-transparent print:shadow-none">
             <table className="w-full border-collapse text-xs print:text-[8pt] print:[&_td]:border-black print:[&_th]:border-black print:[&_tr]:border-black">
@@ -75,6 +78,9 @@ export default async function RegisterPage({ params, searchParams }: { params: P
                     </th>
                   ))}
                   <th scope="col" className="border-b border-s border-border p-2 text-center">Present</th>
+                  <th scope="col" className="border-b border-s border-border p-2 text-center">Absent</th>
+                  <th scope="col" className="border-b border-s border-border p-2 text-center">Late</th>
+                  <th scope="col" className="border-b border-s border-border p-2 text-center">Leave</th>
                   <th scope="col" className="border-b border-s border-border p-2 text-center">%</th>
                 </tr>
               </thead>
@@ -83,11 +89,14 @@ export default async function RegisterPage({ params, searchParams }: { params: P
                   <tr key={r.enrollmentId} className="border-b border-border last:border-0">
                     <th scope="row" className="sticky start-0 z-10 max-w-48 truncate bg-surface p-2 text-start font-semibold print:static print:max-w-none print:bg-transparent" dir="auto">{r.name}</th>
                     {r.cells.map((c, i) => (
-                      <td key={i} className={`border-s border-border px-1 py-1 text-center font-semibold ${c === "A" ? "bg-danger-soft text-danger print:bg-transparent print:text-black" : c === "P" ? "text-success print:text-black" : ""}`}>
+                      <td key={i} className={`border-s border-border px-1 py-1 text-center font-semibold ${c ? `${cellLook[c]} print:bg-transparent print:text-black` : ""}`}>
                         {c ?? ""}
                       </td>
                     ))}
-                    <td className="border-s border-border p-2 text-center">{r.present}/{r.total}</td>
+                    <td className="border-s border-border p-2 text-center">{r.present}/{r.counted}</td>
+                    <td className="border-s border-border p-2 text-center">{r.absent}</td>
+                    <td className="border-s border-border p-2 text-center">{r.late}</td>
+                    <td className="border-s border-border p-2 text-center">{r.leave}</td>
                     <td className="border-s border-border p-2 text-center font-semibold">{r.pct === null ? "—" : pct(r.pct)}</td>
                   </tr>
                 ))}
@@ -96,7 +105,12 @@ export default async function RegisterPage({ params, searchParams }: { params: P
                 <tr className="border-t-2 border-border-strong">
                   <th scope="row" className="sticky start-0 z-10 bg-surface p-2 text-start print:static print:bg-transparent">Present that day</th>
                   {reg.presentPerDay.map((n, i) => <td key={i} className="border-s border-border px-1 py-1 text-center">{n}</td>)}
-                  <td className="border-s border-border" colSpan={2} />
+                  <td className="border-s border-border" colSpan={5} />
+                </tr>
+                <tr>
+                  <th scope="row" className="sticky start-0 z-10 bg-surface p-2 text-start print:static print:bg-transparent">Absent that day</th>
+                  {reg.perDay.map((d, i) => <td key={i} className="border-s border-border px-1 py-1 text-center">{d.absent}</td>)}
+                  <td className="border-s border-border" colSpan={5} />
                 </tr>
               </tfoot>
             </table>

@@ -58,10 +58,12 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
     // Attendance story 2: the monthly register, as on the page.
     const month = parseMonth(search.get("month"), monthOf(new Date().toISOString()));
     const reg = await loadRegister(cohort.id, month);
-    const head = ["Name", ...reg.days.map((d) => d.slice(8)), "Present", "Class days", "Attendance %"];
-    const lines = reg.rows.map((r) => [r.name, ...r.cells.map((c) => c ?? ""), r.present, r.total, r.pct === null ? "" : Math.round(r.pct * 100)]);
-    const foot = ["Present that day", ...reg.presentPerDay, "", "", ""];
-    return download([[`${cohort.name} · attendance ${month}`], head, ...lines, foot], `${name}-attendance-${month}.csv`);
+    const head = ["Name", ...reg.days.map((d) => d.slice(8)), "Present", "Absent", "Late", "Leave", "Days counted", "Attendance %"];
+    const lines = reg.rows.map((r) => [r.name, ...r.cells.map((c) => c ?? ""), r.present, r.absent, r.late, r.leave, r.counted, r.pct === null ? "" : Math.round(r.pct * 100)]);
+    const blank = ["", "", "", "", "", ""];
+    const foot = [["Present that day", ...reg.presentPerDay, ...blank], ["Absent that day", ...reg.perDay.map((d) => d.absent), ...blank]];
+    const key = ["P = present, L = late (counts as present), Lv = leave (doesn't count), A = absent"];
+    return download([[`${cohort.name} · attendance ${month}`], key, head, ...lines, ...foot], `${name}-attendance-${month}.csv`);
   }
   const { tree, rows, expected } = await cohortRows(cohort);
   const head = ["Name", "Email", "Status", "Progress %", "Expected %", "Items done", "Items required", "Verified", "Stages passed", "Hours logged", "Attendance %", "Last active", "Risk", "Left on", "Why they left",

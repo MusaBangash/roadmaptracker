@@ -167,7 +167,8 @@ async function seed(tx: Tx) {
       }));
       await tx.insert(schema.attendance).values(Array.from({ length: Math.min(c.weeksAgo, 10) }, (_, w) => ({
         enrollmentId: enr.id, date: new Date(start.getTime() + w * WEEK).toISOString().slice(0, 10),
-        present: start.getTime() + w * WEEK < lastDay && rand() > 0.1,
+        // Mostly present, a few late, absent or on leave.
+        status: start.getTime() + w * WEEK >= lastDay ? ("ABSENT" as const) : (() => { const x = rand(); return x < 0.08 ? "ABSENT" as const : x < 0.14 ? "LATE" as const : x < 0.17 ? "LEAVE" as const : "PRESENT" as const; })(),
       })));
       roster.push({ id: enr.id, active: (p.status ?? "ACTIVE") === "ACTIVE", done: doneIds });
     }
@@ -198,7 +199,7 @@ async function seed(tx: Tx) {
     if (latest) {
       const present = roster.filter((r) => r.active && !r.done.has(latest.itemId));
       if (present.length) {
-        await tx.insert(schema.attendance).values(present.map((r) => ({ enrollmentId: r.id, date: latest.taughtOn, present: true }))).onConflictDoNothing();
+        await tx.insert(schema.attendance).values(present.map((r) => ({ enrollmentId: r.id, date: latest.taughtOn, status: "PRESENT" as const }))).onConflictDoNothing();
         await tx.insert(schema.itemProgress).values(present.map((r) => ({
           enrollmentId: r.id, itemId: latest.itemId, status: "DONE" as const, markedById: teacher.id,
           completedAt: new Date(`${latest.taughtOn}T12:00:00Z`), updatedAt: new Date(`${latest.taughtOn}T12:00:00Z`),

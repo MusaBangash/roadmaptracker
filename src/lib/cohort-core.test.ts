@@ -15,6 +15,13 @@ describe("cohortChanges", () => {
   });
 });
 
+describe("cohortChanges: class days", () => {
+  it("logs class days in words, only when they change", () => {
+    expect(cohortChanges({ ...before, classDays: null }, { ...before, classDays: [0, 1, 2, 3] }, title)).toBe("class days: not set → Mon–Thu");
+    expect(cohortChanges({ ...before, classDays: [0, 2] }, { ...before, classDays: [0, 2] }, title)).toBeNull();
+  });
+});
+
 describe("canChangeTrack", () => {
   it("only while nobody is enrolled", () => {
     expect(canChangeTrack(0)).toBe(true);
