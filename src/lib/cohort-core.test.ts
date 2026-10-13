@@ -22,6 +22,13 @@ describe("cohortChanges: class days", () => {
   });
 });
 
+describe("cohortChanges: group", () => {
+  it("logs the class group by name", () => {
+    expect(cohortChanges({ ...before, groupName: null }, { ...before, groupName: "Evening Girls" }, title)).toBe("group: none → Evening Girls");
+    expect(cohortChanges({ ...before, groupName: "A" }, { ...before, groupName: "A" }, title)).toBeNull();
+  });
+});
+
 describe("canChangeTrack", () => {
   it("only while nobody is enrolled", () => {
     expect(canChangeTrack(0)).toBe(true);

@@ -2,7 +2,7 @@
 
 import { classDaysLabel } from "./attendance-core";
 
-export type CohortFields = { name: string; startDate: string; trackId: string; classDays?: number[] | null };
+export type CohortFields = { name: string; startDate: string; trackId: string; classDays?: number[] | null; groupName?: string | null };
 
 /**
  * What an edit changes, as words for the activity log ("name: A → B; start: … → …"), or null when
@@ -13,6 +13,9 @@ export function cohortChanges(before: CohortFields, after: CohortFields, trackTi
   if (before.name !== after.name) parts.push(`name: ${before.name} → ${after.name}`);
   if (before.startDate !== after.startDate) parts.push(`start: ${before.startDate} → ${after.startDate}`);
   if (before.trackId !== after.trackId) parts.push(`track: ${trackTitle(before.trackId)} → ${trackTitle(after.trackId)}`);
+  if (after.groupName !== undefined && (before.groupName ?? null) !== after.groupName) {
+    parts.push(`group: ${before.groupName ?? "none"} → ${after.groupName ?? "none"}`);
+  }
   if (after.classDays !== undefined && JSON.stringify(before.classDays ?? null) !== JSON.stringify(after.classDays ?? null)) {
     parts.push(`class days: ${classDaysLabel(before.classDays) ?? "not set"} → ${classDaysLabel(after.classDays) ?? "not set"}`);
   }

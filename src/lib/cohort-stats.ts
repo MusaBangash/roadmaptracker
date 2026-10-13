@@ -20,9 +20,11 @@ function byEnrollment<T extends { enrollmentId: string }>(rows: T[]) {
 export async function cohortRows(cohort: Cohort, tree?: StageNode[]) {
   const [loadedTree, rows] = await Promise.all([
     tree ?? loadTrackTree(cohort.trackId),
-    db.select({ e: schema.enrollments, u: { id: schema.users.id, name: schema.users.name, email: schema.users.email } })
+    db.select({ e: schema.enrollments, u: { id: schema.users.id, name: schema.users.name, email: schema.users.email }, residence: schema.memberships.residence })
       .from(schema.enrollments)
       .innerJoin(schema.users, eq(schema.enrollments.userId, schema.users.id))
+      // Hostel / Day scholar is kept on their place in the school.
+      .leftJoin(schema.memberships, and(eq(schema.memberships.userId, schema.enrollments.userId), eq(schema.memberships.orgId, cohort.orgId)))
       .where(eq(schema.enrollments.cohortId, cohort.id))
       .orderBy(schema.users.name),
   ]);
@@ -43,14 +45,14 @@ export async function cohortRows(cohort: Cohort, tree?: StageNode[]) {
   const expected = expectedPct(tree, cohort.startDate);
   const hoursBy = new Map(hours.map((h) => [h.e, Number(h.h)]));
 
-  const out = rows.map(({ e, u }) => {
+  const out = rows.map(({ e, u, residence }) => {
     const sum = summarizeCells(tree!, cells.get(e.id) ?? [], signBy.get(e.id) ?? []);
     const lastAt = last.get(e.id);
     // Attendance: Late counts as present; Leave is left out (total = the days that count).
     const marks = att.get(e.id) ?? [];
     const a = attendanceSummary(marks.map((status) => ({ status })));
     return {
-      enrollment: e, user: u, sum, last: lastAt, hours: hoursBy.get(e.id) ?? 0,
+      enrollment: e, user: u, residence, sum, last: lastAt, hours: hoursBy.get(e.id) ?? 0,
       attendance: a.counted ? { present: a.present, total: a.counted, late: a.late, leave: a.leave, absent: a.absent } : null,
       risk: e.status === "ACTIVE" ? riskOf(sum, expected, lastAt, e.createdAt) : null,
       /** Keeps missing class (3 absences in a row, or below 75%): only for active students. */

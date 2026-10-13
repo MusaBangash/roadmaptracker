@@ -3,6 +3,8 @@ import { db, schema } from "@/db";
 import { requireRole } from "@/lib/access";
 import { PageHeader } from "@/components/ui";
 import { CohortForm } from "@/components/cohort-form";
+import { loadGroups } from "@/lib/groups";
+import { schoolToday } from "@/lib/utils";
 
 export const metadata = { title: "New cohort" };
 
@@ -18,7 +20,7 @@ export default async function NewCohortPage() {
   return (
     <>
       <PageHeader title="New cohort" sub="A cohort is one group of students following one track, starting on one date." back={{ href: "/cohorts", label: "Cohorts" }} />
-      <CohortForm tracks={tracks} staff={staff} today={new Date().toISOString().slice(0, 10)} />
+      <CohortForm tracks={tracks} staff={staff} today={schoolToday()} groups={await loadGroups(ctx.org.id)} />
     </>
   );
 }

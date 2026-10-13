@@ -4,6 +4,7 @@ import { requireTeachableCohort } from "@/lib/access";
 import { canChangeTrack } from "@/lib/cohort-core";
 import { PageHeader } from "@/components/ui";
 import { EditCohortForm } from "@/components/cohort-form";
+import { loadGroups } from "@/lib/groups";
 
 export const metadata = { title: "Edit cohort" };
 
@@ -19,8 +20,8 @@ export default async function EditCohortPage({ params }: { params: Promise<{ id:
   return (
     <>
       <PageHeader title="Edit cohort" sub={cohort.name} back={{ href: `/cohorts/${cohort.id}`, label: cohort.name }} />
-      <EditCohortForm tracks={tracks} trackLocked={!canChangeTrack(n)}
-        cohort={{ id: cohort.id, name: cohort.name, startDate: cohort.startDate.toISOString().slice(0, 10), trackId: cohort.trackId, classDays: cohort.classDays }} />
+      <EditCohortForm tracks={tracks} trackLocked={!canChangeTrack(n)} groups={await loadGroups(org.id)}
+        cohort={{ id: cohort.id, name: cohort.name, startDate: cohort.startDate.toISOString().slice(0, 10), trackId: cohort.trackId, classDays: cohort.classDays, groupId: cohort.groupId }} />
     </>
   );
 }

@@ -5,14 +5,30 @@ import { createCohortAction, updateCohortAction } from "@/app/actions/admin";
 import { FormError } from "@/components/ui";
 import { keepFields } from "@/components/keep-fields";
 
-export function CohortForm({ tracks, staff, today }: {
+/** The class group, when the school has made groups (School settings). */
+function GroupSelect({ groups, value }: { groups: { id: string; name: string }[]; value?: string | null }) {
+  if (!groups.length) return null;
+  return (
+    <div>
+      <label className="label" htmlFor="groupId">Group</label>
+      <select id="groupId" name="groupId" defaultValue={value ?? ""} className="input">
+        <option value="">No group</option>
+        {groups.map((g) => <option key={g.id} value={g.id}>{g.name}</option>)}
+      </select>
+      <p className="mt-1 text-xs text-ink-muted">E.g. Morning Boys or Evening Girls. Admins make the groups in School settings.</p>
+    </div>
+  );
+}
+
+export function CohortForm({ tracks, staff, today, groups }: {
   tracks: { id: string; title: string; edition: string }[];
   staff: { id: string; name: string | null; email: string | null }[];
   today: string;
+  groups: { id: string; name: string }[];
 }) {
   const [state, action, pending] = useActionState(createCohortAction, undefined);
   return (
-    <form action={action} className="card grid max-w-2xl gap-4 p-6">
+    <form onSubmit={keepFields(action)} className="card grid max-w-2xl gap-4 p-6">
       <div><label className="label" htmlFor="name">Cohort name</label><input id="name" name="name" required className="input" placeholder="AI Engineer — October 2026" /></div>
       <div>
         <label className="label" htmlFor="trackId">Track</label>
@@ -22,6 +38,7 @@ export function CohortForm({ tracks, staff, today }: {
         </select>
       </div>
       <div><label className="label" htmlFor="startDate">Start date</label><input id="startDate" name="startDate" type="date" required defaultValue={today} className="input" /></div>
+      <GroupSelect groups={groups} />
       {staff.length > 0 && (
         <fieldset>
           <legend className="label">Instructors</legend>
@@ -44,8 +61,9 @@ export function CohortForm({ tracks, staff, today }: {
 /** Fix a cohort's name and start date; its roadmap only while nobody has joined. */
 const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
-export function EditCohortForm({ cohort, tracks, trackLocked }: {
-  cohort: { id: string; name: string; startDate: string; trackId: string; classDays: number[] | null };
+export function EditCohortForm({ cohort, tracks, trackLocked, groups }: {
+  cohort: { id: string; name: string; startDate: string; trackId: string; classDays: number[] | null; groupId: string | null };
+  groups: { id: string; name: string }[];
   tracks: { id: string; title: string; edition: string }[];
   trackLocked: boolean;
 }) {
@@ -77,6 +95,7 @@ export function EditCohortForm({ cohort, tracks, trackLocked }: {
           </>
         )}
       </div>
+      <GroupSelect groups={groups} value={cohort.groupId} />
       <fieldset>
         <legend className="label">Class days</legend>
         <div className="flex flex-wrap gap-2">

@@ -11,6 +11,7 @@ import { canJudgeWork } from "@/lib/security-core";
 import { canApply, inClass, leaveDetails, leaveWords, OP_STATUS, type ClassListOp, type EnrollmentStatus } from "@/lib/cohort-core";
 import { schoolToday } from "@/lib/utils";
 import { ATTENDANCE_STATUSES, type AttendanceStatus } from "@/lib/attendance-core";
+import { RESIDENCE_WORDS, type Residence } from "@/lib/group-core";
 import { audit } from "@/lib/audit";
 
 const OWN_WORK = "This is your own work. Another teacher or an admin has to check it.";
@@ -172,14 +173,37 @@ export async function setEnrollmentStatusAction(_: FormState, form: FormData): P
   return { ok: "Saved." };
 }
 
-const classListSchema = z.object({ cohortId: z.string(), op: z.enum(["accept", "accept-all", "decline", "withdraw"]) });
+const classListSchema = z.object({ cohortId: z.string(), op: z.enum(["accept", "accept-all", "decline", "withdraw", "hostel", "day"]) });
 const OP_DONE: Record<ClassListOp, string> = { accept: "Accepted", decline: "Turned away", withdraw: "Marked Withdrawn" };
+
+/** Ticked students of the class marked Hostel or Day scholar (their place in the school). */
+async function markResidence(ctx: Awaited<ReturnType<typeof requireTeachableCohort>>, residence: Residence, picked: string[]): Promise<FormState> {
+  if (!ctx.org.hasHostel) return { error: "Turn on \"We have a hostel\" in School settings first." };
+  if (!picked.length) return { error: "Tick at least one student first." };
+  const rows = await db.select({ userId: schema.enrollments.userId, status: schema.enrollments.status }).from(schema.enrollments)
+    .where(and(eq(schema.enrollments.cohortId, ctx.cohort.id), inArray(schema.enrollments.id, picked)));
+  const users = rows.filter((r) => inClass(r.status)).map((r) => r.userId);
+  if (!users.length) return { error: "Nothing changed: those students are not in the class." };
+  await db.transaction(async (tx) => {
+    await tx.update(schema.memberships).set({ residence })
+      .where(and(eq(schema.memberships.orgId, ctx.org.id), inArray(schema.memberships.userId, users)));
+    for (const userId of users) {
+      await audit({ orgId: ctx.org.id, actorId: ctx.user.id, action: "student.residence", subjectId: userId, detail: RESIDENCE_WORDS[residence] }, tx);
+    }
+  });
+  revalidatePath(`/cohorts/${ctx.cohort.id}`, "layout");
+  revalidatePath("/hostel");
+  revalidatePath("/dashboard");
+  const done = `Marked as ${RESIDENCE_WORDS[residence]}: ${users.length} student${users.length === 1 ? "" : "s"}.`;
+  return { ok: done };
+}
 
 /** Waiting list and class list: accept, turn away or withdraw the ticked students (or everyone waiting). */
 export async function classListAction(_: FormState, form: FormData): Promise<FormState> {
   const p = classListSchema.safeParse({ cohortId: form.get("cohortId"), op: form.get("op") });
   if (!p.success) return { error: "Something went wrong. Refresh the page and try again." };
   const ctx = await requireTeachableCohort(p.data.cohortId);
+  if (p.data.op === "hostel" || p.data.op === "day") return markResidence(ctx, p.data.op === "hostel" ? "HOSTEL" : "DAY", form.getAll("enrollmentId").map(String));
   const all = p.data.op === "accept-all"; // everyone waiting, ticked or not
   const op: ClassListOp = all ? "accept" : (p.data.op as ClassListOp);
   const picked = form.getAll("enrollmentId").map(String);

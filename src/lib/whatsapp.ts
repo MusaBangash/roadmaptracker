@@ -28,9 +28,18 @@ export function certificateMessage(c: { name: string; course: string; school: st
 
 /** The day's attendance for a parents' group or the principal: who was absent, late or on leave. */
 export function absentListMessage(a: { cohort: string; day: string; present: number; total: number; absent: string[]; late: string[]; leave: string[] }) {
-  const line = (label: string, names: string[]) => (names.length ? `
-${label} (${names.length}): ${names.join(", ")}` : "");
+  const line = (label: string, names: string[]) => (names.length ? `\n${label} (${names.length}): ${names.join(", ")}` : "");
   const head = `Attendance, ${a.cohort}, ${a.day}: ${a.present} of ${a.total} present.`;
   const rest = line("Absent", a.absent) + line("Late", a.late) + line("On leave", a.leave);
   return rest ? head + rest : `${head} Everyone was present.`;
+}
+
+/** The hostel warden's list for a day: hostel students absent or on leave, with their class. */
+export function hostelListMessage(h: { school: string; day: string; absent: { name: string; cohort: string }[]; leave: { name: string; cohort: string }[]; notTaken: string[] }) {
+  const list = (label: string, xs: { name: string; cohort: string }[]) =>
+    (xs.length ? `\n${label} (${xs.length}):\n${xs.map((x) => `- ${x.name} (${x.cohort})`).join("\n")}` : "");
+  const head = `Hostel students, ${h.school}, ${h.day}.`;
+  const body = list("Absent", h.absent) + list("On leave", h.leave);
+  const missing = h.notTaken.length ? `\nAttendance not taken yet: ${h.notTaken.join(", ")}.` : "";
+  return `${head}${body || " No hostel student was absent or on leave."}${missing}`;
 }

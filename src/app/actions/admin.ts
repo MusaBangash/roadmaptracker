@@ -22,6 +22,13 @@ const cohortSchema = z.object({
   startDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Choose a start date."),
 });
 
+/** A class group from a form, only if it belongs to this school (else none). */
+async function groupOf(orgId: string, v: FormDataEntryValue | null) {
+  const id = typeof v === "string" ? v : "";
+  if (!id) return null;
+  return (await db.query.classGroups.findFirst({ where: and(eq(schema.classGroups.id, id), eq(schema.classGroups.orgId, orgId)) })) ?? null;
+}
+
 export async function createCohortAction(_: FormState, form: FormData): Promise<FormState> {
   const ctx = await requireRole(["ADMIN"]);
   const p = cohortSchema.safeParse({ name: form.get("name"), trackId: form.get("trackId"), startDate: form.get("startDate") });
@@ -31,8 +38,9 @@ export async function createCohortAction(_: FormState, form: FormData): Promise<
   });
   const track = await db.query.tracks.findFirst({ where: eq(schema.tracks.id, p.data.trackId) });
   if (!enabled || !track || !canUseTrack(ctx.org.id, track)) return { error: "That track isn't enabled for your school." };
+  const group = await groupOf(ctx.org.id, form.get("groupId"));
   const [cohort] = await db.insert(schema.cohorts)
-    .values({ orgId: ctx.org.id, trackId: p.data.trackId, name: p.data.name, startDate: new Date(p.data.startDate) }).returning();
+    .values({ orgId: ctx.org.id, trackId: p.data.trackId, name: p.data.name, startDate: new Date(p.data.startDate), groupId: group?.id ?? null }).returning();
   const instructorIds = form.getAll("instructorIds").map(String);
   for (const userId of instructorIds) {
     const m = await db.query.memberships.findFirst({ where: and(eq(schema.memberships.orgId, ctx.org.id), eq(schema.memberships.userId, userId)) });
@@ -49,11 +57,13 @@ export async function updateCohortAction(_: FormState, form: FormData): Promise<
   if (!p.success) return { error: p.error.issues[0].message };
   // Class days for attendance reminders (none ticked = not set).
   const days = parseClassDays(form.getAll("classDays"));
-  const after = { ...p.data, classDays: days.length ? days : null };
+  const group = await groupOf(ctx.org.id, form.get("groupId"));
+  const after = { ...p.data, classDays: days.length ? days : null, groupName: group?.name ?? null };
   const result = await db.transaction(async (tx) => {
     // Locked, so a student joining at the same moment can't slip in while the roadmap changes.
     const [cohort] = await tx.select().from(schema.cohorts).where(eq(schema.cohorts.id, ctx.cohort.id)).for("update");
-    const before = { name: cohort.name, startDate: cohort.startDate.toISOString().slice(0, 10), trackId: cohort.trackId, classDays: cohort.classDays };
+    const oldGroup = cohort.groupId ? await tx.query.classGroups.findFirst({ where: eq(schema.classGroups.id, cohort.groupId) }) : null;
+    const before = { name: cohort.name, startDate: cohort.startDate.toISOString().slice(0, 10), trackId: cohort.trackId, classDays: cohort.classDays, groupName: oldGroup?.name ?? null };
     if (after.trackId !== before.trackId) {
       const [{ n }] = await tx.select({ n: sql<number>`count(*)::int` }).from(schema.enrollments).where(eq(schema.enrollments.cohortId, cohort.id));
       if (!canChangeTrack(n)) return { error: "The roadmap can't change any more: students have joined, and their ticks belong to this roadmap's lessons." };
@@ -68,7 +78,7 @@ export async function updateCohortAction(_: FormState, form: FormData): Promise<
     const detail = cohortChanges(before, after, (id) => titles.find((t) => t.id === id)?.title ?? "Unknown roadmap");
     if (!detail) return { ok: "Nothing changed." };
     await tx.update(schema.cohorts).set({
-      name: after.name, startDate: new Date(after.startDate), trackId: after.trackId, classDays: after.classDays,
+      name: after.name, startDate: new Date(after.startDate), trackId: after.trackId, classDays: after.classDays, groupId: group?.id ?? null,
       // New class days count from today: earlier days were never meant to be class days.
       ...(JSON.stringify(before.classDays ?? null) !== JSON.stringify(after.classDays) ? { classDaysSince: schoolToday() } : {}),
     }).where(eq(schema.cohorts.id, cohort.id));

@@ -5,6 +5,8 @@ import { loadTrackTree, loadProgress, summarize, expectedPct, expectedStagePcts,
 import { GroupBar, KindBars, PlanLineNote, StageLine } from "@/components/progress";
 import { reviewItemAction, signoffStageAction } from "@/app/actions/teach";
 import { EnrollmentStatusForm } from "@/components/class-list";
+import { ResidenceForm } from "@/components/school-settings";
+import { residences } from "@/lib/groups";
 import { PageHeader, ProgressBar, Stat, KindPill, StatusPill, Badge } from "@/components/ui";
 import { AssessmentForm } from "@/components/assessment-form";
 import { DEFAULT_RUBRIC } from "@/lib/rubric";
@@ -26,7 +28,7 @@ export const metadata = { title: "Student" };
 
 export default async function StudentPage({ params }: { params: Promise<{ id: string; enrollmentId: string }> }) {
   const { enrollmentId } = await params;
-  const { cohort, enrollment, user, role } = await requireTeachableEnrollment(enrollmentId);
+  const { cohort, enrollment, user, role, org } = await requireTeachableEnrollment(enrollmentId);
   // Story 4: nobody checks their own work (a teacher who is also enrolled in this cohort).
   const own = !canJudgeWork(user.id, enrollment.userId);
   const student = (await db.query.users.findFirst({ where: eq(schema.users.id, enrollment.userId) }))!;
@@ -77,6 +79,9 @@ export default async function StudentPage({ params }: { params: Promise<{ id: st
             Their work below is kept. Set the status to Active if they come back.
           </span>
         </p>
+      )}
+      {org.hasHostel && inClass(enrollment.status) && (
+        <div className="mb-6"><ResidenceForm enrollmentId={enrollment.id} residence={(await residences(org.id, [enrollment.userId])).get(enrollment.userId) ?? null} /></div>
       )}
       {own && (
         <p role="status" className="mb-6 flex items-start gap-2 rounded-md bg-info-soft px-4 py-3 text-sm text-info">

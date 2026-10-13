@@ -2,15 +2,19 @@ import "server-only";
 import { and, asc, desc, eq, gte, inArray, lt, sql } from "drizzle-orm";
 import { db, schema } from "@/db";
 import { addDays, buildRegister, shiftMonth, type AttendanceStatus } from "@/lib/attendance-core";
+import { matchesShow, type Show } from "@/lib/group-core";
 
 // Attendance: loading what the rules in attendance-core.ts need.
 
 /** The cohort's register for a month: every student still in the cohort (active or paused), plus anyone
  *  who has a mark that month (e.g. withdrawn later), so a printed register never loses a row. */
-export async function loadRegister(cohortId: string, month: string) {
-  const people = await db.select({ enrollmentId: schema.enrollments.id, status: schema.enrollments.status, name: schema.users.name, email: schema.users.email })
+export async function loadRegister(cohortId: string, orgId: string, month: string, show: Show = "all") {
+  const all = await db.select({ enrollmentId: schema.enrollments.id, status: schema.enrollments.status, name: schema.users.name, email: schema.users.email, residence: schema.memberships.residence })
     .from(schema.enrollments).innerJoin(schema.users, eq(schema.users.id, schema.enrollments.userId))
+    .leftJoin(schema.memberships, and(eq(schema.memberships.userId, schema.enrollments.userId), eq(schema.memberships.orgId, orgId)))
     .where(eq(schema.enrollments.cohortId, cohortId)).orderBy(asc(schema.users.name));
+  // Hostel students or day scholars only (when the school has a hostel).
+  const people = all.filter((p) => matchesShow(show, p.residence));
   const records = people.length
     ? await db.select({ enrollmentId: schema.attendance.enrollmentId, date: schema.attendance.date, status: schema.attendance.status })
       .from(schema.attendance)
@@ -43,9 +47,10 @@ export async function marksByStudent(enrollmentIds: string[]) {
 }
 
 /** One day on the Attendance page: the students on the list, their mark (if saved) and who saved it, when. */
-export async function loadDay(cohortId: string, date: string) {
-  const people = await db.select({ enrollmentId: schema.enrollments.id, status: schema.enrollments.status, name: schema.users.name, email: schema.users.email })
+export async function loadDay(cohortId: string, orgId: string, date: string) {
+  const people = await db.select({ enrollmentId: schema.enrollments.id, status: schema.enrollments.status, name: schema.users.name, email: schema.users.email, residence: schema.memberships.residence })
     .from(schema.enrollments).innerJoin(schema.users, eq(schema.enrollments.userId, schema.users.id))
+    .leftJoin(schema.memberships, and(eq(schema.memberships.userId, schema.enrollments.userId), eq(schema.memberships.orgId, orgId)))
     .where(and(eq(schema.enrollments.cohortId, cohortId), inArray(schema.enrollments.status, ["ACTIVE", "PAUSED"])))
     .orderBy(asc(schema.users.name));
   const recs = people.length
@@ -57,7 +62,7 @@ export async function loadDay(cohortId: string, date: string) {
   const mark = new Map(recs.map((r) => [r.e, r.status]));
   const last = recs.find((r) => r.at);
   return {
-    students: people.map((p) => ({ enrollmentId: p.enrollmentId, name: p.name ?? p.email ?? "Student", paused: p.status === "PAUSED", status: mark.get(p.enrollmentId) ?? null })),
+    students: people.map((p) => ({ enrollmentId: p.enrollmentId, name: p.name ?? p.email ?? "Student", paused: p.status === "PAUSED", residence: p.residence, status: mark.get(p.enrollmentId) ?? null })),
     saved: recs.length ? { by: last?.by ?? null, at: last?.at ?? null } : null,
   };
 }

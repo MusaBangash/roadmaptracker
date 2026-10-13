@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { absentListMessage, certificateMessage, inviteMessage, resetMessage, welcomeMessage, whatsappUrl } from "./whatsapp";
+import { absentListMessage, hostelListMessage, certificateMessage, inviteMessage, resetMessage, welcomeMessage, whatsappUrl } from "./whatsapp";
 
 describe("whatsapp", () => {
   it("puts the whole message, safely encoded, into a wa.me link", () => {
@@ -29,5 +29,13 @@ describe("absentListMessage", () => {
   it("says so when everyone came", () => {
     expect(absentListMessage({ cohort: "A", day: "Mon 12 Oct 2026", present: 4, total: 4, absent: [], late: [], leave: [] }))
       .toBe("Attendance, A, Mon 12 Oct 2026: 4 of 4 present. Everyone was present.");
+  });
+});
+
+describe("hostelListMessage", () => {
+  it("lists hostel students absent or on leave with their class, and classes not taken yet", () => {
+    expect(hostelListMessage({ school: "Aisha Cahn College", day: "Wed 14 Oct 2026", absent: [{ name: "Ali", cohort: "Web A" }], leave: [{ name: "Sara", cohort: "Web B" }], notTaken: ["AI Evening"] }))
+      .toBe("Hostel students, Aisha Cahn College, Wed 14 Oct 2026.\nAbsent (1):\n- Ali (Web A)\nOn leave (1):\n- Sara (Web B)\nAttendance not taken yet: AI Evening.");
+    expect(hostelListMessage({ school: "S", day: "D", absent: [], leave: [], notTaken: [] })).toBe("Hostel students, S, D. No hostel student was absent or on leave.");
   });
 });

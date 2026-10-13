@@ -5,6 +5,7 @@ import { requireTeachableCohort } from "@/lib/access";
 import { cohortRows, pendingReviewCount } from "@/lib/cohort-stats";
 import { PageHeader, ProgressBar, Stat, RiskPill, Empty, EnrollmentBadge, Tag, Badge, sentence } from "@/components/ui";
 import { flagWords, isClassDay } from "@/lib/attendance-core";
+import { RESIDENCE_WORDS } from "@/lib/group-core";
 import { recentAttendance } from "@/lib/attendance";
 import { Icon } from "@/components/icon";
 import { ClassStageList, PlanLineNote } from "@/components/progress";
@@ -59,6 +60,7 @@ export default async function CohortPage({ params }: { params: Promise<{ id: str
       : Promise.resolve([]),
     recentAttendance([cohort.id], today),
   ]);
+  const group = cohort.groupId ? await db.query.classGroups.findFirst({ where: eq(schema.classGroups.id, cohort.groupId) }) : null;
   // A class day with no attendance saved yet: the Attendance button asks for it.
   const takeToday = isClassDay(cohort.classDays, today) && !recent.get(cohort.id)?.has(today) && !cohort.archived;
   const pending = pendingBy.get(cohort.id) ?? 0;
@@ -84,7 +86,7 @@ export default async function CohortPage({ params }: { params: Promise<{ id: str
     <>
       <PageHeader
         title={cohort.name}
-        sub={<>{track.title} · started {fmtDate(cohort.startDate)}{cohort.archived ? " · archived" : ""}</>}
+        sub={<>{group ? <><Tag>{group.name}</Tag>{" "}</> : null}{track.title} · started {fmtDate(cohort.startDate)}{cohort.archived ? " · archived" : ""}</>}
         back={{ href: "/cohorts", label: "Cohorts" }}
         actions={<>
           <Link href={`/cohorts/${cohort.id}/review`} className={pending ? "btn-primary" : "btn-ghost"}>Review{pending ? ` (${pending})` : ""}</Link>
@@ -155,6 +157,7 @@ export default async function CohortPage({ params }: { params: Promise<{ id: str
                     <td className="p-3">
                       <Link href={`/cohorts/${cohort.id}/students/${r.enrollment.id}`} className="font-semibold text-primary hover:underline">{r.user.name ?? r.user.email}</Link>
                       <div className="text-xs text-ink-muted">{r.user.email}</div>
+                      {ctx.org.hasHostel && r.residence && <div className="mt-1"><Tag>{RESIDENCE_WORDS[r.residence]}</Tag></div>}
                     </td>
                     <td className="w-40 p-3"><ProgressBar value={r.sum.pct} expected={expected} /><div className="mt-1 text-xs text-ink-muted">{pct(r.sum.pct)} · {r.sum.verified} verified</div></td>
                     <td className="p-3">
@@ -184,9 +187,10 @@ export default async function CohortPage({ params }: { params: Promise<{ id: str
               <span className="inline-flex items-center gap-1 text-danger"><Icon name="x" size={14} /><span className="text-ink-muted">not passed</span></span>
             </div>
             <div className="border-t border-border p-3">
-              <ClassListBar formId="class" cohortId={cohort.id} today={schoolToday()} buttons={[
-                { op: "withdraw", label: "Mark selected Withdrawn", confirm: "Mark the ticked students Withdrawn? They move to Former students and leave attendance and the class averages. Their work is kept, and you can make them active again on their page." },
-              ]} />
+              <ClassListBar formId="class" cohortId={cohort.id} withdrawToday={schoolToday()} buttons={ctx.org.hasHostel ? [
+                { op: "hostel", label: "Mark as Hostel" },
+                { op: "day", label: "Mark as Day scholar" },
+              ] : []} />
             </div>
           </div>
         )}

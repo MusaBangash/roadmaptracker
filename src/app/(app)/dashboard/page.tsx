@@ -14,10 +14,14 @@ import { inClass } from "@/lib/cohort-core";
 import { recentAttendance } from "@/lib/attendance";
 import { isClassDay, missedClassDays, remindFrom } from "@/lib/attendance-core";
 import { schoolToday } from "@/lib/utils";
+import { loadGroups, residenceToday } from "@/lib/groups";
+import { groupTotals, inGroup, parseGroup, RESIDENCE_WORDS } from "@/lib/group-core";
+import { FilterChips, groupOptions } from "@/components/filter-chips";
+import { Tag } from "@/components/ui";
 
 export const metadata = { title: "Dashboard" };
 
-export default async function Dashboard() {
+export default async function Dashboard({ searchParams }: { searchParams: Promise<{ group?: string }> }) {
   const [ctx, tr] = await Promise.all([getContext(), getT()]);
   const first = ctx.user.name?.split(" ")[0] ?? tr("dash.there");
 
@@ -63,8 +67,17 @@ export default async function Dashboard() {
       .innerJoin(schema.tracks, eq(schema.cohorts.trackId, schema.tracks.id))
       .where(and(eq(schema.cohortInstructors.userId, ctx.user.id), eq(schema.cohorts.orgId, ctx.org.id), eq(schema.cohorts.archived, false)));
   }
+  // Class groups (School settings): show one group, with totals per group.
+  const groups = ctx.org ? (await loadGroups(ctx.org.id)).filter((g) => teach.some((x) => x.c.groupId === g.id)) : [];
+  const groupFilter = parseGroup((await searchParams).group, groups.map((g) => g.id));
+  const anyWithoutGroup = teach.some((x) => !x.c.groupId);
+  teach = teach.filter((x) => inGroup(groupFilter, x.c.groupId));
   const today = schoolToday();
-  const [pending, recent] = await Promise.all([pendingReviewCount(teach.map((x) => x.c.id)), recentAttendance(teach.map((x) => x.c.id), today)]);
+  const [pending, recent, byResidence] = await Promise.all([
+    pendingReviewCount(teach.map((x) => x.c.id)), recentAttendance(teach.map((x) => x.c.id), today),
+    ctx.org.hasHostel ? residenceToday(ctx.org.id, teach.map((x) => x.c.id), today) : Promise.resolve(null),
+  ]);
+  const groupName = new Map(groups.map((g) => [g.id, g.name]));
   const teachCards = await Promise.all(teach.map(async ({ c, t }) => {
     const { rows, expected, tree, coverage } = await cohortRows(c);
     const n = coverage.next;
@@ -103,11 +116,34 @@ export default async function Dashboard() {
         </div>
       )}
 
+      {(ctx.role === "ADMIN" || ctx.role === "INSTRUCTOR") && groups.length > 0 && (
+        <FilterChips label="Group" current={groupFilter} options={groupOptions(groups, (g) => (g ? `/dashboard?group=${g}` : "/dashboard"), anyWithoutGroup)} />
+      )}
+
       {(ctx.role === "ADMIN" || ctx.role === "INSTRUCTOR") && teachCards.length > 0 && (
         <section className="mb-8">
           <h2 className="h2 mb-3">Today&apos;s attendance</h2>
+          {byResidence && (
+            <p className="mb-3 flex flex-wrap gap-x-4 gap-y-1 text-sm">
+              {(["HOSTEL", "DAY"] as const).map((r) => (
+                <span key={r}>{RESIDENCE_WORDS[r]}: {byResidence[r].marked ? <b>{byResidence[r].present} of {byResidence[r].marked} present</b> : <span className="text-ink-muted">not taken yet</span>}</span>
+              ))}
+              <Link href="/hostel" className="text-secondary underline">Hostel list</Link>
+            </p>
+          )}
+          {(groups.length && groupFilter === null
+            ? groupTotals(teachCards.map((x) => ({ groupId: x.c.groupId, present: x.att.today?.present ?? 0, marked: x.att.today?.marked ?? 0, taken: !!x.att.today })), groups)
+            : [{ id: "all" as string | null, name: "", classes: 0, present: 0, marked: 0, notTaken: 0 }]
+          ).map((g) => (
+          <div key={g.id ?? "none"} className="mb-3">
+          {g.name && (
+            <p className="mb-1 flex flex-wrap items-baseline gap-x-2 text-sm">
+              <b>{g.name}</b>
+              <span className="text-ink-muted">{g.classes} {g.classes === 1 ? "class" : "classes"}{g.marked ? ` · ${g.present} of ${g.marked} present` : ""}{g.notTaken ? ` · ${g.notTaken} not taken yet` : ""}</span>
+            </p>
+          )}
           <ul className="card divide-y divide-border text-sm">
-            {teachCards.map((x) => (
+            {teachCards.filter((x) => g.id === "all" || x.c.groupId === g.id).map((x) => (
               <li key={x.c.id}>
                 <Link href={`/cohorts/${x.c.id}/attendance`} className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 hover:bg-surface-sunken">
                   <span className="font-semibold">{x.c.name}</span>
@@ -122,6 +158,8 @@ export default async function Dashboard() {
               </li>
             ))}
           </ul>
+          </div>
+          ))}
         </section>
       )}
 
@@ -139,7 +177,7 @@ export default async function Dashboard() {
                 <Link key={x.c.id} href={`/cohorts/${x.c.id}`} className="card block p-4 hover:border-primary">
                   <div className="flex flex-wrap items-start justify-between gap-2">
                     <div>
-                      <div className="font-semibold">{x.c.name}</div>
+                      <div className="font-semibold">{x.c.name}{x.c.groupId && groupName.get(x.c.groupId) && <span className="ms-2 align-middle"><Tag>{groupName.get(x.c.groupId)}</Tag></span>}</div>
                       <div className="text-sm text-ink-muted">{x.t.title} · started {fmtDate(x.c.startDate)}</div>
                     </div>
                     <div className="flex flex-col items-start gap-1 sm:items-end">

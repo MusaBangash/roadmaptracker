@@ -1,5 +1,8 @@
 import Link from "next/link";
 import { requireRole } from "@/lib/access";
+import { loadGroups } from "@/lib/groups";
+import { parseGroup } from "@/lib/group-core";
+import { FilterChips, groupOptions } from "@/components/filter-chips";
 import { insightTables, loadInsights, parseRange, RANGES, weekLabel, type ChartName, type Range } from "@/lib/insights";
 import { PageHeader, ProgressBar, Stat, Empty, Badge } from "@/components/ui";
 import { ChartTable, ColumnLegend, LineLegend, ProgressLine, ReviewColumns } from "@/components/charts";
@@ -15,7 +18,7 @@ function PaceBadge({ pace }: { pace: string | null }) {
   return <Badge tone="info" icon="check">{pace}</Badge>;
 }
 
-function Section({ id, title, sub, chart, range, children }: { id: string; title: string; sub: string; chart: ChartName; range: Range; children: React.ReactNode }) {
+function Section({ id, title, sub, chart, range, group, children }: { id: string; title: string; sub: string; chart: ChartName; range: Range; group: string | null; children: React.ReactNode }) {
   return (
     <section className="mb-10" aria-labelledby={`${id}-h`}>
       <div className="mb-3 flex flex-wrap items-end justify-between gap-2">
@@ -23,7 +26,7 @@ function Section({ id, title, sub, chart, range, children }: { id: string; title
           <h2 id={`${id}-h`} className="h2">{title}</h2>
           <p className="text-sm text-ink-muted">{sub}</p>
         </div>
-        <a href={`/insights/export?chart=${chart}&range=${range}`} className="btn-ghost text-sm"><Icon name="download" size={16} />Download CSV</a>
+        <a href={`/insights/export?chart=${chart}&range=${range}${group ? `&group=${group}` : ""}`} className="btn-ghost text-sm"><Icon name="download" size={16} />Download CSV</a>
       </div>
       {children}
     </section>
@@ -31,17 +34,21 @@ function Section({ id, title, sub, chart, range, children }: { id: string; title
 }
 
 /** Feature 4: the school's charts. Admins see every open cohort; teachers only theirs. */
-export default async function InsightsPage({ searchParams }: { searchParams: Promise<{ range?: string }> }) {
+export default async function InsightsPage({ searchParams }: { searchParams: Promise<{ range?: string; group?: string }> }) {
   const ctx = await requireRole(["ADMIN", "INSTRUCTOR"]);
-  const range = parseRange((await searchParams).range);
-  const data = await loadInsights(ctx, range);
+  const sp = await searchParams;
+  const range = parseRange(sp.range);
+  const groups = await loadGroups(ctx.org.id);
+  const group = parseGroup(sp.group, groups.map((g) => g.id));
+  const data = await loadInsights(ctx, range, group);
+  const q = (r: Range, g: string | null) => `/insights?range=${r}${g ? `&group=${g}` : ""}`;
   const tables = insightTables(data);
   const scope = ctx.role === "ADMIN" ? "every open cohort" : "the cohorts you teach";
 
   const ranges = (
     <nav aria-label="Time period" className="flex flex-wrap gap-1 rounded-md border border-border p-1">
       {(Object.keys(RANGES) as Range[]).map((r) => (
-        <Link key={r} href={`/insights?range=${r}`} aria-current={r === range ? "page" : undefined}
+        <Link key={r} href={q(r, group)} aria-current={r === range ? "page" : undefined}
           className={`rounded px-3 py-1.5 text-sm font-semibold ${r === range ? "bg-primary text-on-primary" : "text-ink-muted hover:bg-surface-sunken hover:text-ink"}`}>{RANGES[r]}</Link>
       ))}
     </nav>
@@ -51,6 +58,7 @@ export default async function InsightsPage({ searchParams }: { searchParams: Pro
     return (
       <>
         <PageHeader title="Insights" sub={`${ctx.org.name} · ${scope}`} />
+        {groups.length > 0 && <FilterChips label="Group" current={group} options={groupOptions(groups, (g) => q(range, g), true)} />}
         <Empty title="No cohorts to show yet">{ctx.role === "ADMIN" ? "Create a cohort and add students; the charts fill in as they work." : "Your school admin will add you to a cohort."}</Empty>
       </>
     );
@@ -63,8 +71,9 @@ export default async function InsightsPage({ searchParams }: { searchParams: Pro
   return (
     <>
       <PageHeader title="Insights" sub={<>{ctx.org.name} · {scope} · {RANGES[range].toLowerCase()} (from the week of {from})</>} actions={ranges} />
+      {groups.length > 0 && <FilterChips label="Group" current={group} options={groupOptions(groups, (g) => q(range, g), true)} />}
 
-      <Section id="progress" title="Progress over time" sub="Each cohort's average progress at the end of every week, against the plan. Counted from the day each item was ticked." chart="progress" range={range}>
+      <Section id="progress" title="Progress over time" sub="Each cohort's average progress at the end of every week, against the plan. Counted from the day each item was ticked." chart="progress" range={range} group={group}>
         <LineLegend />
         <div className="mt-3 grid gap-3 md:grid-cols-2">
           {data.cohorts.map((c) => (
@@ -87,7 +96,7 @@ export default async function InsightsPage({ searchParams }: { searchParams: Pro
         <ChartTable caption={tables.progress.title} head={tables.progress.head} rows={tables.progress.rows} />
       </Section>
 
-      <Section id="compare" title="Compare cohorts" sub="Today: average progress (the line marks the plan), students needing attention and attendance. Open a cohort for its students." chart="cohorts" range={range}>
+      <Section id="compare" title="Compare cohorts" sub="Today: average progress (the line marks the plan), students needing attention and attendance. Open a cohort for its students." chart="cohorts" range={range} group={group}>
         <div className="grid gap-3 md:grid-cols-2">
           {data.cohorts.map((c) => (
             <Link key={c.id} href={`/cohorts/${c.id}`} className="card block p-4 hover:border-primary">
@@ -108,7 +117,7 @@ export default async function InsightsPage({ searchParams }: { searchParams: Pro
         <ChartTable caption={tables.cohorts.title} head={tables.cohorts.head} rows={tables.cohorts.rows} />
       </Section>
 
-      <Section id="stuck" title="Where students are now" sub="How many active students are on each stage today. A long bar means many students are on that stage: they may be stuck there." chart="stuck" range={range}>
+      <Section id="stuck" title="Where students are now" sub="How many active students are on each stage today. A long bar means many students are on that stage: they may be stuck there." chart="stuck" range={range} group={group}>
         <div className="grid gap-3 lg:grid-cols-2">
           {data.stuck.map((t) => {
             const top = Math.max(1, ...t.stages.map((s) => s.students));
@@ -139,7 +148,7 @@ export default async function InsightsPage({ searchParams }: { searchParams: Pro
         <ChartTable caption={tables.stuck.title} head={tables.stuck.head} rows={tables.stuck.rows} />
       </Section>
 
-      <Section id="reviews" title="How quickly work is checked" sub="Projects, deliverables and milestones: submitted each week, and verified or sent back." chart="reviews" range={range}>
+      <Section id="reviews" title="How quickly work is checked" sub="Projects, deliverables and milestones: submitted each week, and verified or sent back." chart="reviews" range={range} group={group}>
         <div className="mb-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
           <Stat label="Average wait" value={r.averageWaitDays === null ? "—" : r.averageWaitDays < 1 ? "Under 1 day" : `${r.averageWaitDays} ${r.averageWaitDays === 1 ? "day" : "days"}`} sub="from submitting to a decision" />
           <Stat label="Waiting now" value={r.waiting} sub="in the review queues" />

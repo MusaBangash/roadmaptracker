@@ -7,7 +7,7 @@ import { FormError } from "@/components/ui";
 import { keepFields } from "@/components/keep-fields";
 import { ATTENDANCE_STATUSES, ATTENDANCE_WORDS, MARK_OF, type AttendanceStatus } from "@/lib/attendance-core";
 
-type Student = { enrollmentId: string; name: string; paused: boolean; status: AttendanceStatus | null };
+type Student = { enrollmentId: string; name: string; paused: boolean; status: AttendanceStatus | null; tag?: string | null };
 
 /** Selected look of each choice: colour, plus the word/letter, so it never depends on colour alone. */
 const ON: Record<AttendanceStatus, string> = {
@@ -52,7 +52,7 @@ export function AttendanceForm({ cohortId, date, today, students }: { cohortId: 
         {students.map((s) => (
           <li key={s.enrollmentId} className="flex flex-wrap items-center justify-between gap-2 py-2">
             <span className="min-w-0 text-sm font-semibold" dir="auto">
-              {s.name}{s.paused && <span className="ms-2 text-xs font-normal text-ink-muted">paused</span>}
+              {s.name}{s.tag && <span className="ms-2 text-xs font-normal text-ink-muted">{s.tag}</span>}{s.paused && <span className="ms-2 text-xs font-normal text-ink-muted">paused</span>}
             </span>
             <fieldset className="flex gap-1">
               <legend className="sr-only">{s.name}</legend>

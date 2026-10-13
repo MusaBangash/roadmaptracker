@@ -18,6 +18,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   const [theme, t] = await Promise.all([savedTheme(), getT()]);
   const nav: { href: string; label: string }[] = [{ href: "/dashboard", label: t("nav.dashboard") }];
   if (role === "ADMIN" || role === "INSTRUCTOR") nav.push({ href: "/cohorts", label: t("nav.cohorts") }, { href: "/insights", label: t("nav.insights") }, { href: "/labs", label: t("nav.labs") });
+  if ((role === "ADMIN" || role === "INSTRUCTOR") && org?.hasHostel) nav.push({ href: "/hostel", label: "Hostel" });
   if (role === "ADMIN") nav.push({ href: "/admin/members", label: t("nav.people") });
   if (org) nav.push({ href: "/tracks", label: t("nav.tracks") });
   if (user.isSuperAdmin) nav.push({ href: "/platform", label: t("nav.schools") });
@@ -41,6 +42,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
               )}
               <div className="mt-3"><ThemeSwitch initial={theme} /></div>
               <Link href="/account" className="mt-3 block text-sm text-primary">{t("account.mine")}</Link>
+              {role === "ADMIN" && <Link href="/admin/school" className="mt-2 block text-sm text-primary">School settings</Link>}
               <Link href="/join" className="mt-2 block text-sm text-primary">{t("account.join")}</Link>
               <Link href="/privacy" className="mt-2 block text-sm text-primary">{t("account.privacy")}</Link>
               <form action={logoutAction} className="mt-3"><button className="btn-ghost w-full">{t("account.signOut")}</button></form>

@@ -1,4 +1,5 @@
 import "server-only";
+import { inGroup } from "@/lib/group-core";
 import { and, eq, gte, inArray, sql } from "drizzle-orm";
 import { db, schema } from "@/db";
 import type { Role } from "@/db/schema";
@@ -77,8 +78,9 @@ async function reviewData(enrollmentIds: string[], since: string) {
 }
 
 /** Everything the Insights page and its CSV downloads show, for the cohorts this person may see. */
-export async function loadInsights(ctx: { user: { id: string }; org: { id: string }; role: Role }, range: Range) {
-  const list = await cohortsInView(ctx);
+export async function loadInsights(ctx: { user: { id: string }; org: { id: string }; role: Role }, range: Range, group: string | null = null) {
+  // One class group only (School settings), or all.
+  const list = (await cohortsInView(ctx)).filter(({ c }) => inGroup(group, c.groupId));
   const cohorts = await Promise.all(list.map(async ({ c, t }) => ({ c, t, ...(await cohortRows(c)) })));
   const earliest = cohorts.length ? cohorts[0].c.startDate : null;
   const weeks = weeksFor(range, earliest);

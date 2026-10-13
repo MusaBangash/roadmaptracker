@@ -6,7 +6,9 @@ import { FormError } from "@/components/ui";
 import { keepFields } from "@/components/keep-fields";
 import { CHOOSABLE_REASONS, LEAVE_NOTE_MAX, LEAVE_REASONS } from "@/lib/cohort-core";
 
-export type ClassListButton = { op: "accept" | "accept-all" | "decline" | "withdraw"; label: string; primary?: boolean; danger?: boolean; confirm?: string };
+export type ClassListButton = { op: "accept" | "accept-all" | "decline" | "withdraw" | "hostel" | "day"; label: string; primary?: boolean; danger?: boolean; confirm?: string };
+
+const WITHDRAW_CONFIRM = "Mark the ticked students Withdrawn? They move to Former students and leave attendance and the class averages. Their work is kept, and you can make them active again on their page.";
 
 const DONE_EVENT = "class-list-done";
 
@@ -18,8 +20,11 @@ export function PickBox({ formId, id, name }: { formId: string; id: string; name
   return <input type="checkbox" name="enrollmentId" value={id} form={formId} aria-label={`Tick ${name}`} className="size-5 shrink-0 accent-primary" />;
 }
 
-/** The buttons under a list of students: "Tick all", how many are ticked, and the actions. */
-export function ClassListBar({ formId, cohortId, buttons, today }: { formId: string; cohortId: string; buttons: ClassListButton[]; today?: string }) {
+/**
+ * The buttons under a list of students: "Tick all", how many are ticked, and the actions. With
+ * `withdrawToday`, "Mark Withdrawn…" first asks why and when they left, then confirms.
+ */
+export function ClassListBar({ formId, cohortId, buttons, withdrawToday }: { formId: string; cohortId: string; buttons: ClassListButton[]; withdrawToday?: string }) {
   // The list can empty and vanish after the action (everyone accepted), so the "done" message is shown
   // by ClassListNotice, which is always on the page.
   const [state, action, pending] = useActionState(async (prev: Awaited<ReturnType<typeof classListAction>>, form: FormData) => {
@@ -29,9 +34,13 @@ export function ClassListBar({ formId, cohortId, buttons, today }: { formId: str
   }, undefined);
   const [ticked, setTicked] = useState(0);
   const [total, setTotal] = useState(0);
+  const [leaving, setLeaving] = useState(false);
 
   useEffect(() => {
-    if (state?.ok) for (const b of boxes(formId)) b.checked = false;
+    if (state?.ok) {
+      for (const b of boxes(formId)) b.checked = false;
+      setLeaving(false);
+    }
     const count = () => {
       const all = boxes(formId);
       setTicked(all.filter((b) => b.checked).length);
@@ -50,7 +59,6 @@ export function ClassListBar({ formId, cohortId, buttons, today }: { formId: str
   return (
     <form id={formId} onSubmit={keepFields(action)} className="grid gap-2">
       <input type="hidden" name="cohortId" value={cohortId} />
-      {today && ticked > 0 && <LeaveFields idPrefix={formId} today={today} />}
       <div className="flex flex-wrap items-center gap-2">
         <label className="me-2 inline-flex items-center gap-2 text-sm">
           <input type="checkbox" checked={total > 0 && ticked === total} onChange={(e) => tickAll(e.target.checked)} className="size-5 accent-primary" />
@@ -69,7 +77,21 @@ export function ClassListBar({ formId, cohortId, buttons, today }: { formId: str
             {b.label}
           </button>
         ))}
+        {withdrawToday && !leaving && (
+          <button type="button" className="btn-ghost" disabled={pending || ticked === 0} onClick={() => setLeaving(true)}>Mark Withdrawn…</button>
+        )}
       </div>
+      {withdrawToday && leaving && (
+        <div className="grid gap-2 rounded-md border border-border p-3">
+          <p className="text-sm font-semibold">Why did the {ticked === 1 ? "ticked student" : `${ticked} ticked students`} leave?</p>
+          <LeaveFields idPrefix={formId} today={withdrawToday} />
+          <div className="flex flex-wrap gap-2">
+            <button name="op" value="withdraw" disabled={pending || ticked === 0} className="btn-primary"
+              onClick={(e) => { if (!window.confirm(WITHDRAW_CONFIRM)) e.preventDefault(); }}>Mark selected Withdrawn</button>
+            <button type="button" className="btn-ghost" onClick={() => setLeaving(false)}>Cancel</button>
+          </div>
+        </div>
+      )}
       <FormError message={state?.error} />
     </form>
   );

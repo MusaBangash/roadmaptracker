@@ -1,4 +1,5 @@
 import { eq, inArray } from "drizzle-orm";
+import { loadGroups } from "@/lib/groups";
 import { db, schema } from "@/db";
 import { requireRole } from "@/lib/access";
 import { audit } from "@/lib/audit";
@@ -16,13 +17,14 @@ export async function GET() {
   const cohorts = await db.select({ c: schema.cohorts, slug: schema.tracks.slug }).from(schema.cohorts)
     .innerJoin(schema.tracks, eq(schema.tracks.id, schema.cohorts.trackId)).where(eq(schema.cohorts.orgId, orgId));
   const cohortIds = cohorts.map((x) => x.c.id);
+  const groups = await loadGroups(orgId);
   const none = ["-"]; // inArray with an empty list is not allowed
   const enrollments = await db.select().from(schema.enrollments).where(inArray(schema.enrollments.cohortId, cohortIds.length ? cohortIds : none));
   const eIds = enrollments.length ? enrollments.map((e) => e.id) : none;
   const ref = { stageKey: schema.stages.key, itemKey: schema.items.key };
 
   const [people, instructors, progress, signoffs, assessments, logs, attendance, coverage, ownTracks, activity, comments] = await Promise.all([
-    db.select({ id: schema.users.id, name: schema.users.name, email: schema.users.email, role: schema.memberships.role, joinedAt: schema.memberships.createdAt, consentAt: schema.users.consentAt })
+    db.select({ id: schema.users.id, name: schema.users.name, email: schema.users.email, role: schema.memberships.role, residence: schema.memberships.residence, joinedAt: schema.memberships.createdAt, consentAt: schema.users.consentAt })
       .from(schema.memberships).innerJoin(schema.users, eq(schema.users.id, schema.memberships.userId)).where(eq(schema.memberships.orgId, orgId)),
     db.select().from(schema.cohortInstructors).where(inArray(schema.cohortInstructors.cohortId, cohortIds.length ? cohortIds : none)),
     db.select({ p: schema.itemProgress, ...ref }).from(schema.itemProgress)
@@ -59,13 +61,15 @@ export async function GET() {
     format: "noorai-tracks-backup",
     version: 1,
     exportedAt: new Date().toISOString(),
-    school: { id: ctx.org.id, name: ctx.org.name, slug: ctx.org.slug },
+    school: { id: ctx.org.id, name: ctx.org.name, slug: ctx.org.slug, hasHostel: ctx.org.hasHostel },
+    classGroups: groups,
     people,
     roadmaps: await Promise.all(ownTracks.map(async (t) => ({
       slug: t.slug, status: t.status, published: t.status === "PUBLISHED" ? await liveDoc(db, t) : null, draft: t.draft,
     }))),
     cohorts: cohorts.map(({ c, slug }) => ({
       id: c.id, name: c.name, track: slug, startDate: c.startDate.toISOString().slice(0, 10), archived: c.archived,
+      group: groups.find((g) => g.id === c.groupId)?.name ?? null, classDays: c.classDays,
       instructorIds: instructors.filter((i) => i.cohortId === c.id).map((i) => i.userId),
       teachingPlan: coverage.filter((x) => x.c.cohortId === c.id)
         .map((x) => ({ stage: x.stageKey, item: x.itemKey, taughtOn: x.c.taughtOn, taughtById: x.c.taughtById })),

@@ -61,16 +61,30 @@ export const organizations = pgTable("organization", {
   id: id(),
   name: text("name").notNull(),
   slug: text("slug").notNull().unique(),
+  /** "We have a hostel": students can be marked Hostel or Day scholar (membership.residence). */
+  hasHostel: boolean("has_hostel").notNull().default(false),
   createdAt: created(),
 });
+
+/** Hostel or day scholar, per student per school (only used when the school has a hostel). */
+export const residenceEnum = pgEnum("residence", ["HOSTEL", "DAY"]);
 
 export const memberships = pgTable("membership", {
   id: id(),
   userId: text("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
   orgId: text("org_id").notNull().references(() => organizations.id, { onDelete: "cascade" }),
   role: roleEnum("role").notNull(),
+  residence: residenceEnum("residence"),
   createdAt: created(),
 }, (t) => [uniqueIndex("membership_user_org").on(t.userId, t.orgId), index("membership_org_role").on(t.orgId, t.role)]);
+
+/** A school's own class groups (e.g. Morning Boys, Evening Girls); each cohort can belong to one. */
+export const classGroups = pgTable("class_group", {
+  id: id(),
+  orgId: text("org_id").notNull().references(() => organizations.id, { onDelete: "cascade" }),
+  name: text("name").notNull(),
+  createdAt: created(),
+}, (t) => [uniqueIndex("class_group_org_name").on(t.orgId, t.name)]);
 
 // ---------- Content (official roadmaps synced from content/tracks/*.json; schools' own from the Roadmap Builder) ----------
 export const itemKindEnum = pgEnum("item_kind", ["LESSON", "PROJECT", "DELIVERABLE", "MILESTONE"]);
@@ -145,6 +159,7 @@ export const cohorts = pgTable("cohort", {
   classDays: jsonb("class_days").$type<number[]>(),
   /** The day the class days were last set: days before it are never "attendance not taken". */
   classDaysSince: date("class_days_since", { mode: "string" }),
+  groupId: text("group_id").references(() => classGroups.id, { onDelete: "set null" }),
   createdAt: created(),
 }, (t) => [index("cohort_org").on(t.orgId)]);
 

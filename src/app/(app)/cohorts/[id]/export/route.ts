@@ -8,6 +8,7 @@ import { csvFile } from "@/lib/csv";
 import { loadRegister } from "@/lib/attendance";
 import { monthOf, parseMonth } from "@/lib/attendance-core";
 import { inClass, leaveLabel } from "@/lib/cohort-core";
+import { parseShow, SHOW_WORDS } from "@/lib/group-core";
 
 /** A UTF-8 CSV with a byte-order mark (so Excel reads Urdu names), lines ending in CRLF. */
 function download(body: unknown[][], filename: string) {
@@ -50,20 +51,23 @@ async function teachingPlan(cohort: Parameters<typeof cohortRows>[0]) {
 
 export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const { cohort } = await requireTeachableCohort(id);
+  const ctx = await requireTeachableCohort(id);
+  const { cohort } = ctx;
   const name = cohort.name.replace(/[^a-z0-9]+/gi, "-").toLowerCase();
   const search = new URL(req.url).searchParams;
   if (search.get("type") === "plan") return download(await teachingPlan(cohort), `${name}-teaching-plan.csv`);
   if (search.get("type") === "attendance") {
     // Attendance story 2: the monthly register, as on the page.
     const month = parseMonth(search.get("month"), monthOf(new Date().toISOString()));
-    const reg = await loadRegister(cohort.id, month);
+    const show = ctx.org.hasHostel ? parseShow(search.get("show")) : "all";
+    const reg = await loadRegister(cohort.id, ctx.org.id, month, show);
     const head = ["Name", ...reg.days.map((d) => d.slice(8)), "Present", "Absent", "Late", "Leave", "Days counted", "Attendance %"];
     const lines = reg.rows.map((r) => [r.name, ...r.cells.map((c) => c ?? ""), r.present, r.absent, r.late, r.leave, r.counted, r.pct === null ? "" : Math.round(r.pct * 100)]);
     const blank = ["", "", "", "", "", ""];
     const foot = [["Present that day", ...reg.presentPerDay, ...blank], ["Absent that day", ...reg.perDay.map((d) => d.absent), ...blank]];
     const key = ["P = present, L = late (counts as present), Lv = leave (doesn't count), A = absent"];
-    return download([[`${cohort.name} · attendance ${month}`], key, head, ...lines, ...foot], `${name}-attendance-${month}.csv`);
+    const who = show === "all" ? "" : ` · ${SHOW_WORDS[show]}`;
+    return download([[`${cohort.name} · attendance ${month}${who}`], key, head, ...lines, ...foot], `${name}-attendance-${month}${show === "all" ? "" : `-${show}`}.csv`);
   }
   const { tree, rows, expected } = await cohortRows(cohort);
   const head = ["Name", "Email", "Status", "Progress %", "Expected %", "Items done", "Items required", "Verified", "Stages passed", "Hours logged", "Attendance %", "Last active", "Risk", "Left on", "Why they left",
