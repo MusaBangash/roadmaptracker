@@ -1,6 +1,8 @@
 import { and, desc, eq } from "drizzle-orm";
 import { db, schema } from "@/db";
+import { redirect } from "next/navigation";
 import { requireOwnEnrollment } from "@/lib/access";
+import { inClass } from "@/lib/cohort-core";
 import { PageHeader, Empty } from "@/components/ui";
 import { WeeklyLogForm } from "@/components/weekly-log-form";
 import { thisMonday } from "@/lib/utils";
@@ -11,6 +13,7 @@ export const metadata = { title: "Weekly log" };
 export default async function LogPage({ params }: { params: Promise<{ enrollmentId: string }> }) {
   const { enrollmentId } = await params;
   const { enrollment } = await requireOwnEnrollment(enrollmentId);
+  if (!inClass(enrollment.status)) redirect(`/learn/${enrollment.id}`);
   const t = await getT();
   const monday = thisMonday();
   const logs = await db.query.weeklyLogs.findMany({

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { canChangeTrack, cohortChanges } from "./cohort-core";
+import { canApply, canChangeTrack, cohortChanges, inClass, statusAfterJoin, type EnrollmentStatus } from "./cohort-core";
 
 const titles: Record<string, string> = { t1: "AI Engineer", t2: "Web Designing" };
 const title = (id: string) => titles[id] ?? id;
@@ -19,5 +19,30 @@ describe("canChangeTrack", () => {
   it("only while nobody is enrolled", () => {
     expect(canChangeTrack(0)).toBe(true);
     expect(canChangeTrack(1)).toBe(false);
+  });
+});
+
+describe("waiting list", () => {
+  it("only waiting and turned-away people are outside the class", () => {
+    expect(["ACTIVE", "PAUSED", "COMPLETED", "WITHDRAWN"].every((s) => inClass(s as EnrollmentStatus))).toBe(true);
+    expect(inClass("PENDING")).toBe(false);
+    expect(inClass("DECLINED")).toBe(false);
+  });
+  it("joining with a link waits for a teacher; turned away stays turned away", () => {
+    expect(statusAfterJoin(null)).toBe("PENDING");
+    expect(statusAfterJoin("WITHDRAWN")).toBe("PENDING");
+    expect(statusAfterJoin("DECLINED")).toBe("DECLINED");
+    expect(statusAfterJoin("ACTIVE")).toBe("ACTIVE");
+    expect(statusAfterJoin("PAUSED")).toBe("PAUSED");
+  });
+  it("each action only changes the places it is meant for", () => {
+    expect(canApply("accept", "PENDING")).toBe(true);
+    expect(canApply("accept", "DECLINED")).toBe(true);
+    expect(canApply("accept", "WITHDRAWN")).toBe(false);
+    expect(canApply("decline", "PENDING")).toBe(true);
+    expect(canApply("decline", "ACTIVE")).toBe(false);
+    expect(canApply("withdraw", "ACTIVE")).toBe(true);
+    expect(canApply("withdraw", "PENDING")).toBe(false);
+    expect(canApply("withdraw", "WITHDRAWN")).toBe(false);
   });
 });

@@ -7,6 +7,7 @@ import { OTHER_GROUP } from "@/lib/progress";
 import { csvFile } from "@/lib/csv";
 import { loadRegister } from "@/lib/attendance";
 import { monthOf, parseMonth } from "@/lib/attendance-core";
+import { inClass } from "@/lib/cohort-core";
 
 /** A UTF-8 CSV with a byte-order mark (so Excel reads Urdu names), lines ending in CRLF. */
 function download(body: unknown[][], filename: string) {
@@ -65,7 +66,8 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
   const { tree, rows, expected } = await cohortRows(cohort);
   const head = ["Name", "Email", "Status", "Progress %", "Expected %", "Items done", "Items required", "Verified", "Stages passed", "Hours logged", "Attendance %", "Last active", "Risk",
     ...tree.map((s, i) => `S${i + 1} ${s.title} %`)];
-  const lines = rows.map((r) => [
+  // People waiting to join or turned away are not in the class.
+  const lines = rows.filter((r) => inClass(r.enrollment.status)).map((r) => [
     r.user.name, r.user.email, r.enrollment.status, Math.round(r.sum.pct * 100), Math.round(expected * 100), r.sum.done, r.sum.required,
     r.sum.verified, r.sum.stagesPassed, r.hours, r.attendance ? Math.round((100 * r.attendance.present) / r.attendance.total) : "",
     r.last ? r.last.toISOString().slice(0, 10) : "", r.risk ?? "",

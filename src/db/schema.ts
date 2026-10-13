@@ -162,7 +162,8 @@ export const invites = pgTable("invite", {
   createdAt: created(),
 });
 
-export const enrollmentStatusEnum = pgEnum("enrollment_status", ["ACTIVE", "PAUSED", "COMPLETED", "WITHDRAWN"]);
+// PENDING = joined with a class link, waiting for a teacher to accept; DECLINED = turned away (kept, can be accepted later).
+export const enrollmentStatusEnum = pgEnum("enrollment_status", ["ACTIVE", "PAUSED", "COMPLETED", "WITHDRAWN", "PENDING", "DECLINED"]);
 
 export const enrollments = pgTable("enrollment", {
   id: id(),

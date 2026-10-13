@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { asc, eq } from "drizzle-orm";
 import { db, schema } from "@/db";
+import { redirect } from "next/navigation";
 import { requireOwnEnrollment } from "@/lib/access";
+import { inClass } from "@/lib/cohort-core";
 import { attendanceSummary, daysOfMonth, monthLabel, monthOf, monthsWithRecords, parseMonth, shiftMonth, weekdayOf } from "@/lib/attendance-core";
 import { PageHeader, Empty } from "@/components/ui";
 import { Icon } from "@/components/icon";
@@ -14,6 +16,7 @@ export const metadata = { title: "My attendance" };
 export default async function MyAttendancePage({ params, searchParams }: { params: Promise<{ enrollmentId: string }>; searchParams: Promise<{ month?: string }> }) {
   const { enrollmentId } = await params;
   const { enrollment } = await requireOwnEnrollment(enrollmentId);
+  if (!inClass(enrollment.status)) redirect(`/learn/${enrollment.id}`);
   const t = await getT();
   const [cohort, records] = await Promise.all([
     db.query.cohorts.findFirst({ where: eq(schema.cohorts.id, enrollment.cohortId) }).then((c) => c!),

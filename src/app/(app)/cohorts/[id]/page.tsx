@@ -12,6 +12,9 @@ import { WhatsAppButton } from "@/components/whatsapp-button";
 import { inviteMessage } from "@/lib/whatsapp";
 import { createInviteAction, deleteInviteAction, setCohortInstructorAction, archiveCohortAction } from "@/app/actions/admin";
 import { baseUrl } from "@/lib/url";
+import { ClassListBar, ClassListNotice, PickBox } from "@/components/class-list";
+import { Fold } from "@/components/fold";
+import { inClass } from "@/lib/cohort-core";
 import { pct, fmtDate, daysAgo } from "@/lib/utils";
 
 export const metadata = { title: "Cohort" };
@@ -53,7 +56,11 @@ export default async function CohortPage({ params }: { params: Promise<{ id: str
       : Promise.resolve([]),
   ]);
   const pending = pendingBy.get(cohort.id) ?? 0;
-  const active = rows.filter((r) => r.enrollment.status === "ACTIVE");
+  // The waiting list (joined with the link, not accepted yet) and turned-away people are not in the class.
+  const waiting = rows.filter((r) => r.enrollment.status === "PENDING");
+  const turnedAway = rows.filter((r) => r.enrollment.status === "DECLINED");
+  const students = rows.filter((r) => inClass(r.enrollment.status));
+  const active = students.filter((r) => r.enrollment.status === "ACTIVE");
   const avg = active.length ? active.reduce((a, r) => a + r.sum.pct, 0) / active.length : 0;
 
   // Where the cohort is: each active student's first unfinished stage.
@@ -81,7 +88,7 @@ export default async function CohortPage({ params }: { params: Promise<{ id: str
       />
 
       <div className="mb-6 grid gap-3 sm:grid-cols-4">
-        <Stat label="Active students" value={active.length} sub={`${rows.length - active.length} paused, finished or withdrawn`} />
+        <Stat label="Active students" value={active.length} sub={`${students.length - active.length} paused, finished or withdrawn`} />
         <div className="card p-4">
           <div className="text-sm font-semibold text-ink-muted">Average progress</div>
           <div className="mt-1 font-bold text-2xl">{pct(avg)}</div>
@@ -92,22 +99,51 @@ export default async function CohortPage({ params }: { params: Promise<{ id: str
         <Stat label="Waiting for review" value={pending} sub="projects, deliverables, milestones" />
       </div>
 
+      <ClassListNotice />
+      {waiting.length > 0 && (
+        <section className="mb-8">
+          <h2 className="h2 mb-1">Waiting to join ({waiting.length})</h2>
+          <p className="mb-3 text-sm text-ink-muted">They opened the class link. They are not in attendance or progress until you accept them. Turn away anyone who is not in this class.</p>
+          <div className="card">
+            <ul className="divide-y divide-border">
+              {waiting.map((r) => (
+                <li key={r.enrollment.id}>
+                  <label className="flex cursor-pointer items-center gap-3 p-3 text-sm hover:bg-surface-sunken">
+                    <PickBox formId="waiting" id={r.enrollment.id} name={r.user.name ?? r.user.email ?? ""} />
+                    <span className="min-w-0 flex-1"><span className="font-semibold">{r.user.name ?? r.user.email}</span><span className="block truncate text-xs text-ink-muted">{r.user.email}</span></span>
+                    <span className="text-xs text-ink-muted">joined {fmtDate(r.enrollment.createdAt)}</span>
+                  </label>
+                </li>
+              ))}
+            </ul>
+            <div className="border-t border-border p-3">
+              <ClassListBar formId="waiting" cohortId={cohort.id} buttons={[
+                { op: "accept", label: "Accept selected", primary: true },
+                { op: "accept-all", label: `Accept all ${waiting.length}` },
+                { op: "decline", label: "Turn away selected", danger: true, confirm: "Turn away the ticked people? They leave this class. You can still accept them later from the Turned away list." },
+              ]} />
+            </div>
+          </div>
+        </section>
+      )}
+
       <section className="mb-8">
         <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
           <h2 className="h2">Students</h2>
           <Link href={`/cohorts/${cohort.id}/import`} className="btn-ghost"><Icon name="addPerson" size={18} />Add students from a file</Link>
         </div>
-        {rows.length === 0 ? (
+        {students.length === 0 ? (
           <Empty title="No students yet">Share the student invite link below, or add the whole class at once with <b>Add students from a file</b>.</Empty>
         ) : (
           <div className="card overflow-x-auto">
             <table className="w-full min-w-[760px] text-sm">
               <thead className="border-b border-border text-left text-sm font-semibold text-ink-muted">
-                <tr><th className="p-3">Student</th><th className="p-3">Progress</th><th className="p-3">Stages</th><th className="p-3">Hours</th><th className="p-3">Attend.</th><th className="p-3">Last active</th><th className="p-3">Status</th></tr>
+                <tr><th className="w-10 p-3"><span className="sr-only">Tick</span></th><th className="p-3">Student</th><th className="p-3">Progress</th><th className="p-3">Stages</th><th className="p-3">Hours</th><th className="p-3">Attend.</th><th className="p-3">Last active</th><th className="p-3">Status</th></tr>
               </thead>
               <tbody className="divide-y divide-border">
-                {rows.map((r) => (
+                {students.map((r) => (
                   <tr key={r.enrollment.id} className="hover:bg-surface-sunken">
+                    <td className="p-3 align-top">{r.enrollment.status !== "WITHDRAWN" && <PickBox formId="class" id={r.enrollment.id} name={r.user.name ?? r.user.email ?? ""} />}</td>
                     <td className="p-3">
                       <Link href={`/cohorts/${cohort.id}/students/${r.enrollment.id}`} className="font-semibold text-primary hover:underline">{r.user.name ?? r.user.email}</Link>
                       <div className="text-xs text-ink-muted">{r.user.email}</div>
@@ -134,7 +170,30 @@ export default async function CohortPage({ params }: { params: Promise<{ id: str
               <span className="inline-flex items-center gap-1 text-success"><Icon name="check" size={14} /><span className="text-ink-muted">signed off</span></span>
               <span className="inline-flex items-center gap-1 text-danger"><Icon name="x" size={14} /><span className="text-ink-muted">not passed</span></span>
             </div>
+            <div className="border-t border-border p-3">
+              <ClassListBar formId="class" cohortId={cohort.id} buttons={[
+                { op: "withdraw", label: "Mark selected Withdrawn", confirm: "Mark the ticked students Withdrawn? They leave attendance and the class averages. Their work is kept, and you can make them active again on their page." },
+              ]} />
+            </div>
           </div>
+        )}
+        {turnedAway.length > 0 && (
+          <Fold defaultOpen={false} className="card mt-4">
+            <summary className="cursor-pointer p-3 text-sm font-semibold">Turned away ({turnedAway.length})</summary>
+            <ul className="divide-y divide-border border-t border-border">
+              {turnedAway.map((r) => (
+                <li key={r.enrollment.id}>
+                  <label className="flex cursor-pointer items-center gap-3 p-3 text-sm hover:bg-surface-sunken">
+                    <PickBox formId="declined" id={r.enrollment.id} name={r.user.name ?? r.user.email ?? ""} />
+                    <span className="min-w-0 flex-1"><span className="font-semibold">{r.user.name ?? r.user.email}</span><span className="block truncate text-xs text-ink-muted">{r.user.email}</span></span>
+                  </label>
+                </li>
+              ))}
+            </ul>
+            <div className="border-t border-border p-3">
+              <ClassListBar formId="declined" cohortId={cohort.id} buttons={[{ op: "accept", label: "Accept selected" }]} />
+            </div>
+          </Fold>
         )}
       </section>
 

@@ -3,7 +3,7 @@ import { eq } from "drizzle-orm";
 import { db, schema } from "@/db";
 import { requireOwnEnrollment } from "@/lib/access";
 import { loadTrackTree, loadProgress, summarize, expectedPct, expectedStagePcts } from "@/lib/progress";
-import { PageHeader } from "@/components/ui";
+import { PageHeader, Badge } from "@/components/ui";
 import { RoadmapView } from "@/components/roadmap-view";
 import { loadCoverage } from "@/lib/coverage";
 import { validCertificate } from "@/lib/certificates";
@@ -12,6 +12,7 @@ import { byThread, loadComments, toViews, unreadFor } from "@/lib/comments";
 import { getT } from "@/i18n/server";
 import { attendanceSummary } from "@/lib/attendance-core";
 import { pct } from "@/lib/utils";
+import { inClass } from "@/lib/cohort-core";
 
 export const metadata = { title: "My track" };
 
@@ -20,6 +21,20 @@ export default async function LearnPage({ params }: { params: Promise<{ enrollme
   const { enrollment, user } = await requireOwnEnrollment(enrollmentId);
   const t = await getT();
   const cohort = (await db.query.cohorts.findFirst({ where: eq(schema.cohorts.id, enrollment.cohortId) }))!;
+  if (!inClass(enrollment.status)) {
+    // Waiting for a teacher to accept them, or turned away: nothing to tick yet.
+    const track = (await db.query.tracks.findFirst({ where: eq(schema.tracks.id, cohort.trackId) }))!;
+    const waiting = enrollment.status === "PENDING";
+    return (
+      <>
+        <PageHeader title={track.title} sub={cohort.name} back={{ href: "/dashboard", label: t("nav.dashboard") }} />
+        <div role="status" className="card max-w-xl p-5">
+          <Badge tone={waiting ? "info" : "neutral"} icon={waiting ? "clock" : "minus"} wrap>{t(waiting ? "dash.waiting" : "dash.turnedAway")}</Badge>
+          <p className="mt-3 text-sm">{t(waiting ? "dash.waitingSub" : "dash.turnedAwaySub")}</p>
+        </div>
+      </>
+    );
+  }
   const [track, tree, { progress, signoffs }, taught, cert, comments, attendance] = await Promise.all([
     db.query.tracks.findFirst({ where: eq(schema.tracks.id, cohort.trackId) }).then((t) => t!),
     loadTrackTree(cohort.trackId),

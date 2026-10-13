@@ -8,6 +8,7 @@ import { requireTeachableEnrollment, requireTeachableCohort } from "@/lib/access
 import { DEFAULT_RUBRIC } from "@/lib/rubric";
 import { presentToMark } from "@/lib/coverage-core";
 import { canJudgeWork } from "@/lib/security-core";
+import { canApply, inClass, OP_STATUS, type ClassListOp } from "@/lib/cohort-core";
 import { audit } from "@/lib/audit";
 
 const OWN_WORK = "This is your own work. Another teacher or an admin has to check it.";
@@ -118,7 +119,10 @@ export async function saveAttendanceAction(_: FormState, form: FormData): Promis
   const date = String(form.get("date") ?? "");
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return { error: "Choose a date." };
   const ctx = await requireTeachableCohort(cohortId);
-  const enrolls = await db.query.enrollments.findMany({ where: eq(schema.enrollments.cohortId, cohortId) });
+  // Only the students on the attendance list (active and paused): never people who left, finished or are waiting to join.
+  const enrolls = await db.query.enrollments.findMany({
+    where: and(eq(schema.enrollments.cohortId, cohortId), inArray(schema.enrollments.status, ["ACTIVE", "PAUSED"])),
+  });
   if (enrolls.length) {
     const rows = enrolls.map((e) => ({ enrollmentId: e.id, date, present: form.get(`p_${e.id}`) === "on" }));
     await db.insert(schema.attendance).values(rows)
@@ -135,10 +139,59 @@ export async function setEnrollmentStatusAction(form: FormData) {
   const enrollmentId = String(form.get("enrollmentId"));
   const status = statusSchema.parse(form.get("status"));
   const ctx = await requireTeachableEnrollment(enrollmentId);
+  if (!inClass(ctx.enrollment.status)) return; // waiting or turned away: accepted on the cohort page
   await db.update(schema.enrollments).set({ status }).where(eq(schema.enrollments.id, enrollmentId));
   await audit({ orgId: ctx.org.id, actorId: ctx.user.id, action: "enrollment.status", subjectId: ctx.enrollment.userId,
     detail: `${ctx.enrollment.status.toLowerCase()} → ${status.toLowerCase()}` });
   revalidatePath(`/cohorts/${ctx.cohort.id}`, "layout");
+}
+
+const classListSchema = z.object({ cohortId: z.string(), op: z.enum(["accept", "accept-all", "decline", "withdraw"]) });
+const OP_DONE: Record<ClassListOp, string> = { accept: "Accepted", decline: "Turned away", withdraw: "Marked Withdrawn" };
+
+/** Waiting list and class list: accept, turn away or withdraw the ticked students (or everyone waiting). */
+export async function classListAction(_: FormState, form: FormData): Promise<FormState> {
+  const p = classListSchema.safeParse({ cohortId: form.get("cohortId"), op: form.get("op") });
+  if (!p.success) return { error: "Something went wrong. Refresh the page and try again." };
+  const ctx = await requireTeachableCohort(p.data.cohortId);
+  const all = p.data.op === "accept-all"; // everyone waiting, ticked or not
+  const op: ClassListOp = all ? "accept" : (p.data.op as ClassListOp);
+  const picked = form.getAll("enrollmentId").map(String);
+  if (!all && !picked.length) return { error: "Tick at least one student first." };
+  const done = await db.transaction(async (tx) => {
+    const rows = await tx.select({ id: schema.enrollments.id, userId: schema.enrollments.userId, status: schema.enrollments.status })
+      .from(schema.enrollments)
+      .where(and(eq(schema.enrollments.cohortId, ctx.cohort.id), all ? eq(schema.enrollments.status, "PENDING") : inArray(schema.enrollments.id, picked)))
+      .for("update");
+    // Never your own place (a teacher who is also enrolled), and only places this action is meant for.
+    const change = rows.filter((r) => canApply(op, r.status) && canJudgeWork(ctx.user.id, r.userId));
+    if (!change.length) return 0;
+    const status = OP_STATUS[op];
+    await tx.update(schema.enrollments).set({ status }).where(inArray(schema.enrollments.id, change.map((r) => r.id)));
+    const users = change.map((r) => r.userId);
+    if (op === "accept") {
+      // Turned-away people lost their place in the school; accepting gives it back (as a student).
+      await tx.insert(schema.memberships).values(users.map((userId) => ({ userId, orgId: ctx.org.id, role: "STUDENT" as const }))).onConflictDoNothing();
+    }
+    if (op === "decline") {
+      // Someone who only joined through this link leaves the school too; anyone with another place stays.
+      await tx.delete(schema.memberships).where(and(
+        eq(schema.memberships.orgId, ctx.org.id), eq(schema.memberships.role, "STUDENT"), inArray(schema.memberships.userId, users),
+        sql`not exists (select 1 from "enrollment" e join "cohort" c on c.id = e.cohort_id
+          where e.user_id = "membership"."user_id" and c.org_id = ${ctx.org.id} and e.status <> 'DECLINED')`,
+      ));
+    }
+    for (const r of change) {
+      await audit({ orgId: ctx.org.id, actorId: ctx.user.id, subjectId: r.userId,
+        action: op === "accept" ? "enrollment.accept" : op === "decline" ? "enrollment.decline" : "enrollment.status",
+        detail: op === "withdraw" ? `${r.status.toLowerCase()} → withdrawn` : ctx.cohort.name }, tx);
+    }
+    return change.length;
+  });
+  revalidatePath(`/cohorts/${ctx.cohort.id}`, "layout");
+  revalidatePath("/dashboard");
+  if (!done) return { error: "Nothing changed: those students were already done." };
+  return { ok: `${OP_DONE[op]}: ${done} student${done === 1 ? "" : "s"}.` };
 }
 
 // ---------- Teaching plan ----------

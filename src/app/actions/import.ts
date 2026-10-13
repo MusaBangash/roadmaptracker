@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { and, eq, inArray } from "drizzle-orm";
+import { and, eq, inArray, notInArray } from "drizzle-orm";
 import { z } from "zod";
 import { db, schema } from "@/db";
 import { requireTeachableCohort } from "@/lib/access";
@@ -33,7 +33,8 @@ async function existingFor(cohortId: string, emails: string[]) {
   const users = await db.select({ id: schema.users.id, email: schema.users.email }).from(schema.users).where(inArray(schema.users.email, emails));
   const enrolled = users.length
     ? new Set((await db.select({ userId: schema.enrollments.userId }).from(schema.enrollments)
-      .where(and(eq(schema.enrollments.cohortId, cohortId), inArray(schema.enrollments.userId, users.map((u) => u.id))))).map((e) => e.userId))
+      .where(and(eq(schema.enrollments.cohortId, cohortId), inArray(schema.enrollments.userId, users.map((u) => u.id)),
+        notInArray(schema.enrollments.status, ["PENDING", "DECLINED"])))).map((e) => e.userId))
     : new Set<string>();
   for (const u of users) if (u.email) map.set(u.email, { userId: u.id, inCohort: enrolled.has(u.id) });
   return map;
@@ -101,7 +102,10 @@ export async function importStudentsAction(_: ImportResult | undefined, form: Fo
     if (toEnroll.length) {
       // Their place in the school: a new member is a student; an existing member keeps their role.
       await tx.insert(schema.memberships).values(toEnroll.map((userId) => ({ userId, orgId: ctx.org.id, role: "STUDENT" as const }))).onConflictDoNothing();
-      await tx.insert(schema.enrollments).values(toEnroll.map((userId) => ({ cohortId: ctx.cohort.id, userId }))).onConflictDoNothing();
+      // Chosen by the teacher: anyone waiting to join (or turned away) is accepted.
+      await tx.insert(schema.enrollments).values(toEnroll.map((userId) => ({ cohortId: ctx.cohort.id, userId })))
+        .onConflictDoUpdate({ target: [schema.enrollments.cohortId, schema.enrollments.userId], set: { status: "ACTIVE" },
+          setWhere: inArray(schema.enrollments.status, ["PENDING", "DECLINED"]) });
     }
     const addedCount = toEnroll.length - created;
     await audit({ orgId: ctx.org.id, actorId: ctx.user.id, action: "students.import",

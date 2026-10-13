@@ -18,3 +18,34 @@ export function cohortChanges(before: CohortFields, after: CohortFields, trackTi
 export function canChangeTrack(enrolled: number) {
   return enrolled === 0;
 }
+
+// ---------- Who is in the class (waiting list) ----------
+
+export type EnrollmentStatus = "ACTIVE" | "PAUSED" | "COMPLETED" | "WITHDRAWN" | "PENDING" | "DECLINED";
+
+/** Waiting to be accepted, or turned away: not part of the class (no attendance, progress or averages). */
+export function inClass(status: EnrollmentStatus) {
+  return status !== "PENDING" && status !== "DECLINED";
+}
+
+/**
+ * Joining with a class link: a new place waits for a teacher (PENDING). Someone who left (WITHDRAWN)
+ * waits again, old work still there. A turned-away person stays turned away (a teacher can still accept
+ * them), so a shared group link can't push them back onto the list. Anyone else keeps their place.
+ */
+export function statusAfterJoin(current: EnrollmentStatus | null): EnrollmentStatus {
+  if (current === null || current === "WITHDRAWN") return "PENDING";
+  return current;
+}
+
+export type ClassListOp = "accept" | "decline" | "withdraw";
+
+/** Which places an action changes: accept waiting or turned-away people, turn away waiting ones,
+ *  withdraw people in the class. Anything else (and the teacher's own place) is skipped. */
+export function canApply(op: ClassListOp, status: EnrollmentStatus) {
+  if (op === "accept") return status === "PENDING" || status === "DECLINED";
+  if (op === "decline") return status === "PENDING";
+  return status === "ACTIVE" || status === "PAUSED" || status === "COMPLETED";
+}
+
+export const OP_STATUS: Record<ClassListOp, EnrollmentStatus> = { accept: "ACTIVE", decline: "DECLINED", withdraw: "WITHDRAWN" };

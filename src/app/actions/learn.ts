@@ -5,6 +5,7 @@ import { and, eq } from "drizzle-orm";
 import { z } from "zod";
 import { db, schema } from "@/db";
 import { requireOwnEnrollment } from "@/lib/access";
+import { inClass } from "@/lib/cohort-core";
 import { safeUrl } from "@/lib/utils";
 import type { FormState } from "./auth";
 import { getT, issueText } from "@/i18n/server";
@@ -24,6 +25,7 @@ async function itemInEnrollment(enrollmentId: string, itemId: string) {
 
 export async function toggleItemAction(enrollmentId: string, itemId: string, done: boolean) {
   const { enrollment } = await requireOwnEnrollment(enrollmentId);
+  if (!inClass(enrollment.status)) return; // waiting for the teacher to accept them
   if (!(await itemInEnrollment(enrollment.id, itemId))) throw new Error("Item not in this track");
   const where = and(eq(schema.itemProgress.enrollmentId, enrollment.id), eq(schema.itemProgress.itemId, itemId));
   const existing = await db.query.itemProgress.findFirst({ where });
@@ -53,6 +55,7 @@ export async function saveEvidenceAction(_: FormState, form: FormData): Promise<
   const p = evidenceSchema.safeParse(Object.fromEntries(form));
   if (!p.success) return { error: t("item.err.check") };
   const { enrollment } = await requireOwnEnrollment(p.data.enrollmentId);
+  if (!inClass(enrollment.status)) return { error: t("dash.waitingSub") };
   if (!(await itemInEnrollment(enrollment.id, p.data.itemId))) return { error: t("item.err.notInTrack") };
   const url = p.data.evidenceUrl ? safeUrl(p.data.evidenceUrl) : null;
   if (p.data.evidenceUrl && !url) return { error: t("item.err.http") };
@@ -88,6 +91,7 @@ export async function saveWeeklyLogAction(_: FormState, form: FormData): Promise
   const p = logSchema.safeParse(Object.fromEntries(form));
   if (!p.success) return { error: issueText(t, p.error.issues[0].message) };
   const { enrollment } = await requireOwnEnrollment(p.data.enrollmentId);
+  if (!inClass(enrollment.status)) return { error: t("dash.waitingSub") };
   const { weekStart, hours, finished, stuck } = p.data;
   await db.insert(schema.weeklyLogs)
     .values({ enrollmentId: enrollment.id, weekStart, hours, finished, stuck })

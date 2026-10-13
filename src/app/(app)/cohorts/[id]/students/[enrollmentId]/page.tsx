@@ -19,6 +19,7 @@ import { byThread, loadComments, toViews, unreadFor } from "@/lib/comments";
 import { CommentThread } from "@/components/comment-thread";
 import { getT } from "@/i18n/server";
 import { REVIEW_KINDS } from "@/lib/progress-core";
+import { inClass } from "@/lib/cohort-core";
 
 export const metadata = { title: "Student" };
 
@@ -52,7 +53,7 @@ export default async function StudentPage({ params }: { params: Promise<{ id: st
         title={student.name ?? student.email ?? "Student"}
         sub={<>{student.email} · {cohort.name}</>}
         back={{ href: `/cohorts/${cohort.id}`, label: cohort.name }}
-        actions={
+        actions={!inClass(enrollment.status) ? null :
           <form action={setEnrollmentStatusAction} className="flex gap-2">
             <input type="hidden" name="enrollmentId" value={enrollment.id} />
             <select name="status" defaultValue={enrollment.status} className="input py-1.5" aria-label="Enrollment status">
@@ -62,6 +63,15 @@ export default async function StudentPage({ params }: { params: Promise<{ id: st
           </form>
         }
       />
+      {!inClass(enrollment.status) && (
+        <p role="status" className="mb-6 flex items-start gap-2 rounded-md bg-info-soft px-4 py-3 text-sm text-info">
+          <Icon name="info" size={20} />
+          <span>
+            <b>{enrollment.status === "PENDING" ? "Waiting to join." : "Turned away."}</b>{" "}
+            {enrollment.status === "PENDING" ? "Accept or turn away this student" : "Accept this student again"} on the <Link href={`/cohorts/${cohort.id}`} className="font-semibold underline">cohort page</Link>.
+          </span>
+        </p>
+      )}
       {own && (
         <p role="status" className="mb-6 flex items-start gap-2 rounded-md bg-info-soft px-4 py-3 text-sm text-info">
           <Icon name="info" size={20} /><span><b>This is your own work.</b> Another teacher or an admin has to verify, sign off and assess it.</span>

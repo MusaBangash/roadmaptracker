@@ -15,6 +15,7 @@ import { audit } from "@/lib/audit";
 import { hashToken } from "@/lib/reset";
 import { INVITE_COOKIE, signupInvite } from "@/lib/invites";
 import { inviteCodeFromNext } from "@/lib/security-core";
+import { statusAfterJoin } from "@/lib/cohort-core";
 import { db, schema } from "@/db";
 import { requireUser, ORG_COOKIE } from "@/lib/access";
 
@@ -117,9 +118,14 @@ export async function acceptInviteAction(_: FormState, form: FormData): Promise<
       detail: existing && role !== existing.role ? `${existing.role.toLowerCase()} → ${role.toLowerCase()}` : role.toLowerCase() }, tx);
     if (invite.cohortId) {
       if (invite.role === "STUDENT") {
-        // Back after being removed (Withdrawn): their place becomes active again, old work still there.
-        await tx.insert(schema.enrollments).values({ cohortId: invite.cohortId, userId: user.id })
-          .onConflictDoUpdate({ target: [schema.enrollments.cohortId, schema.enrollments.userId], set: { status: "ACTIVE" }, setWhere: eq(schema.enrollments.status, "WITHDRAWN") });
+        // A class link puts the student on the waiting list until a teacher accepts them (links get shared
+        // in groups). Someone who left waits again with their old work kept; turned away stays turned away.
+        const prev = await tx.query.enrollments.findFirst({
+          where: and(eq(schema.enrollments.cohortId, invite.cohortId), eq(schema.enrollments.userId, user.id)),
+        });
+        const status = statusAfterJoin(prev?.status ?? null);
+        if (!prev) await tx.insert(schema.enrollments).values({ cohortId: invite.cohortId, userId: user.id, status }).onConflictDoNothing();
+        else if (status !== prev.status) await tx.update(schema.enrollments).set({ status }).where(eq(schema.enrollments.id, prev.id));
       } else {
         await tx.insert(schema.cohortInstructors).values({ cohortId: invite.cohortId, userId: user.id }).onConflictDoNothing();
       }

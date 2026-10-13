@@ -27,7 +27,7 @@ export default async function MembersPage({ searchParams }: { searchParams: Prom
   // What "Remove from school" would change for each person (shown in its box).
   const reach = await db.execute<{ user_id: string; withdrawn: number; teaching: number; labs: number }>(sql`
     select m.user_id,
-      (select count(*)::int from "enrollment" e join "cohort" c on c.id = e.cohort_id where e.user_id = m.user_id and c.org_id = ${ctx.org.id} and e.status <> 'WITHDRAWN') as withdrawn,
+      (select count(*)::int from "enrollment" e join "cohort" c on c.id = e.cohort_id where e.user_id = m.user_id and c.org_id = ${ctx.org.id} and e.status in ('ACTIVE', 'PAUSED', 'COMPLETED')) as withdrawn,
       (select count(*)::int from "cohort_instructor" ci join "cohort" c on c.id = ci.cohort_id where ci.user_id = m.user_id and c.org_id = ${ctx.org.id}) as teaching,
       (select count(*)::int from "lab_teacher" lt join "lab" l on l.id = lt.lab_id where lt.user_id = m.user_id and l.org_id = ${ctx.org.id}) as labs
     from "membership" m where m.org_id = ${ctx.org.id}`);

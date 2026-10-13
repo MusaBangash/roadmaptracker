@@ -10,6 +10,7 @@ import { JoinForm } from "@/components/auth-forms";
 import { pct, fmtDate, plural } from "@/lib/utils";
 import { unreadForStudents } from "@/lib/comments";
 import { getT } from "@/i18n/server";
+import { inClass } from "@/lib/cohort-core";
 
 export const metadata = { title: "Dashboard" };
 
@@ -66,7 +67,8 @@ export default async function Dashboard() {
     const nextToTeach = n ? `Stage ${n.stageIndex + 1} · ${n.groupIndex !== null ? coverage.stages[n.stageIndex].groups[n.groupIndex].name : tree[n.stageIndex].title}` : null;
     const active = rows.filter((r) => r.enrollment.status === "ACTIVE");
     const avg = active.length ? active.reduce((a, r) => a + r.sum.pct, 0) / active.length : 0;
-    return { c, t, students: active.length, avg, expected, atRisk: active.filter((r) => r.risk).length, pending: pending.get(c.id) ?? 0, nextToTeach, behind: coverage.behind };
+    const waiting = rows.filter((r) => r.enrollment.status === "PENDING").length;
+    return { c, t, students: active.length, avg, expected, atRisk: active.filter((r) => r.risk).length, pending: pending.get(c.id) ?? 0, waiting, nextToTeach, behind: coverage.behind };
   }));
 
   let counts: Record<string, number> = {};
@@ -106,7 +108,10 @@ export default async function Dashboard() {
                       <div className="font-semibold">{x.c.name}</div>
                       <div className="text-sm text-ink-muted">{x.t.title} · started {fmtDate(x.c.startDate)}</div>
                     </div>
-                    {x.pending > 0 && <Badge tone="warning" icon="clock">{x.pending} to review</Badge>}
+                    <div className="flex flex-col items-end gap-1">
+                      {x.waiting > 0 && <Badge tone="info" icon="addPerson">{plural(x.waiting, "student")} waiting to join</Badge>}
+                      {x.pending > 0 && <Badge tone="warning" icon="clock">{x.pending} to review</Badge>}
+                    </div>
                   </div>
                   <div className="mt-3"><ProgressBar value={x.avg} expected={x.expected} /></div>
                   <div className="mt-2 flex flex-wrap gap-x-4 text-xs text-ink-muted">
@@ -131,7 +136,18 @@ export default async function Dashboard() {
             <Empty title={tr("dash.noCohort")}>{tr("dash.noCohortSub")}</Empty>
           ) : (
             <div className="grid gap-3 md:grid-cols-2">
-              {studentCards.map((x) => (
+              {studentCards.map((x) => !inClass(x.e.status) ? (
+                <div key={x.e.id} className="card p-5">
+                  <div className="text-sm font-semibold text-highlight-text">{x.c.name}</div>
+                  <div className="mt-1 font-bold text-xl" lang="en" dir="auto">{x.t.title}</div>
+                  <div className="mt-3">
+                    <Badge tone={x.e.status === "PENDING" ? "info" : "neutral"} icon={x.e.status === "PENDING" ? "clock" : "minus"} wrap>
+                      {tr(x.e.status === "PENDING" ? "dash.waiting" : "dash.turnedAway")}
+                    </Badge>
+                  </div>
+                  <p className="mt-2 text-sm text-ink-muted">{tr(x.e.status === "PENDING" ? "dash.waitingSub" : "dash.turnedAwaySub")}</p>
+                </div>
+              ) : (
                 <Link key={x.e.id} href={`/learn/${x.e.id}`} className="card block p-5 hover:border-primary">
                   <div className="text-sm font-semibold text-highlight-text">{x.c.name}</div>
                   <div className="mt-1 font-bold text-xl" lang="en" dir="auto">{x.t.title}</div>

@@ -193,8 +193,11 @@ export async function removeMemberAction(form: FormData) {
   const orgLabs = sql`(select "id" from "lab" where "lab"."org_id" = ${ctx.org.id})`;
   await db.transaction(async (tx) => {
     const withdrawn = await tx.update(schema.enrollments).set({ status: "WITHDRAWN" })
-      .where(and(eq(schema.enrollments.userId, m.userId), ne(schema.enrollments.status, "WITHDRAWN"), sql`${schema.enrollments.cohortId} in ${orgCohorts}`))
+      .where(and(eq(schema.enrollments.userId, m.userId), inArray(schema.enrollments.status, ["ACTIVE", "PAUSED", "COMPLETED"]), sql`${schema.enrollments.cohortId} in ${orgCohorts}`))
       .returning({ id: schema.enrollments.id });
+    // Still on a waiting list: turned away (never part of the class, so not "withdrawn").
+    await tx.update(schema.enrollments).set({ status: "DECLINED" })
+      .where(and(eq(schema.enrollments.userId, m.userId), eq(schema.enrollments.status, "PENDING"), sql`${schema.enrollments.cohortId} in ${orgCohorts}`));
     const teaching = await tx.delete(schema.cohortInstructors)
       .where(and(eq(schema.cohortInstructors.userId, m.userId), sql`${schema.cohortInstructors.cohortId} in ${orgCohorts}`))
       .returning({ id: schema.cohortInstructors.cohortId });

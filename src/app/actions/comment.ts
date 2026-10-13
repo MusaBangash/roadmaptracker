@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { and, count, eq, getTableColumns, gt, inArray, sql } from "drizzle-orm";
 import { db, schema } from "@/db";
+import { inClass } from "@/lib/cohort-core";
 import { requireCommentAccess, requireRole, requireTeachableEnrollment, requireUser } from "@/lib/access";
 import { COMMENT_MAX, canChangeComment, checkCommentBody, tooManyComments } from "@/lib/comment-core";
 import { REVIEW_KINDS } from "@/lib/progress-core";
@@ -45,6 +46,7 @@ function refresh(enrollmentId: string, cohortId: string) {
 export async function addCommentAction(enrollmentId: string, itemId: string, text: string): Promise<FormState> {
   const ctx = await requireCommentAccess(enrollmentId);
   const t = await getT();
+  if (ctx.side === "STUDENT" && !inClass(ctx.enrollment.status)) return { error: t("dash.waitingSub") };
   const checked = checkCommentBody(text);
   if ("error" in checked) return { error: bodyError(t, text) };
   const work = await submittedWork(enrollmentId, itemId);

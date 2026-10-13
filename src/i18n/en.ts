@@ -174,6 +174,10 @@ export const en = {
   "dash.verified": "{n} verified",
   "dash.behind": "behind the plan — keep going",
   "dash.there": "there",
+  "dash.waiting": "Waiting for your teacher to accept you",
+  "dash.waitingSub": "Your teacher will accept you soon. Then you can start ticking lessons.",
+  "dash.turnedAway": "Not accepted into this class",
+  "dash.turnedAwaySub": "Your teacher did not accept you into this class. If this is a mistake, ask your teacher.",
 
   // ---------- my roadmap ----------
   "learn.title": "My track",
