@@ -117,7 +117,9 @@ export async function acceptInviteAction(_: FormState, form: FormData): Promise<
       detail: existing && role !== existing.role ? `${existing.role.toLowerCase()} → ${role.toLowerCase()}` : role.toLowerCase() }, tx);
     if (invite.cohortId) {
       if (invite.role === "STUDENT") {
-        await tx.insert(schema.enrollments).values({ cohortId: invite.cohortId, userId: user.id }).onConflictDoNothing();
+        // Back after being removed (Withdrawn): their place becomes active again, old work still there.
+        await tx.insert(schema.enrollments).values({ cohortId: invite.cohortId, userId: user.id })
+          .onConflictDoUpdate({ target: [schema.enrollments.cohortId, schema.enrollments.userId], set: { status: "ACTIVE" }, setWhere: eq(schema.enrollments.status, "WITHDRAWN") });
       } else {
         await tx.insert(schema.cohortInstructors).values({ cohortId: invite.cohortId, userId: user.id }).onConflictDoNothing();
       }

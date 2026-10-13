@@ -1,4 +1,4 @@
-import { and, eq, isNull } from "drizzle-orm";
+import { and, eq, isNull, sql } from "drizzle-orm";
 import { db, schema } from "@/db";
 import { requireRole } from "@/lib/access";
 import { setMemberRoleAction, removeMemberAction, createInviteAction, deleteInviteAction } from "@/app/actions/admin";
@@ -12,6 +12,7 @@ import { SchoolNameForm } from "@/components/school-name-form";
 import Link from "next/link";
 import { baseUrl } from "@/lib/url";
 import { fmtDate, plural } from "@/lib/utils";
+import { removalText } from "@/lib/security-core";
 
 export const metadata = { title: "People" };
 
@@ -23,6 +24,14 @@ export default async function MembersPage({ searchParams }: { searchParams: Prom
     .where(eq(schema.memberships.orgId, ctx.org.id)).orderBy(schema.memberships.role, schema.users.name);
   const invites = await db.query.invites.findMany({ where: and(eq(schema.invites.orgId, ctx.org.id), isNull(schema.invites.cohortId)) });
   const url = await baseUrl();
+  // What "Remove from school" would change for each person (shown in its box).
+  const reach = await db.execute<{ user_id: string; withdrawn: number; teaching: number; labs: number }>(sql`
+    select m.user_id,
+      (select count(*)::int from "enrollment" e join "cohort" c on c.id = e.cohort_id where e.user_id = m.user_id and c.org_id = ${ctx.org.id} and e.status <> 'WITHDRAWN') as withdrawn,
+      (select count(*)::int from "cohort_instructor" ci join "cohort" c on c.id = ci.cohort_id where ci.user_id = m.user_id and c.org_id = ${ctx.org.id}) as teaching,
+      (select count(*)::int from "lab_teacher" lt join "lab" l on l.id = lt.lab_id where lt.user_id = m.user_id and l.org_id = ${ctx.org.id}) as labs
+    from "membership" m where m.org_id = ${ctx.org.id}`);
+  const reachOf = new Map(reach.rows.map((r) => [r.user_id, r]));
   const counts = { ADMIN: 0, INSTRUCTOR: 0, STUDENT: 0 } as Record<string, number>;
   for (const { m } of members) counts[m.role]++;
 
@@ -97,7 +106,7 @@ export default async function MembersPage({ searchParams }: { searchParams: Prom
                           {!u.isSuperAdmin && <ResetLinkForm userId={u.id} name={u.name ?? u.email ?? "this person"} />}
                           <form action={removeMemberAction} className="grid gap-1 border-t border-border pt-3">
                             <input type="hidden" name="membershipId" value={m.id} />
-                            <p className="text-sm text-ink-muted">Remove from this school. Their work stays in the school&apos;s records.</p>
+                            <p className="text-sm text-ink-muted">{removalText({ name: u.name ?? u.email ?? "This person", withdrawn: reachOf.get(u.id)?.withdrawn ?? 0, teaching: reachOf.get(u.id)?.teaching ?? 0, labs: reachOf.get(u.id)?.labs ?? 0 })}</p>
                             <div><button className="btn-ghost text-danger">Remove from school</button></div>
                           </form>
                           {!u.isSuperAdmin && u.email && (

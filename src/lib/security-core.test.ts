@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { canJudgeWork, canResetPassword, deleteScope, inviteCodeFromNext, inviteUsable, loginLock, roleAfterInvite, type Admin, type Person } from "./security-core";
+import { canJudgeWork, canResetPassword, deleteScope, inviteCodeFromNext, inviteUsable, loginLock, removalText, roleAfterInvite, type Admin, type Person } from "./security-core";
 import { actionLabel, actionsIn, cleanDetail } from "./audit-core";
 
 const now = new Date("2026-10-10T10:00:00Z");
@@ -76,6 +76,14 @@ describe("sign-up by invite only", () => {
     expect(inviteUsable({ expiresAt: new Date("2026-10-01"), uses: 0, maxUses: 1 }, now)).toBe(false);
     expect(inviteUsable({ expiresAt: null, uses: 1, maxUses: 1 }, now)).toBe(false);
     expect(inviteUsable(null, now)).toBe(false);
+  });
+});
+
+describe("removalText", () => {
+  it("says what Remove from school does, in plain words", () => {
+    expect(removalText({ name: "Ayesha", withdrawn: 1, teaching: 0, labs: 0 })).toBe("Ayesha leaves this school and is marked Withdrawn in 1 cohort. Their past work is kept.");
+    expect(removalText({ name: "Mr Ali", withdrawn: 0, teaching: 2, labs: 1 })).toBe("Mr Ali leaves this school and stops teaching 2 cohorts and stops looking after 1 lab. Their past work is kept.");
+    expect(removalText({ name: "Sara", withdrawn: 0, teaching: 0, labs: 0 })).toBe("Sara leaves this school. Their past work is kept.");
   });
 });
 

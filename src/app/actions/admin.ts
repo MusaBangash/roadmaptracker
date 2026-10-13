@@ -180,14 +180,33 @@ export async function setMemberRoleAction(form: FormData) {
   revalidatePath("/admin/members");
 }
 
+/**
+ * Remove someone from the school. Their places in this school's cohorts become Withdrawn (history kept),
+ * and they stop teaching its cohorts and looking after its labs. Other schools are not touched.
+ */
 export async function removeMemberAction(form: FormData) {
   const ctx = await requireRole(["ADMIN"]);
   const membershipId = String(form.get("membershipId"));
   const m = await db.query.memberships.findFirst({ where: and(eq(schema.memberships.id, membershipId), eq(schema.memberships.orgId, ctx.org.id)) });
   if (!m || m.userId === ctx.user.id) return;
-  await db.delete(schema.memberships).where(eq(schema.memberships.id, m.id));
-  await audit({ orgId: ctx.org.id, actorId: ctx.user.id, action: "member.remove", subjectId: m.userId, detail: m.role.toLowerCase() });
+  const orgCohorts = sql`(select "id" from "cohort" where "cohort"."org_id" = ${ctx.org.id})`;
+  const orgLabs = sql`(select "id" from "lab" where "lab"."org_id" = ${ctx.org.id})`;
+  await db.transaction(async (tx) => {
+    const withdrawn = await tx.update(schema.enrollments).set({ status: "WITHDRAWN" })
+      .where(and(eq(schema.enrollments.userId, m.userId), ne(schema.enrollments.status, "WITHDRAWN"), sql`${schema.enrollments.cohortId} in ${orgCohorts}`))
+      .returning({ id: schema.enrollments.id });
+    const teaching = await tx.delete(schema.cohortInstructors)
+      .where(and(eq(schema.cohortInstructors.userId, m.userId), sql`${schema.cohortInstructors.cohortId} in ${orgCohorts}`))
+      .returning({ id: schema.cohortInstructors.cohortId });
+    const labs = await tx.delete(schema.labTeachers)
+      .where(and(eq(schema.labTeachers.userId, m.userId), sql`${schema.labTeachers.labId} in ${orgLabs}`))
+      .returning({ id: schema.labTeachers.labId });
+    await tx.delete(schema.memberships).where(eq(schema.memberships.id, m.id));
+    await audit({ orgId: ctx.org.id, actorId: ctx.user.id, action: "member.remove", subjectId: m.userId,
+      detail: `${m.role.toLowerCase()}; withdrawn from ${withdrawn.length} cohort(s); taken off ${teaching.length} cohort(s) and ${labs.length} lab(s)` }, tx);
+  });
   revalidatePath("/admin/members");
+  revalidatePath("/cohorts", "layout");
 }
 
 export async function toggleOrgTrackAction(form: FormData) {

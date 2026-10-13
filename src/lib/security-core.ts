@@ -72,3 +72,14 @@ export function inviteCodeFromNext(next: string): string | null {
 export function inviteUsable(invite: { expiresAt: Date | null; uses: number; maxUses: number } | null | undefined, now: Date) {
   return !!invite && (!invite.expiresAt || invite.expiresAt > now) && invite.uses < invite.maxUses;
 }
+
+/** What "Remove from school" does to one person, in plain words (People page and activity log). */
+export function removalText(r: { name: string; withdrawn: number; teaching: number; labs: number }) {
+  const n = (count: number, word: string) => `${count} ${word}${count === 1 ? "" : "s"}`;
+  const parts: string[] = [];
+  if (r.withdrawn) parts.push(`is marked Withdrawn in ${n(r.withdrawn, "cohort")}`);
+  if (r.teaching) parts.push(`stops teaching ${n(r.teaching, "cohort")}`);
+  if (r.labs) parts.push(`stops looking after ${n(r.labs, "lab")}`);
+  const what = parts.length ? `${r.name} leaves this school and ${parts.join(", ").replace(/, ([^,]*)$/, " and $1")}.` : `${r.name} leaves this school.`;
+  return `${what} Their past work is kept.`;
+}
