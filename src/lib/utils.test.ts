@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { fmtDate } from "./utils";
+import { fmtDate, schoolToday } from "./utils";
 
 describe("fmtDate", () => {
   // A server west of UTC (like a US region) is where a calendar day used to slip back by one.
@@ -14,4 +14,11 @@ describe("fmtDate", () => {
   });
 
   it("shows a dash for nothing", () => expect(fmtDate(null)).toBe("—"));
+});
+
+describe("schoolToday", () => {
+  it("is the day in Pakistan, even when the server's UTC day is still the day before", () => {
+    expect(schoolToday(new Date("2026-10-12T20:30:00Z"))).toBe("2026-10-13"); // 01:30 in Pakistan
+    expect(schoolToday(new Date("2026-10-13T18:59:00Z"))).toBe("2026-10-13"); // 23:59 in Pakistan
+  });
 });

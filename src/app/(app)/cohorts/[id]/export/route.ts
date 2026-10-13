@@ -7,7 +7,7 @@ import { OTHER_GROUP } from "@/lib/progress";
 import { csvFile } from "@/lib/csv";
 import { loadRegister } from "@/lib/attendance";
 import { monthOf, parseMonth } from "@/lib/attendance-core";
-import { inClass } from "@/lib/cohort-core";
+import { inClass, leaveLabel } from "@/lib/cohort-core";
 
 /** A UTF-8 CSV with a byte-order mark (so Excel reads Urdu names), lines ending in CRLF. */
 function download(body: unknown[][], filename: string) {
@@ -64,13 +64,14 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
     return download([[`${cohort.name} · attendance ${month}`], head, ...lines, foot], `${name}-attendance-${month}.csv`);
   }
   const { tree, rows, expected } = await cohortRows(cohort);
-  const head = ["Name", "Email", "Status", "Progress %", "Expected %", "Items done", "Items required", "Verified", "Stages passed", "Hours logged", "Attendance %", "Last active", "Risk",
+  const head = ["Name", "Email", "Status", "Progress %", "Expected %", "Items done", "Items required", "Verified", "Stages passed", "Hours logged", "Attendance %", "Last active", "Risk", "Left on", "Why they left",
     ...tree.map((s, i) => `S${i + 1} ${s.title} %`)];
   // People waiting to join or turned away are not in the class.
   const lines = rows.filter((r) => inClass(r.enrollment.status)).map((r) => [
     r.user.name, r.user.email, r.enrollment.status, Math.round(r.sum.pct * 100), Math.round(expected * 100), r.sum.done, r.sum.required,
     r.sum.verified, r.sum.stagesPassed, r.hours, r.attendance ? Math.round((100 * r.attendance.present) / r.attendance.total) : "",
     r.last ? r.last.toISOString().slice(0, 10) : "", r.risk ?? "",
+    r.enrollment.leftOn ?? "", [leaveLabel(r.enrollment.leftReason), r.enrollment.leftNote].filter(Boolean).join(": "),
     ...r.sum.stages.map((s) => `${Math.round(s.pct * 100)}${s.signedOff === true ? " (passed)" : ""}`),
   ]);
   return download([head, ...lines], `${name}-progress.csv`);

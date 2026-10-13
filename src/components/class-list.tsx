@@ -1,12 +1,25 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
-import { classListAction } from "@/app/actions/teach";
+import { startTransition, useActionState, useEffect, useState } from "react";
+import { classListAction, setEnrollmentStatusAction } from "@/app/actions/teach";
 import { FormError } from "@/components/ui";
+import { CHOOSABLE_REASONS, LEAVE_NOTE_MAX, LEAVE_REASONS } from "@/lib/cohort-core";
 
 export type ClassListButton = { op: "accept" | "accept-all" | "decline" | "withdraw"; label: string; primary?: boolean; danger?: boolean; confirm?: string };
 
 const DONE_EVENT = "class-list-done";
+
+/**
+ * Submit without React's automatic form reset: a refused save (e.g. "choose why they left") must keep
+ * what the teacher picked and typed, and the ticked students. The pressed button's name/value is kept.
+ */
+function keepFields(dispatch: (form: FormData) => void) {
+  return (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const form = new FormData(e.currentTarget, (e.nativeEvent as SubmitEvent).submitter);
+    startTransition(() => dispatch(form));
+  };
+}
 
 const boxes = (formId: string) =>
   [...document.querySelectorAll<HTMLInputElement>(`input[type="checkbox"][name="enrollmentId"][form="${formId}"]`)];
@@ -17,7 +30,7 @@ export function PickBox({ formId, id, name }: { formId: string; id: string; name
 }
 
 /** The buttons under a list of students: "Tick all", how many are ticked, and the actions. */
-export function ClassListBar({ formId, cohortId, buttons }: { formId: string; cohortId: string; buttons: ClassListButton[] }) {
+export function ClassListBar({ formId, cohortId, buttons, today }: { formId: string; cohortId: string; buttons: ClassListButton[]; today?: string }) {
   // The list can empty and vanish after the action (everyone accepted), so the "done" message is shown
   // by ClassListNotice, which is always on the page.
   const [state, action, pending] = useActionState(async (prev: Awaited<ReturnType<typeof classListAction>>, form: FormData) => {
@@ -46,8 +59,9 @@ export function ClassListBar({ formId, cohortId, buttons }: { formId: string; co
   };
 
   return (
-    <form id={formId} action={action} className="grid gap-2">
+    <form id={formId} onSubmit={keepFields(action)} className="grid gap-2">
       <input type="hidden" name="cohortId" value={cohortId} />
+      {today && ticked > 0 && <LeaveFields idPrefix={formId} today={today} />}
       <div className="flex flex-wrap items-center gap-2">
         <label className="me-2 inline-flex items-center gap-2 text-sm">
           <input type="checkbox" checked={total > 0 && ticked === total} onChange={(e) => tickAll(e.target.checked)} className="size-5 accent-primary" />
@@ -82,4 +96,54 @@ export function ClassListNotice() {
   }, []);
   if (!message) return null;
   return <p role="status" className="mb-3 rounded-md bg-success-soft px-3 py-2 text-sm text-success">{message}</p>;
+}
+
+/** Why and when a student left: asked whenever someone is marked Withdrawn. */
+export function LeaveFields({ idPrefix, today, reason, leftOn, note }: { idPrefix: string; today: string; reason?: string | null; leftOn?: string | null; note?: string | null }) {
+  return (
+    <div className="grid gap-2 sm:grid-cols-[auto_auto_1fr]">
+      <div>
+        <label className="label" htmlFor={`${idPrefix}-reason`}>Why they left</label>
+        <select id={`${idPrefix}-reason`} name="reason" required defaultValue={reason && (CHOOSABLE_REASONS as readonly string[]).includes(reason) ? reason : ""} className="input py-1.5">
+          <option value="" disabled>Choose…</option>
+          {CHOOSABLE_REASONS.map((r) => <option key={r} value={r}>{LEAVE_REASONS[r]}</option>)}
+        </select>
+      </div>
+      <div>
+        <label className="label" htmlFor={`${idPrefix}-leftOn`}>Date they left</label>
+        <input id={`${idPrefix}-leftOn`} name="leftOn" type="date" required max={today} defaultValue={leftOn ?? today} className="input py-1.5" />
+      </div>
+      <div>
+        <label className="label" htmlFor={`${idPrefix}-note`}>Note <span className="font-normal text-ink-muted">(needed for Other)</span></label>
+        <input id={`${idPrefix}-note`} name="note" maxLength={LEAVE_NOTE_MAX} defaultValue={note ?? ""} dir="auto" className="input py-1.5" />
+      </div>
+    </div>
+  );
+}
+
+const STATUS_WORDS = { ACTIVE: "Active", PAUSED: "Paused", COMPLETED: "Completed", WITHDRAWN: "Withdrawn" } as const;
+
+/** A student's status on their page; choosing Withdrawn asks why and when they left. */
+export function EnrollmentStatusForm({ enrollmentId, status, today, reason, leftOn, note }: {
+  enrollmentId: string; status: keyof typeof STATUS_WORDS; today: string; reason: string | null; leftOn: string | null; note: string | null;
+}) {
+  const [state, action, pending] = useActionState(setEnrollmentStatusAction, undefined);
+  const [chosen, setChosen] = useState<string>(status);
+  return (
+    <form onSubmit={keepFields(action)} className="grid gap-2">
+      <input type="hidden" name="enrollmentId" value={enrollmentId} />
+      <div className="flex flex-wrap items-end gap-2">
+        <div>
+          <label className="label" htmlFor="status">Status</label>
+          <select id="status" name="status" value={chosen} onChange={(e) => setChosen(e.target.value)} className="input py-1.5">
+            {Object.entries(STATUS_WORDS).map(([v, w]) => <option key={v} value={v}>{w}</option>)}
+          </select>
+        </div>
+        <button className="btn-ghost" disabled={pending}>{pending ? "Saving…" : "Update"}</button>
+      </div>
+      {chosen === "WITHDRAWN" && <LeaveFields idPrefix="status" today={today} reason={reason} leftOn={leftOn} note={note} />}
+      <FormError message={state?.error} />
+      {state?.ok && <p role="status" className="text-sm text-success">{state.ok}</p>}
+    </form>
+  );
 }

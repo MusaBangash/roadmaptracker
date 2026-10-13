@@ -170,6 +170,10 @@ export const enrollments = pgTable("enrollment", {
   cohortId: text("cohort_id").notNull().references(() => cohorts.id, { onDelete: "cascade" }),
   userId: text("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
   status: enrollmentStatusEnum("status").notNull().default("ACTIVE"),
+  /** Set when the student is marked Withdrawn (LEAVE_REASONS in src/lib/cohort-core.ts); cleared if they come back. */
+  leftOn: date("left_on", { mode: "string" }),
+  leftReason: text("left_reason"),
+  leftNote: text("left_note"),
   createdAt: created(),
 }, (t) => [uniqueIndex("enrollment_cohort_user").on(t.cohortId, t.userId)]);
 

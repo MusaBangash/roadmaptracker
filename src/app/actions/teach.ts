@@ -8,7 +8,8 @@ import { requireTeachableEnrollment, requireTeachableCohort } from "@/lib/access
 import { DEFAULT_RUBRIC } from "@/lib/rubric";
 import { presentToMark } from "@/lib/coverage-core";
 import { canJudgeWork } from "@/lib/security-core";
-import { canApply, inClass, OP_STATUS, type ClassListOp } from "@/lib/cohort-core";
+import { canApply, inClass, leaveDetails, leaveWords, OP_STATUS, type ClassListOp, type EnrollmentStatus } from "@/lib/cohort-core";
+import { schoolToday } from "@/lib/utils";
 import { audit } from "@/lib/audit";
 
 const OWN_WORK = "This is your own work. Another teacher or an admin has to check it.";
@@ -135,15 +136,27 @@ export async function saveAttendanceAction(_: FormState, form: FormData): Promis
 }
 
 const statusSchema = z.enum(["ACTIVE", "PAUSED", "COMPLETED", "WITHDRAWN"]);
-export async function setEnrollmentStatusAction(form: FormData) {
+/** The leaving details typed with a Withdrawn status (reason, date, note), checked. */
+function leaveFrom(status: EnrollmentStatus, form: FormData) {
+  const text = (k: string) => { const v = form.get(k); return typeof v === "string" ? v : null; };
+  return leaveDetails(status, { reason: text("reason"), leftOn: text("leftOn"), note: text("note") }, schoolToday());
+}
+
+export async function setEnrollmentStatusAction(_: FormState, form: FormData): Promise<FormState> {
   const enrollmentId = String(form.get("enrollmentId"));
-  const status = statusSchema.parse(form.get("status"));
+  const p = statusSchema.safeParse(form.get("status"));
+  if (!p.success) return { error: "Choose a status." };
   const ctx = await requireTeachableEnrollment(enrollmentId);
-  if (!inClass(ctx.enrollment.status)) return; // waiting or turned away: accepted on the cohort page
-  await db.update(schema.enrollments).set({ status }).where(eq(schema.enrollments.id, enrollmentId));
+  if (!inClass(ctx.enrollment.status)) return { error: "Accept or turn away this student on the cohort page." };
+  const status = p.data;
+  // Withdrawn keeps why and when they left; any other status clears it (they are back).
+  const leave = leaveFrom(status, form);
+  if ("error" in leave) return leave;
+  await db.update(schema.enrollments).set({ status, ...leave }).where(eq(schema.enrollments.id, enrollmentId));
   await audit({ orgId: ctx.org.id, actorId: ctx.user.id, action: "enrollment.status", subjectId: ctx.enrollment.userId,
-    detail: `${ctx.enrollment.status.toLowerCase()} → ${status.toLowerCase()}` });
+    detail: `${ctx.enrollment.status.toLowerCase()} → ${status.toLowerCase()}${leave.leftReason ? `; ${leaveWords(leave)}` : ""}` });
   revalidatePath(`/cohorts/${ctx.cohort.id}`, "layout");
+  return { ok: "Saved." };
 }
 
 const classListSchema = z.object({ cohortId: z.string(), op: z.enum(["accept", "accept-all", "decline", "withdraw"]) });
@@ -158,6 +171,9 @@ export async function classListAction(_: FormState, form: FormData): Promise<For
   const op: ClassListOp = all ? "accept" : (p.data.op as ClassListOp);
   const picked = form.getAll("enrollmentId").map(String);
   if (!all && !picked.length) return { error: "Tick at least one student first." };
+  // Withdrawing asks why and when they left; accepting clears it (they are back in the class).
+  const leave = leaveFrom(op === "withdraw" ? "WITHDRAWN" : "ACTIVE", form);
+  if ("error" in leave) return leave;
   const done = await db.transaction(async (tx) => {
     const rows = await tx.select({ id: schema.enrollments.id, userId: schema.enrollments.userId, status: schema.enrollments.status })
       .from(schema.enrollments)
@@ -167,7 +183,7 @@ export async function classListAction(_: FormState, form: FormData): Promise<For
     const change = rows.filter((r) => canApply(op, r.status) && canJudgeWork(ctx.user.id, r.userId));
     if (!change.length) return 0;
     const status = OP_STATUS[op];
-    await tx.update(schema.enrollments).set({ status }).where(inArray(schema.enrollments.id, change.map((r) => r.id)));
+    await tx.update(schema.enrollments).set({ status, ...(op === "decline" ? {} : leave) }).where(inArray(schema.enrollments.id, change.map((r) => r.id)));
     const users = change.map((r) => r.userId);
     if (op === "accept") {
       // Turned-away people lost their place in the school; accepting gives it back (as a student).
@@ -184,7 +200,7 @@ export async function classListAction(_: FormState, form: FormData): Promise<For
     for (const r of change) {
       await audit({ orgId: ctx.org.id, actorId: ctx.user.id, subjectId: r.userId,
         action: op === "accept" ? "enrollment.accept" : op === "decline" ? "enrollment.decline" : "enrollment.status",
-        detail: op === "withdraw" ? `${r.status.toLowerCase()} → withdrawn` : ctx.cohort.name }, tx);
+        detail: op === "withdraw" ? `${r.status.toLowerCase()} → withdrawn; ${leaveWords(leave)}` : ctx.cohort.name }, tx);
     }
     return change.length;
   });

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { canApply, canChangeTrack, cohortChanges, inClass, statusAfterJoin, type EnrollmentStatus } from "./cohort-core";
+import { canApply, canChangeTrack, cohortChanges, inClass, leaveDetails, leaveLabel, leaveWords, statusAfterJoin, type EnrollmentStatus } from "./cohort-core";
 
 const titles: Record<string, string> = { t1: "AI Engineer", t2: "Web Designing" };
 const title = (id: string) => titles[id] ?? id;
@@ -44,5 +44,28 @@ describe("waiting list", () => {
     expect(canApply("withdraw", "ACTIVE")).toBe(true);
     expect(canApply("withdraw", "PENDING")).toBe(false);
     expect(canApply("withdraw", "WITHDRAWN")).toBe(false);
+  });
+});
+
+describe("leaveDetails", () => {
+  const today = "2026-10-13";
+  it("clears the details for any status but Withdrawn", () => {
+    expect(leaveDetails("ACTIVE", { leftOn: "2026-10-01", reason: "FEES" }, today)).toEqual({ leftOn: null, leftReason: null, leftNote: null });
+  });
+  it("Withdrawn needs a reason from the list and a real date, not in the future", () => {
+    expect(leaveDetails("WITHDRAWN", { leftOn: today }, today)).toEqual({ error: "Choose why the student left." });
+    expect(leaveDetails("WITHDRAWN", { leftOn: today, reason: "REMOVED" }, today)).toEqual({ error: "Choose why the student left." });
+    expect(leaveDetails("WITHDRAWN", { leftOn: "2026-02-30", reason: "FEES" }, today)).toEqual({ error: "Choose the date the student left." });
+    expect(leaveDetails("WITHDRAWN", { leftOn: "2026-10-14", reason: "FEES" }, today)).toEqual({ error: "The date they left can't be in the future." });
+  });
+  it("Other needs a note; notes are trimmed and empty ones dropped", () => {
+    expect(leaveDetails("WITHDRAWN", { leftOn: today, reason: "OTHER", note: "  " }, today)).toEqual({ error: "For Other, write a few words about why." });
+    expect(leaveDetails("WITHDRAWN", { leftOn: "2026-10-01", reason: "MOVED", note: "  to Lahore " }, today))
+      .toEqual({ leftOn: "2026-10-01", leftReason: "MOVED", leftNote: "to Lahore" });
+    expect(leaveDetails("WITHDRAWN", { leftOn: today, reason: "JOB", note: "" }, today)).toEqual({ leftOn: today, leftReason: "JOB", leftNote: null });
+  });
+  it("reads as words for the activity log", () => {
+    expect(leaveWords({ leftOn: "2026-10-01", leftReason: "MOVED", leftNote: "to Lahore" })).toBe("Moved away, left 2026-10-01: to Lahore");
+    expect(leaveLabel("NOPE")).toBeNull();
   });
 });

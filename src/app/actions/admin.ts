@@ -12,7 +12,7 @@ import { canChangeTrack, cohortChanges } from "@/lib/cohort-core";
 import { audit } from "@/lib/audit";
 import { hashToken, newResetToken, RESET_HOURS } from "@/lib/reset";
 import { baseUrl } from "@/lib/url";
-import { randomCode } from "@/lib/utils";
+import { randomCode, schoolToday } from "@/lib/utils";
 import type { FormState } from "./auth";
 
 const cohortSchema = z.object({
@@ -192,7 +192,7 @@ export async function removeMemberAction(form: FormData) {
   const orgCohorts = sql`(select "id" from "cohort" where "cohort"."org_id" = ${ctx.org.id})`;
   const orgLabs = sql`(select "id" from "lab" where "lab"."org_id" = ${ctx.org.id})`;
   await db.transaction(async (tx) => {
-    const withdrawn = await tx.update(schema.enrollments).set({ status: "WITHDRAWN" })
+    const withdrawn = await tx.update(schema.enrollments).set({ status: "WITHDRAWN", leftOn: schoolToday(), leftReason: "REMOVED", leftNote: null })
       .where(and(eq(schema.enrollments.userId, m.userId), inArray(schema.enrollments.status, ["ACTIVE", "PAUSED", "COMPLETED"]), sql`${schema.enrollments.cohortId} in ${orgCohorts}`))
       .returning({ id: schema.enrollments.id });
     // Still on a waiting list: turned away (never part of the class, so not "withdrawn").

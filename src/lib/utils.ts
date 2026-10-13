@@ -52,3 +52,11 @@ export function plural(n: number, word: string, many = `${word}s`) {
   return `${n} ${n === 1 ? word : many}`;
 }
 
+
+/** The school's time zone: "today" for attendance and leaving dates is a day in Pakistan, not on the server's clock. */
+export const SCHOOL_TZ = "Asia/Karachi";
+
+/** Today as "YYYY-MM-DD" in the school's time zone. */
+export function schoolToday(now = new Date()) {
+  return new Intl.DateTimeFormat("en-CA", { timeZone: SCHOOL_TZ, year: "numeric", month: "2-digit", day: "2-digit" }).format(now);
+}

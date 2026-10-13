@@ -70,7 +70,7 @@ export async function GET() {
       teachingPlan: coverage.filter((x) => x.c.cohortId === c.id)
         .map((x) => ({ stage: x.stageKey, item: x.itemKey, taughtOn: x.c.taughtOn, taughtById: x.c.taughtById })),
       students: enrollments.filter((e) => e.cohortId === c.id).map((e) => ({
-        enrollmentId: e.id, userId: e.userId, status: e.status, joinedAt: e.createdAt,
+        enrollmentId: e.id, userId: e.userId, status: e.status, joinedAt: e.createdAt, leftOn: e.leftOn, leftReason: e.leftReason, leftNote: e.leftNote,
         progress: (prog.get(e.id) ?? []).map(({ p, stageKey, itemKey }) => ({
           stage: stageKey, item: itemKey, status: p.status, evidenceUrl: p.evidenceUrl, note: p.note, completedAt: p.completedAt,
           reviewedById: p.reviewedById, reviewedAt: p.reviewedAt, reviewNote: p.reviewNote, markedById: p.markedById,

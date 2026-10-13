@@ -104,7 +104,7 @@ export async function importStudentsAction(_: ImportResult | undefined, form: Fo
       await tx.insert(schema.memberships).values(toEnroll.map((userId) => ({ userId, orgId: ctx.org.id, role: "STUDENT" as const }))).onConflictDoNothing();
       // Chosen by the teacher: anyone waiting to join (or turned away) is accepted.
       await tx.insert(schema.enrollments).values(toEnroll.map((userId) => ({ cohortId: ctx.cohort.id, userId })))
-        .onConflictDoUpdate({ target: [schema.enrollments.cohortId, schema.enrollments.userId], set: { status: "ACTIVE" },
+        .onConflictDoUpdate({ target: [schema.enrollments.cohortId, schema.enrollments.userId], set: { status: "ACTIVE", leftOn: null, leftReason: null, leftNote: null },
           setWhere: inArray(schema.enrollments.status, ["PENDING", "DECLINED"]) });
     }
     const addedCount = toEnroll.length - created;

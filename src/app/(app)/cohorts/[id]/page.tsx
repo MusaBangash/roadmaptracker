@@ -14,8 +14,8 @@ import { createInviteAction, deleteInviteAction, setCohortInstructorAction, arch
 import { baseUrl } from "@/lib/url";
 import { ClassListBar, ClassListNotice, PickBox } from "@/components/class-list";
 import { Fold } from "@/components/fold";
-import { inClass } from "@/lib/cohort-core";
-import { pct, fmtDate, daysAgo } from "@/lib/utils";
+import { inClass, leaveLabel } from "@/lib/cohort-core";
+import { pct, fmtDate, daysAgo, schoolToday } from "@/lib/utils";
 
 export const metadata = { title: "Cohort" };
 
@@ -59,7 +59,9 @@ export default async function CohortPage({ params }: { params: Promise<{ id: str
   // The waiting list (joined with the link, not accepted yet) and turned-away people are not in the class.
   const waiting = rows.filter((r) => r.enrollment.status === "PENDING");
   const turnedAway = rows.filter((r) => r.enrollment.status === "DECLINED");
-  const students = rows.filter((r) => inClass(r.enrollment.status));
+  // Former students (Withdrawn) keep all their work, shown in their own list, out of the class numbers.
+  const students = rows.filter((r) => inClass(r.enrollment.status) && r.enrollment.status !== "WITHDRAWN");
+  const former = rows.filter((r) => r.enrollment.status === "WITHDRAWN");
   const active = students.filter((r) => r.enrollment.status === "ACTIVE");
   const avg = active.length ? active.reduce((a, r) => a + r.sum.pct, 0) / active.length : 0;
 
@@ -88,7 +90,7 @@ export default async function CohortPage({ params }: { params: Promise<{ id: str
       />
 
       <div className="mb-6 grid gap-3 sm:grid-cols-4">
-        <Stat label="Active students" value={active.length} sub={`${students.length - active.length} paused, finished or withdrawn`} />
+        <Stat label="Active students" value={active.length} sub={`${students.length - active.length} paused or completed · ${former.length} former`} />
         <div className="card p-4">
           <div className="text-sm font-semibold text-ink-muted">Average progress</div>
           <div className="mt-1 font-bold text-2xl">{pct(avg)}</div>
@@ -143,7 +145,7 @@ export default async function CohortPage({ params }: { params: Promise<{ id: str
               <tbody className="divide-y divide-border">
                 {students.map((r) => (
                   <tr key={r.enrollment.id} className="hover:bg-surface-sunken">
-                    <td className="p-3 align-top">{r.enrollment.status !== "WITHDRAWN" && <PickBox formId="class" id={r.enrollment.id} name={r.user.name ?? r.user.email ?? ""} />}</td>
+                    <td className="p-3 align-top"><PickBox formId="class" id={r.enrollment.id} name={r.user.name ?? r.user.email ?? ""} /></td>
                     <td className="p-3">
                       <Link href={`/cohorts/${cohort.id}/students/${r.enrollment.id}`} className="font-semibold text-primary hover:underline">{r.user.name ?? r.user.email}</Link>
                       <div className="text-xs text-ink-muted">{r.user.email}</div>
@@ -171,8 +173,8 @@ export default async function CohortPage({ params }: { params: Promise<{ id: str
               <span className="inline-flex items-center gap-1 text-danger"><Icon name="x" size={14} /><span className="text-ink-muted">not passed</span></span>
             </div>
             <div className="border-t border-border p-3">
-              <ClassListBar formId="class" cohortId={cohort.id} buttons={[
-                { op: "withdraw", label: "Mark selected Withdrawn", confirm: "Mark the ticked students Withdrawn? They leave attendance and the class averages. Their work is kept, and you can make them active again on their page." },
+              <ClassListBar formId="class" cohortId={cohort.id} today={schoolToday()} buttons={[
+                { op: "withdraw", label: "Mark selected Withdrawn", confirm: "Mark the ticked students Withdrawn? They move to Former students and leave attendance and the class averages. Their work is kept, and you can make them active again on their page." },
               ]} />
             </div>
           </div>
@@ -196,6 +198,38 @@ export default async function CohortPage({ params }: { params: Promise<{ id: str
           </Fold>
         )}
       </section>
+
+      {former.length > 0 && (
+        <section className="mb-8">
+          <Fold defaultOpen={false} className="card">
+            <summary className="cursor-pointer p-4">
+              <span className="font-semibold">Former students ({former.length})</span>
+              <span className="block text-sm text-ink-muted">Students who left. All their work is kept; open a name to see it. They are not in attendance or the class numbers.</span>
+            </summary>
+            <div className="overflow-x-auto border-t border-border">
+              <table className="w-full min-w-[640px] text-sm">
+                <thead className="border-b border-border text-left text-sm font-semibold text-ink-muted">
+                  <tr><th className="p-3">Student</th><th className="p-3">Progress</th><th className="p-3">Attend.</th><th className="p-3">Left on</th><th className="p-3">Why they left</th></tr>
+                </thead>
+                <tbody className="divide-y divide-border">
+                  {former.map((r) => (
+                    <tr key={r.enrollment.id} className="hover:bg-surface-sunken">
+                      <td className="p-3">
+                        <Link href={`/cohorts/${cohort.id}/students/${r.enrollment.id}`} className="font-semibold text-primary hover:underline">{r.user.name ?? r.user.email}</Link>
+                        <div className="text-xs text-ink-muted">{r.user.email}</div>
+                      </td>
+                      <td className="p-3">{pct(r.sum.pct)} · {r.sum.stagesPassed}/{tree.length} stages</td>
+                      <td className="p-3">{r.attendance ? pct(r.attendance.present / r.attendance.total) : "—"}</td>
+                      <td className="p-3">{r.enrollment.leftOn ? fmtDate(r.enrollment.leftOn) : "—"}</td>
+                      <td className="p-3">{leaveLabel(r.enrollment.leftReason) ?? "—"}{r.enrollment.leftNote && <div className="text-xs text-ink-muted" dir="auto">{r.enrollment.leftNote}</div>}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </Fold>
+        </section>
+      )}
 
       <section className="mb-8">
         <h2 className="h2 mb-1">Progress by stage</h2>
