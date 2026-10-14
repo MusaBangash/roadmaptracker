@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { canApply, canChangeTrack, cohortChanges, inClass, leaveDetails, leaveLabel, leaveWords, statusAfterJoin, type EnrollmentStatus } from "./cohort-core";
+import { addNote, canAddToClass, canApply, canChangeTrack, cohortChanges, inClass, leaveDetails, leaveLabel, leaveWords, statusAfterJoin, teacherCanSee, type EnrollmentStatus } from "./cohort-core";
 
 const titles: Record<string, string> = { t1: "AI Engineer", t2: "Web Designing" };
 const title = (id: string) => titles[id] ?? id;
@@ -81,5 +81,29 @@ describe("leaveDetails", () => {
   it("reads as words for the activity log", () => {
     expect(leaveWords({ leftOn: "2026-10-01", leftReason: "MOVED", leftNote: "to Lahore" })).toBe("Moved away, left 2026-10-01: to Lahore");
     expect(leaveLabel("NOPE")).toBeNull();
+  });
+});
+
+describe("adding students from the school", () => {
+  it("adds people with no place, or a withdrawn, waiting or turned-away place; never twice", () => {
+    expect(canAddToClass(null)).toBe(true);
+    for (const s of ["WITHDRAWN", "PENDING", "DECLINED"] as const) expect(canAddToClass(s)).toBe(true);
+    for (const s of ["ACTIVE", "PAUSED", "COMPLETED"] as const) expect(canAddToClass(s)).toBe(false);
+  });
+  it("notes an earlier place in this class", () => {
+    expect(addNote(null, null)).toBeNull();
+    expect(addNote("WITHDRAWN", "2026-10-02")).toBe("Left this class on 2 Oct 2026");
+    expect(addNote("WITHDRAWN", null)).toBe("Left this class");
+    expect(addNote("PENDING", null)).toBe("Waiting to join this class");
+    expect(addNote("DECLINED", null)).toBe("Turned away from this class earlier");
+  });
+  it("teachers see the students of their own classes, plus anyone with a place in this class", () => {
+    const taught = new Set(["mine"]);
+    expect(teacherCanSee([{ cohortId: "mine", status: "ACTIVE" }], taught, "this")).toBe(true);
+    expect(teacherCanSee([{ cohortId: "mine", status: "WITHDRAWN" }], taught, "this")).toBe(true);
+    expect(teacherCanSee([{ cohortId: "mine", status: "PENDING" }], taught, "this")).toBe(false);
+    expect(teacherCanSee([{ cohortId: "other", status: "ACTIVE" }], taught, "this")).toBe(false);
+    expect(teacherCanSee([], taught, "this")).toBe(false);
+    expect(teacherCanSee([{ cohortId: "this", status: "DECLINED" }], taught, "this")).toBe(true);
   });
 });

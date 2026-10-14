@@ -26,6 +26,11 @@ export function certificateMessage(c: { name: string; course: string; school: st
   return `${c.name} completed ${c.course} at ${c.school}. Check it is genuine: ${c.link}`;
 }
 
+/** For the class group after a teacher added students who already have an account. */
+export function addedToClassMessage(a: { cohort: string; school: string; link: string }) {
+  return `Assalam-o-Alaikum! You have been added to ${a.cohort} at ${a.school} on NoorAI Tracks. Sign in to see it: ${a.link}`;
+}
+
 /** The day's attendance for a parents' group or the principal: who was absent, late or on leave. */
 export function absentListMessage(a: { cohort: string; day: string; present: number; total: number; absent: string[]; late: string[]; leave: string[] }) {
   const line = (label: string, names: string[]) => (names.length ? `\n${label} (${names.length}): ${names.join(", ")}` : "");

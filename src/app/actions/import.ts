@@ -9,9 +9,13 @@ import { audit } from "@/lib/audit";
 import { checkStudent, IMPORT_LIMIT, planImport, readStudentFile, type Existing, type RowProblem, type StudentRow } from "@/lib/import-core";
 import { hashToken, newResetToken } from "@/lib/reset";
 import { baseUrl } from "@/lib/url";
+import { addableStudents } from "@/lib/add-students";
+import { plural } from "@/lib/utils";
+import { addedToClassMessage } from "@/lib/whatsapp";
 
-// Adding many students to a cohort from a file (Step 5, feature 1). Who may: the same people who
-// may make the cohort's student invite links (its teachers, and the school's admins).
+// Adding many students to a cohort from a file (Step 5, feature 1), or from the students already in the
+// school. Who may: the same people who may make the cohort's student invite links (its teachers, and the
+// school's admins).
 
 export type ImportPreview = {
   error?: string;
@@ -115,4 +119,38 @@ export async function importStudentsAction(_: ImportResult | undefined, form: Fo
   revalidatePath(`/cohorts/${ctx.cohort.id}`, "layout");
   const url = await baseUrl();
   return { done: { created, added, skipped: plan.skip.length, links: tokens.map((t) => ({ name: t.name, email: t.email, link: `${url}/reset/${t.token}` })) } };
+}
+
+export type AddFromSchoolResult = { error?: string; ok?: string; message?: string };
+
+/** "Add students from the school": put ticked students who already have an account in this class, Active
+ *  straight away. Who may be added is worked out again here from the school's data (never the page). */
+export async function addFromSchoolAction(_: AddFromSchoolResult | undefined, form: FormData): Promise<AddFromSchoolResult> {
+  const ctx = await requireTeachableCohort(String(form.get("cohortId") ?? ""));
+  const ids = [...new Set(form.getAll("userId").map(String))];
+  if (!ids.length) return { error: "Tick the students to add first." };
+  if (ids.length > IMPORT_LIMIT.rows) return { error: `Add at most ${IMPORT_LIMIT.rows} students at a time.` };
+  const { students } = await addableStudents(ctx, ctx.cohort.id);
+  const allowed = new Map(students.map((s) => [s.userId, s]));
+  const chosen = ids.filter((id) => allowed.has(id));
+  if (!chosen.length) return { error: "Those students are already in this class." };
+  const back = chosen.filter((id) => allowed.get(id)!.here).length;
+
+  const added = await db.transaction(async (tx) => {
+    // A place that is Withdrawn, waiting or turned away becomes Active again (old work kept); a place that
+    // became Active a moment ago is left alone and not counted.
+    const rows = await tx.insert(schema.enrollments).values(chosen.map((userId) => ({ cohortId: ctx.cohort.id, userId })))
+      .onConflictDoUpdate({ target: [schema.enrollments.cohortId, schema.enrollments.userId], set: { status: "ACTIVE", leftOn: null, leftReason: null, leftNote: null },
+        setWhere: inArray(schema.enrollments.status, ["WITHDRAWN", "PENDING", "DECLINED"]) })
+      .returning({ id: schema.enrollments.id });
+    await audit({ orgId: ctx.org.id, actorId: ctx.user.id, action: "students.add",
+      detail: `${ctx.cohort.name}: ${rows.length} added${back ? ` (${back} had a place in it before)` : ""}` }, tx);
+    return rows.length;
+  });
+  revalidatePath(`/cohorts/${ctx.cohort.id}`, "layout");
+  const url = await baseUrl();
+  return {
+    ok: `Added ${plural(added, "student")} to ${ctx.cohort.name}. They see it the next time they open Tracks.`,
+    message: addedToClassMessage({ cohort: ctx.cohort.name, school: ctx.org.name, link: `${url}/dashboard` }),
+  };
 }

@@ -140,10 +140,13 @@ export default async function CohortPage({ params }: { params: Promise<{ id: str
       <section className="mb-8">
         <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
           <h2 className="h2">Students</h2>
-          <Link href={`/cohorts/${cohort.id}/import`} className="btn-ghost"><Icon name="addPerson" size={18} />Add students from a file</Link>
+          <div className="flex flex-wrap gap-2">
+            <Link href={`/cohorts/${cohort.id}/add`} className="btn-ghost"><Icon name="addPerson" size={18} />Add students from the school</Link>
+            <Link href={`/cohorts/${cohort.id}/import`} className="btn-ghost"><Icon name="addPerson" size={18} />Add students from a file</Link>
+          </div>
         </div>
         {students.length === 0 ? (
-          <Empty title="No students yet">Share the student invite link below, or add the whole class at once with <b>Add students from a file</b>.</Empty>
+          <Empty title="No students yet">Students who already have an account: <b>Add students from the school</b>. New students: share the student invite link below, or add the whole class at once with <b>Add students from a file</b>.</Empty>
         ) : (
           <div className="card overflow-x-auto">
             <table className="w-full min-w-[760px] text-sm">

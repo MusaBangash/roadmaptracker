@@ -1,0 +1,977 @@
+{
+  "title": "AI Powered Graphic Designing – Advanced",
+  "kind": "COURSE",
+  "edition": "2026",
+  "subtitle": "6 months · 24 weeks · Advanced · 4 days a week, 2 hours a day",
+  "summary": "Professional graphic designing for print and digital media: CorelDRAW, Urdu designing in InPage, Canva, Adobe Photoshop, Adobe Illustrator and AI design tools, ending with a professional portfolio, a freelancing profile and a final capstone project.",
+  "expert": "At the end you can take a client brief from idea to finished brand, print and social media work across CorelDRAW, Photoshop, Illustrator, Canva and InPage, use AI tools responsibly, and present it in a professional portfolio.",
+  "benchmarks": [
+    {
+      "title": "Design principles",
+      "detail": "Understand and apply the elements and principles of graphic design: colour theory, typography, layout and visual hierarchy."
+    },
+    {
+      "title": "CorelDRAW",
+      "detail": "Use CorelDRAW for vector design, print media and branding projects."
+    },
+    {
+      "title": "Urdu designing",
+      "detail": "Create Urdu layouts in InPage for notices, advertisements, invitation cards, certificates and publications."
+    },
+    {
+      "title": "Digital design",
+      "detail": "Use Canva for social media posts, covers, stories, campaigns and presentations."
+    },
+    {
+      "title": "Print and digital output",
+      "detail": "Prepare designs to the size and file format that print and digital media need (PDF, JPG, PNG)."
+    },
+    {
+      "title": "Photoshop",
+      "detail": "Use Adobe Photoshop for photo editing, retouching, manipulation, product editing and social media ads."
+    },
+    {
+      "title": "Illustrator",
+      "detail": "Use Adobe Illustrator for vector drawing, typography, branding, icons, mascots and illustrations."
+    },
+    {
+      "title": "Branding",
+      "detail": "Develop brand identities, packaging, labels, mockups and creative concepts, with AI assistance where it helps."
+    },
+    {
+      "title": "AI tools",
+      "detail": "Use ChatGPT, Google Gemini, Canva AI, Adobe Firefly, Microsoft Designer, Leonardo AI, Ideogram AI, Clipdrop and Remove.bg in a responsible design workflow."
+    },
+    {
+      "title": "Portfolio and freelancing",
+      "detail": "Prepare a professional portfolio and understand Behance, LinkedIn, Fiverr, Upwork and working with clients."
+    },
+    {
+      "title": "Capstone",
+      "detail": "Complete an integrated final capstone project demonstrating advanced graphic designing skills."
+    }
+  ],
+  "stages": [
+    {
+      "key": "coreldraw-fundamentals-design-essentials",
+      "title": "CorelDRAW Fundamentals & Design Essentials",
+      "level": "Foundation",
+      "weeks": 4,
+      "goal": "Learn the basics of graphic design and draw, shape, colour and type confidently in CorelDRAW.",
+      "doneWhen": "Your teacher has checked your four weekly tasks and you have passed Monthly Test 1 (theory + practical).",
+      "items": [
+        {
+          "key": "course-orientation-career-scope-design-basics-coreldraw-introduction-and-interfa",
+          "title": "Course orientation, career scope, design basics, CorelDRAW introduction and interface",
+          "detail": "Home task: identify and label the CorelDRAW workspace tools",
+          "kind": "LESSON",
+          "group": "Week 1 · Introduction to Graphic Designing & CorelDRAW Fundamentals"
+        },
+        {
+          "key": "workspace-vector-vs-bitmap-page-setup-and-document-properties",
+          "title": "Workspace, vector vs bitmap, page setup and document properties",
+          "detail": "Home task: create documents in different page sizes",
+          "kind": "LESSON",
+          "group": "Week 1 · Introduction to Graphic Designing & CorelDRAW Fundamentals"
+        },
+        {
+          "key": "rectangle-ellipse-polygon-star-and-spiral-tools",
+          "title": "Rectangle, Ellipse, Polygon, Star and Spiral tools",
+          "detail": "Home task: create a composition using basic shapes",
+          "kind": "LESSON",
+          "group": "Week 1 · Introduction to Graphic Designing & CorelDRAW Fundamentals"
+        },
+        {
+          "key": "pick-tool-selection-duplicate-alignment-group-and-ungroup",
+          "title": "Pick Tool, selection, duplicate, alignment, group and ungroup",
+          "detail": "Weekly quiz today",
+          "kind": "LESSON",
+          "group": "Week 1 · Introduction to Graphic Designing & CorelDRAW Fundamentals"
+        },
+        {
+          "key": "weekly-task-simple-shape-composition",
+          "title": "Weekly task: simple shape composition",
+          "detail": "Create and align a simple shape composition in CorelDRAW",
+          "kind": "PROJECT",
+          "group": "Week 1 · Introduction to Graphic Designing & CorelDRAW Fundamentals"
+        },
+        {
+          "key": "object-manipulation-sizing-positioning-and-duplicate-techniques",
+          "title": "Object manipulation, sizing, positioning and duplicate techniques",
+          "detail": "Home task: recreate a simple object layout",
+          "kind": "LESSON",
+          "group": "Week 2 · CorelDRAW Fundamentals"
+        },
+        {
+          "key": "basic-design-elements-line-shape-size-space-and-texture",
+          "title": "Basic design elements: line, shape, size, space and texture",
+          "detail": "Home task: create a design showing the design elements",
+          "kind": "LESSON",
+          "group": "Week 2 · CorelDRAW Fundamentals"
+        },
+        {
+          "key": "design-principles-balance-contrast-repetition-unity-and-hierarchy",
+          "title": "Design principles: balance, contrast, repetition, unity and hierarchy",
+          "detail": "Home task: create a balanced poster layout",
+          "kind": "LESSON",
+          "group": "Week 2 · CorelDRAW Fundamentals"
+        },
+        {
+          "key": "hands-on-practice-and-revision-of-coreldraw-fundamentals",
+          "title": "Hands-on practice and revision of CorelDRAW fundamentals",
+          "detail": "Weekly quiz today",
+          "kind": "LESSON",
+          "group": "Week 2 · CorelDRAW Fundamentals"
+        },
+        {
+          "key": "weekly-task-mini-design-exercise",
+          "title": "Weekly task: mini design exercise",
+          "detail": "A mini design that uses this week's design elements and principles",
+          "kind": "PROJECT",
+          "group": "Week 2 · CorelDRAW Fundamentals"
+        },
+        {
+          "key": "shape-tool-node-editing-and-object-reshaping",
+          "title": "Shape Tool, node editing and object reshaping",
+          "detail": "Home task: edit and reshape multiple objects",
+          "kind": "LESSON",
+          "group": "Week 3 · CorelDRAW Design Essentials"
+        },
+        {
+          "key": "freehand-tool-bezier-tool-and-basic-curve-drawing",
+          "title": "Freehand Tool, Bezier Tool and basic curve drawing",
+          "detail": "Home task: create a simple vector illustration",
+          "kind": "LESSON",
+          "group": "Week 3 · CorelDRAW Design Essentials"
+        },
+        {
+          "key": "weld-trim-intersect-combine-and-convert-to-curves",
+          "title": "Weld, Trim, Intersect, Combine and Convert to Curves",
+          "detail": "Home task: create a custom icon using the shaping tools",
+          "kind": "LESSON",
+          "group": "Week 3 · CorelDRAW Design Essentials"
+        },
+        {
+          "key": "revision-and-practical-application-of-drawing-and-shaping-tools",
+          "title": "Revision and practical application of drawing and shaping tools",
+          "detail": "Weekly quiz today",
+          "kind": "LESSON",
+          "group": "Week 3 · CorelDRAW Design Essentials"
+        },
+        {
+          "key": "weekly-task-custom-logo-symbol",
+          "title": "Weekly task: custom logo symbol",
+          "detail": "Create a custom logo symbol with the drawing and shaping tools",
+          "kind": "PROJECT",
+          "group": "Week 3 · CorelDRAW Design Essentials"
+        },
+        {
+          "key": "colour-theory-colour-meanings-and-colour-combinations",
+          "title": "Colour theory, colour meanings and colour combinations",
+          "detail": "Home task: create a colour palette sheet",
+          "kind": "LESSON",
+          "group": "Week 4 · CorelDRAW Design Essentials"
+        },
+        {
+          "key": "fill-tool-uniform-fill-fountain-fill-and-outline-settings",
+          "title": "Fill Tool, Uniform Fill, Fountain Fill and Outline settings",
+          "detail": "Home task: apply professional fills and outlines",
+          "kind": "LESSON",
+          "group": "Week 4 · CorelDRAW Design Essentials"
+        },
+        {
+          "key": "artistic-text-paragraph-text-and-basic-typography",
+          "title": "Artistic Text, Paragraph Text and basic typography",
+          "detail": "Home task: create a typography composition (hand it in below)",
+          "kind": "LESSON",
+          "group": "Week 4 · CorelDRAW Design Essentials"
+        },
+        {
+          "key": "revision-and-monthly-test-preparation",
+          "title": "Revision and Monthly Test preparation",
+          "detail": "Weekly quiz and Monthly Test 1 today",
+          "kind": "LESSON",
+          "group": "Week 4 · CorelDRAW Design Essentials"
+        },
+        {
+          "key": "weekly-task-typography-composition",
+          "title": "Weekly task: typography composition",
+          "detail": "A typography composition using Artistic and Paragraph Text, fills and outlines",
+          "kind": "PROJECT",
+          "group": "Week 4 · CorelDRAW Design Essentials"
+        }
+      ]
+    },
+    {
+      "key": "print-design-urdu-designing-with-inpage",
+      "title": "Print Design & Urdu Designing with InPage",
+      "level": "Foundation",
+      "weeks": 4,
+      "goal": "Design real print work (logo, stationery, flyer, banner, certificate) in CorelDRAW and Urdu layouts in InPage.",
+      "doneWhen": "Your teacher has checked your four weekly tasks and you have passed Monthly Test 2 (theory + practical).",
+      "items": [
+        {
+          "key": "introduction-to-logo-design-concepts-and-basic-logo-construction",
+          "title": "Introduction to logo design, concepts and basic logo construction",
+          "detail": "Home task: create a simple wordmark or symbol logo",
+          "kind": "LESSON",
+          "group": "Week 5 · CorelDRAW Projects & Print Design"
+        },
+        {
+          "key": "business-card-design-size-layout-hierarchy-and-export",
+          "title": "Business card design: size, layout, hierarchy and export",
+          "detail": "Home task: design a professional business card",
+          "kind": "LESSON",
+          "group": "Week 5 · CorelDRAW Projects & Print Design"
+        },
+        {
+          "key": "letterhead-design-and-basic-brand-consistency",
+          "title": "Letterhead design and basic brand consistency",
+          "detail": "Home task: design a matching letterhead",
+          "kind": "LESSON",
+          "group": "Week 5 · CorelDRAW Projects & Print Design"
+        },
+        {
+          "key": "print-file-preparation-and-export-basics",
+          "title": "Print file preparation and export basics",
+          "detail": "Weekly quiz today",
+          "kind": "LESSON",
+          "group": "Week 5 · CorelDRAW Projects & Print Design"
+        },
+        {
+          "key": "weekly-task-business-stationery-export",
+          "title": "Weekly task: business stationery export",
+          "detail": "Export your logo, business card and letterhead as PDF and JPG",
+          "kind": "PROJECT",
+          "group": "Week 5 · CorelDRAW Projects & Print Design"
+        },
+        {
+          "key": "flyer-and-poster-design-concepts",
+          "title": "Flyer and poster design concepts",
+          "detail": "Home task: design an event flyer",
+          "kind": "LESSON",
+          "group": "Week 6 · CorelDRAW Projects & Print Design"
+        },
+        {
+          "key": "flex-banner-and-large-format-layout-basics",
+          "title": "Flex banner and large-format layout basics",
+          "detail": "Home task: design a basic flex banner",
+          "kind": "LESSON",
+          "group": "Week 6 · CorelDRAW Projects & Print Design"
+        },
+        {
+          "key": "certificate-design-and-layout",
+          "title": "Certificate design and layout",
+          "detail": "Home task: create a professional certificate",
+          "kind": "LESSON",
+          "group": "Week 6 · CorelDRAW Projects & Print Design"
+        },
+        {
+          "key": "basic-print-setup-and-exporting-files-pdf-jpg-and-png",
+          "title": "Basic print setup and exporting files: PDF, JPG and PNG",
+          "detail": "Weekly quiz today",
+          "kind": "LESSON",
+          "group": "Week 6 · CorelDRAW Projects & Print Design"
+        },
+        {
+          "key": "weekly-task-print-and-digital-output",
+          "title": "Weekly task: print and digital output",
+          "detail": "Prepare one design for print and for digital output",
+          "kind": "PROJECT",
+          "group": "Week 6 · CorelDRAW Projects & Print Design"
+        },
+        {
+          "key": "introduction-to-the-inpage-interface-and-urdu-typing-basics",
+          "title": "Introduction to the InPage interface and Urdu typing basics",
+          "detail": "Home task: type and format a short Urdu paragraph",
+          "kind": "LESSON",
+          "group": "Week 7 · Urdu Designing with InPage"
+        },
+        {
+          "key": "keyboard-layout-text-box-formatting-and-symbols",
+          "title": "Keyboard layout, text box, formatting and symbols",
+          "detail": "Home task: create a formatted Urdu notice",
+          "kind": "LESSON",
+          "group": "Week 7 · Urdu Designing with InPage"
+        },
+        {
+          "key": "urdu-typography-and-basic-page-layout",
+          "title": "Urdu typography and basic page layout",
+          "detail": "Home task: create a simple Urdu advertisement",
+          "kind": "LESSON",
+          "group": "Week 7 · Urdu Designing with InPage"
+        },
+        {
+          "key": "newspaper-and-publication-layout-concepts",
+          "title": "Newspaper and publication layout concepts",
+          "detail": "Weekly quiz today",
+          "kind": "LESSON",
+          "group": "Week 7 · Urdu Designing with InPage"
+        },
+        {
+          "key": "weekly-task-newspaper-style-layout",
+          "title": "Weekly task: newspaper-style layout",
+          "detail": "Create a basic newspaper-style layout in InPage",
+          "kind": "PROJECT",
+          "group": "Week 7 · Urdu Designing with InPage"
+        },
+        {
+          "key": "invitation-card-design-in-urdu",
+          "title": "Invitation card design in Urdu",
+          "detail": "Home task: design an Urdu invitation card",
+          "kind": "LESSON",
+          "group": "Week 8 · Urdu Designing with InPage"
+        },
+        {
+          "key": "urdu-certificate-and-notice-design",
+          "title": "Urdu certificate and notice design",
+          "detail": "Home task: create an Urdu certificate",
+          "kind": "LESSON",
+          "group": "Week 8 · Urdu Designing with InPage"
+        },
+        {
+          "key": "urdu-advertisement-and-composition-practice",
+          "title": "Urdu advertisement and composition practice",
+          "detail": "Home task: design a professional Urdu advertisement (hand it in below)",
+          "kind": "LESSON",
+          "group": "Week 8 · Urdu Designing with InPage"
+        },
+        {
+          "key": "module-revision-and-practical-project-preparation",
+          "title": "Module revision and practical project preparation",
+          "detail": "Weekly quiz and Monthly Test 2 today",
+          "kind": "LESSON",
+          "group": "Week 8 · Urdu Designing with InPage"
+        },
+        {
+          "key": "weekly-task-professional-urdu-advertisement",
+          "title": "Weekly task: professional Urdu advertisement",
+          "detail": "Design a professional Urdu advertisement in InPage",
+          "kind": "PROJECT",
+          "group": "Week 8 · Urdu Designing with InPage"
+        }
+      ]
+    },
+    {
+      "key": "canva-ai-assisted-designing-portfolio",
+      "title": "Canva, AI-Assisted Designing & Portfolio",
+      "level": "Foundation",
+      "weeks": 4,
+      "goal": "Design for social media in Canva, use AI tools responsibly for ideas and content, and finish a mini portfolio and final project.",
+      "doneWhen": "Your weekly tasks, mini portfolio and final practical project are checked by your teacher, and you have passed Monthly Test 3.",
+      "items": [
+        {
+          "key": "canva-interface-templates-pages-and-basic-workflow",
+          "title": "Canva interface, templates, pages and basic workflow",
+          "detail": "Home task: create a simple design using a template",
+          "kind": "LESSON",
+          "group": "Week 9 · Canva for Digital Designing"
+        },
+        {
+          "key": "brand-kit-elements-photos-icons-and-typography",
+          "title": "Brand Kit, Elements, photos, icons and typography",
+          "detail": "Home task: create a branded social media post",
+          "kind": "LESSON",
+          "group": "Week 9 · Canva for Digital Designing"
+        },
+        {
+          "key": "text-effects-backgrounds-and-background-removal",
+          "title": "Text effects, backgrounds and background removal",
+          "detail": "Home task: create an edited promotional post",
+          "kind": "LESSON",
+          "group": "Week 9 · Canva for Digital Designing"
+        },
+        {
+          "key": "social-media-design-best-practices-and-revision",
+          "title": "Social media design best practices and revision",
+          "detail": "Weekly quiz today",
+          "kind": "LESSON",
+          "group": "Week 9 · Canva for Digital Designing"
+        },
+        {
+          "key": "weekly-task-complete-campaign-post",
+          "title": "Weekly task: complete campaign post",
+          "detail": "Create a complete campaign post in Canva",
+          "kind": "PROJECT",
+          "group": "Week 9 · Canva for Digital Designing"
+        },
+        {
+          "key": "facebook-post-and-cover-design",
+          "title": "Facebook post and cover design",
+          "detail": "Home task: create a Facebook post and cover",
+          "kind": "LESSON",
+          "group": "Week 10 · Canva for Digital Designing"
+        },
+        {
+          "key": "instagram-post-and-story-design",
+          "title": "Instagram post and story design",
+          "detail": "Home task: create an Instagram post and story",
+          "kind": "LESSON",
+          "group": "Week 10 · Canva for Digital Designing"
+        },
+        {
+          "key": "presentation-design-and-visual-consistency",
+          "title": "Presentation design and visual consistency",
+          "detail": "Home task: create a 5-slide presentation",
+          "kind": "LESSON",
+          "group": "Week 10 · Canva for Digital Designing"
+        },
+        {
+          "key": "digital-design-project-and-revision",
+          "title": "Digital design project and revision",
+          "detail": "Weekly quiz today",
+          "kind": "LESSON",
+          "group": "Week 10 · Canva for Digital Designing"
+        },
+        {
+          "key": "weekly-task-social-media-mini-campaign",
+          "title": "Weekly task: social media mini campaign",
+          "detail": "Design a social media mini campaign",
+          "kind": "PROJECT",
+          "group": "Week 10 · Canva for Digital Designing"
+        },
+        {
+          "key": "introduction-to-ai-and-its-use-in-graphic-design",
+          "title": "Introduction to AI and its use in graphic design",
+          "detail": "Home task: identify practical uses of AI in designing",
+          "kind": "LESSON",
+          "group": "Week 11 · Introduction to Artificial Intelligence"
+        },
+        {
+          "key": "prompt-engineering-basics-and-using-chatgpt-for-design-ideas",
+          "title": "Prompt engineering basics and using ChatGPT for design ideas",
+          "detail": "Home task: write prompts for three design concepts",
+          "kind": "LESSON",
+          "group": "Week 11 · Introduction to Artificial Intelligence"
+        },
+        {
+          "key": "google-gemini-and-canva-ai-for-creative-assistance",
+          "title": "Google Gemini and Canva AI for creative assistance",
+          "detail": "Home task: generate design ideas and refine a concept",
+          "kind": "LESSON",
+          "group": "Week 11 · Introduction to Artificial Intelligence"
+        },
+        {
+          "key": "ai-image-generation-and-responsible-use-of-ai-tools",
+          "title": "AI image generation and responsible use of AI tools",
+          "detail": "Weekly quiz today",
+          "kind": "LESSON",
+          "group": "Week 11 · Introduction to Artificial Intelligence"
+        },
+        {
+          "key": "weekly-task-prompt-based-design-concept",
+          "title": "Weekly task: prompt-based design concept",
+          "detail": "Create a design concept from your own prompts",
+          "kind": "PROJECT",
+          "group": "Week 11 · Introduction to Artificial Intelligence"
+        },
+        {
+          "key": "ai-content-writing-design-ideas-and-project-planning",
+          "title": "AI content writing, design ideas and project planning",
+          "detail": "Home task: prepare the concept and content for your final project",
+          "kind": "LESSON",
+          "group": "Week 12 · AI-Assisted Designing & Portfolio"
+        },
+        {
+          "key": "basic-portfolio-creation-and-selection-of-best-work",
+          "title": "Basic portfolio creation and selection of best work",
+          "detail": "Home task: arrange your selected designs into a mini portfolio (hand it in below)",
+          "kind": "LESSON",
+          "group": "Week 12 · AI-Assisted Designing & Portfolio"
+        },
+        {
+          "key": "final-practical-project-development-and-presentation-preparation",
+          "title": "Final practical project development and presentation preparation",
+          "detail": "Home task: complete your final project artwork",
+          "kind": "LESSON",
+          "group": "Week 12 · AI-Assisted Designing & Portfolio"
+        },
+        {
+          "key": "final-project-presentation-revision-and-course-review",
+          "title": "Final project presentation, revision and course review",
+          "detail": "Weekly quiz, Monthly Test 3 and the final practical assessment today",
+          "kind": "LESSON",
+          "group": "Week 12 · AI-Assisted Designing & Portfolio"
+        },
+        {
+          "key": "mini-portfolio",
+          "title": "Mini portfolio",
+          "detail": "Your best designs from the course arranged into a mini portfolio (PDF or Behance link)",
+          "kind": "DELIVERABLE",
+          "group": "Week 12 · AI-Assisted Designing & Portfolio"
+        },
+        {
+          "key": "practical-project-end-of-month-3",
+          "title": "Practical project (end of month 3)",
+          "detail": "An integrated practical project: concept, content and finished artwork, presented in class",
+          "kind": "PROJECT",
+          "group": "Week 12 · AI-Assisted Designing & Portfolio"
+        }
+      ]
+    },
+    {
+      "key": "adobe-photoshop",
+      "title": "Adobe Photoshop",
+      "level": "Advanced",
+      "weeks": 4,
+      "goal": "Edit, retouch, manipulate and correct photos in Photoshop and design social media adverts.",
+      "doneWhen": "Your teacher has checked your four weekly tasks and you have passed Monthly Test 4 (theory + practical).",
+      "items": [
+        {
+          "key": "photoshop-interface-layers-and-workspace",
+          "title": "Photoshop interface, layers and workspace",
+          "detail": "Home task: create and organise a layered Photoshop document",
+          "kind": "LESSON",
+          "group": "Week 13 · Adobe Photoshop Fundamentals"
+        },
+        {
+          "key": "selection-tools-and-crop-tool",
+          "title": "Selection tools and Crop Tool",
+          "detail": "Home task: select, crop and prepare an image",
+          "kind": "LESSON",
+          "group": "Week 13 · Adobe Photoshop Fundamentals"
+        },
+        {
+          "key": "move-tool-and-text-tool",
+          "title": "Move Tool and Text Tool",
+          "detail": "Home task: create a simple promotional composition",
+          "kind": "LESSON",
+          "group": "Week 13 · Adobe Photoshop Fundamentals"
+        },
+        {
+          "key": "image-size-and-canvas-size",
+          "title": "Image Size and Canvas Size",
+          "detail": "Weekly quiz today",
+          "kind": "LESSON",
+          "group": "Week 13 · Adobe Photoshop Fundamentals"
+        },
+        {
+          "key": "weekly-task-image-for-digital-output",
+          "title": "Weekly task: image for digital output",
+          "detail": "Prepare an image for digital output with the right image and canvas size",
+          "kind": "PROJECT",
+          "group": "Week 13 · Adobe Photoshop Fundamentals"
+        },
+        {
+          "key": "layers-and-basic-image-organisation",
+          "title": "Layers and basic image organisation",
+          "detail": "Home task: build a multi-layer composition",
+          "kind": "LESSON",
+          "group": "Week 14 · Adobe Photoshop Fundamentals"
+        },
+        {
+          "key": "selection-crop-and-object-positioning-practice",
+          "title": "Selection, crop and object positioning practice",
+          "detail": "Home task: create a clean photo composition",
+          "kind": "LESSON",
+          "group": "Week 14 · Adobe Photoshop Fundamentals"
+        },
+        {
+          "key": "basic-photo-editing-workflow",
+          "title": "Basic photo editing workflow",
+          "detail": "Home task: edit and enhance a photograph",
+          "kind": "LESSON",
+          "group": "Week 14 · Adobe Photoshop Fundamentals"
+        },
+        {
+          "key": "photoshop-fundamentals-integrated-practice",
+          "title": "Photoshop fundamentals integrated practice",
+          "detail": "Weekly quiz today",
+          "kind": "LESSON",
+          "group": "Week 14 · Adobe Photoshop Fundamentals"
+        },
+        {
+          "key": "weekly-task-basic-photo-editing-project",
+          "title": "Weekly task: basic photo-editing project",
+          "detail": "Complete a basic photo-editing project in Photoshop",
+          "kind": "PROJECT",
+          "group": "Week 14 · Adobe Photoshop Fundamentals"
+        },
+        {
+          "key": "layer-masks-and-non-destructive-editing",
+          "title": "Layer masks and non-destructive editing",
+          "detail": "Home task: create a masked image composition",
+          "kind": "LESSON",
+          "group": "Week 15 · Advanced Photoshop Editing"
+        },
+        {
+          "key": "blend-modes-and-creative-compositing",
+          "title": "Blend modes and creative compositing",
+          "detail": "Home task: create a blend-mode artwork",
+          "kind": "LESSON",
+          "group": "Week 15 · Advanced Photoshop Editing"
+        },
+        {
+          "key": "adjustment-layers-and-professional-colour-correction",
+          "title": "Adjustment layers and professional colour correction",
+          "detail": "Home task: correct and enhance a photograph",
+          "kind": "LESSON",
+          "group": "Week 15 · Advanced Photoshop Editing"
+        },
+        {
+          "key": "camera-raw-filter-and-advanced-image-enhancement",
+          "title": "Camera Raw Filter and advanced image enhancement",
+          "detail": "Weekly quiz today",
+          "kind": "LESSON",
+          "group": "Week 15 · Advanced Photoshop Editing"
+        },
+        {
+          "key": "weekly-task-advanced-photo-edit",
+          "title": "Weekly task: advanced photo edit",
+          "detail": "Complete an advanced photo edit",
+          "kind": "PROJECT",
+          "group": "Week 15 · Advanced Photoshop Editing"
+        },
+        {
+          "key": "skin-retouching",
+          "title": "Skin retouching",
+          "detail": "Home task: perform professional portrait retouching",
+          "kind": "LESSON",
+          "group": "Week 16 · Advanced Photoshop Editing"
+        },
+        {
+          "key": "background-removal-and-photo-manipulation",
+          "title": "Background removal and photo manipulation",
+          "detail": "Home task: create a realistic photo manipulation",
+          "kind": "LESSON",
+          "group": "Week 16 · Advanced Photoshop Editing"
+        },
+        {
+          "key": "product-editing",
+          "title": "Product editing",
+          "detail": "Home task: create a polished product image",
+          "kind": "LESSON",
+          "group": "Week 16 · Advanced Photoshop Editing"
+        },
+        {
+          "key": "social-media-ads-and-advanced-photoshop-workflow",
+          "title": "Social media ads and advanced Photoshop workflow",
+          "detail": "Weekly quiz and Monthly Test 4 today",
+          "kind": "LESSON",
+          "group": "Week 16 · Advanced Photoshop Editing"
+        },
+        {
+          "key": "weekly-task-social-media-advertising-design",
+          "title": "Weekly task: social media advertising design",
+          "detail": "Design a social media advert in Photoshop",
+          "kind": "PROJECT",
+          "group": "Week 16 · Advanced Photoshop Editing"
+        }
+      ]
+    },
+    {
+      "key": "adobe-illustrator-professional-branding",
+      "title": "Adobe Illustrator & Professional Branding",
+      "level": "Advanced",
+      "weeks": 4,
+      "goal": "Draw precise vectors in Illustrator and build a brand: logo, packaging, labels, icons, mascot and stationery.",
+      "doneWhen": "Your weekly tasks and brand identity project are checked by your teacher, and you have passed Monthly Test 5.",
+      "items": [
+        {
+          "key": "illustrator-interface-and-artboards",
+          "title": "Illustrator interface and artboards",
+          "detail": "Home task: set up multiple artboards for a design project",
+          "kind": "LESSON",
+          "group": "Week 17 · Adobe Illustrator Fundamentals"
+        },
+        {
+          "key": "pen-tool-and-precise-vector-paths",
+          "title": "Pen Tool and precise vector paths",
+          "detail": "Home task: draw a clean vector illustration",
+          "kind": "LESSON",
+          "group": "Week 17 · Adobe Illustrator Fundamentals"
+        },
+        {
+          "key": "shape-builder-tool",
+          "title": "Shape Builder Tool",
+          "detail": "Home task: create custom vector shapes",
+          "kind": "LESSON",
+          "group": "Week 17 · Adobe Illustrator Fundamentals"
+        },
+        {
+          "key": "vector-drawing-workflow-and-practice",
+          "title": "Vector drawing workflow and practice",
+          "detail": "Weekly quiz today",
+          "kind": "LESSON",
+          "group": "Week 17 · Adobe Illustrator Fundamentals"
+        },
+        {
+          "key": "weekly-task-vector-composition",
+          "title": "Weekly task: vector composition",
+          "detail": "Create a vector composition in Illustrator",
+          "kind": "PROJECT",
+          "group": "Week 17 · Adobe Illustrator Fundamentals"
+        },
+        {
+          "key": "pathfinder-and-advanced-shape-construction",
+          "title": "Pathfinder and advanced shape construction",
+          "detail": "Home task: build a custom icon using Pathfinder",
+          "kind": "LESSON",
+          "group": "Week 18 · Adobe Illustrator Fundamentals"
+        },
+        {
+          "key": "basic-vector-drawing",
+          "title": "Basic vector drawing",
+          "detail": "Home task: create a professional vector illustration",
+          "kind": "LESSON",
+          "group": "Week 18 · Adobe Illustrator Fundamentals"
+        },
+        {
+          "key": "typography-in-illustrator",
+          "title": "Typography in Illustrator",
+          "detail": "Home task: create a typography-based vector design",
+          "kind": "LESSON",
+          "group": "Week 18 · Adobe Illustrator Fundamentals"
+        },
+        {
+          "key": "integrated-illustrator-fundamentals-practice",
+          "title": "Integrated Illustrator fundamentals practice",
+          "detail": "Weekly quiz today",
+          "kind": "LESSON",
+          "group": "Week 18 · Adobe Illustrator Fundamentals"
+        },
+        {
+          "key": "weekly-task-vector-design-project",
+          "title": "Weekly task: vector design project",
+          "detail": "Complete a vector design project in Illustrator",
+          "kind": "PROJECT",
+          "group": "Week 18 · Adobe Illustrator Fundamentals"
+        },
+        {
+          "key": "logo-design-and-professional-logo-development",
+          "title": "Logo design and professional logo development",
+          "detail": "Home task: create a professional logo concept",
+          "kind": "LESSON",
+          "group": "Week 19 · Professional Branding & Illustration"
+        },
+        {
+          "key": "brand-identity-and-visual-identity-systems",
+          "title": "Brand identity and visual identity systems",
+          "detail": "Home task: develop a mini brand identity",
+          "kind": "LESSON",
+          "group": "Week 19 · Professional Branding & Illustration"
+        },
+        {
+          "key": "packaging-design",
+          "title": "Packaging design",
+          "detail": "Home task: create a packaging concept",
+          "kind": "LESSON",
+          "group": "Week 19 · Professional Branding & Illustration"
+        },
+        {
+          "key": "labels-and-brand-applications",
+          "title": "Labels and brand applications",
+          "detail": "Weekly quiz today",
+          "kind": "LESSON",
+          "group": "Week 19 · Professional Branding & Illustration"
+        },
+        {
+          "key": "weekly-task-branded-packaging-labels",
+          "title": "Weekly task: branded packaging labels",
+          "detail": "Create branded packaging labels",
+          "kind": "PROJECT",
+          "group": "Week 19 · Professional Branding & Illustration"
+        },
+        {
+          "key": "icon-design-and-visual-systems",
+          "title": "Icon design and visual systems",
+          "detail": "Home task: design a professional icon set",
+          "kind": "LESSON",
+          "group": "Week 20 · Professional Branding & Illustration"
+        },
+        {
+          "key": "mascot-design",
+          "title": "Mascot design",
+          "detail": "Home task: create a mascot character",
+          "kind": "LESSON",
+          "group": "Week 20 · Professional Branding & Illustration"
+        },
+        {
+          "key": "vector-portraits-and-infographics",
+          "title": "Vector portraits and infographics",
+          "detail": "Home task: create a vector portrait or infographic",
+          "kind": "LESSON",
+          "group": "Week 20 · Professional Branding & Illustration"
+        },
+        {
+          "key": "stationery-design-and-integrated-branding",
+          "title": "Stationery design and integrated branding",
+          "detail": "Weekly quiz and Monthly Test 5 today",
+          "kind": "LESSON",
+          "group": "Week 20 · Professional Branding & Illustration"
+        },
+        {
+          "key": "brand-identity-project",
+          "title": "Brand identity project",
+          "detail": "Complete a brand identity: logo, stationery and brand applications",
+          "kind": "PROJECT",
+          "group": "Week 20 · Professional Branding & Illustration"
+        }
+      ]
+    },
+    {
+      "key": "ai-for-designers-freelancing",
+      "title": "AI for Designers & Freelancing",
+      "level": "Advanced",
+      "weeks": 4,
+      "goal": "Use professional AI design tools in a responsible workflow, then present your work and prepare to find clients.",
+      "doneWhen": "Your portfolio, freelancing profile and final capstone project are checked by your teacher, and you have passed Monthly Test 6.",
+      "items": [
+        {
+          "key": "ai-fundamentals-and-applications-in-graphic-designing",
+          "title": "AI fundamentals and applications in graphic designing",
+          "detail": "Home task: identify practical uses of AI in designing",
+          "kind": "LESSON",
+          "group": "Week 21 · Artificial Intelligence for Designers"
+        },
+        {
+          "key": "prompt-engineering-and-chatgpt-for-design-ideas",
+          "title": "Prompt engineering and ChatGPT for design ideas",
+          "detail": "Home task: write prompts for three design concepts",
+          "kind": "LESSON",
+          "group": "Week 21 · Artificial Intelligence for Designers"
+        },
+        {
+          "key": "google-gemini-for-creative-assistance",
+          "title": "Google Gemini for creative assistance",
+          "detail": "Home task: generate and refine design ideas with Gemini",
+          "kind": "LESSON",
+          "group": "Week 21 · Artificial Intelligence for Designers"
+        },
+        {
+          "key": "canva-ai-and-ai-assisted-design-workflow",
+          "title": "Canva AI and AI-assisted design workflow",
+          "detail": "Weekly quiz today",
+          "kind": "LESSON",
+          "group": "Week 21 · Artificial Intelligence for Designers"
+        },
+        {
+          "key": "weekly-task-ai-assisted-design-concept",
+          "title": "Weekly task: AI-assisted design concept",
+          "detail": "Create an AI-assisted design concept",
+          "kind": "PROJECT",
+          "group": "Week 21 · Artificial Intelligence for Designers"
+        },
+        {
+          "key": "adobe-firefly-for-creative-design-support",
+          "title": "Adobe Firefly for creative design support",
+          "detail": "Home task: generate creative visual assets",
+          "kind": "LESSON",
+          "group": "Week 22 · Artificial Intelligence for Designers"
+        },
+        {
+          "key": "microsoft-designer-gemini-chatgpt-and-ai-design-workflows",
+          "title": "Microsoft Designer, Gemini, ChatGPT and AI design workflows",
+          "detail": "Home task: create an AI-assisted social media design",
+          "kind": "LESSON",
+          "group": "Week 22 · Artificial Intelligence for Designers"
+        },
+        {
+          "key": "ai-content-writing-for-design-projects",
+          "title": "AI content writing for design projects",
+          "detail": "Home task: prepare AI-assisted content for a campaign",
+          "kind": "LESSON",
+          "group": "Week 22 · Artificial Intelligence for Designers"
+        },
+        {
+          "key": "ai-image-generation-and-responsible-use-of-ai-tools",
+          "title": "AI image generation and responsible use of AI tools",
+          "detail": "Weekly quiz today",
+          "kind": "LESSON",
+          "group": "Week 22 · Artificial Intelligence for Designers"
+        },
+        {
+          "key": "weekly-task-prompt-based-design-concept",
+          "title": "Weekly task: prompt-based design concept",
+          "detail": "Create a prompt-based design concept",
+          "kind": "PROJECT",
+          "group": "Week 22 · Artificial Intelligence for Designers"
+        },
+        {
+          "key": "leonardo-ai-for-advanced-image-generation",
+          "title": "Leonardo AI for advanced image generation",
+          "detail": "Home task: generate a professional AI visual",
+          "kind": "LESSON",
+          "group": "Week 23 · Advanced AI Workflow & Freelancing"
+        },
+        {
+          "key": "ideogram-ai-for-typography-and-creative-visuals",
+          "title": "Ideogram AI for typography and creative visuals",
+          "detail": "Home task: create an AI-generated graphic concept",
+          "kind": "LESSON",
+          "group": "Week 23 · Advanced AI Workflow & Freelancing"
+        },
+        {
+          "key": "clipdrop-and-remove-bg-for-ai-assisted-editing",
+          "title": "Clipdrop and Remove.bg for AI-assisted editing",
+          "detail": "Home task: prepare and enhance design assets",
+          "kind": "LESSON",
+          "group": "Week 23 · Advanced AI Workflow & Freelancing"
+        },
+        {
+          "key": "ai-mockups-and-professional-presentation-of-designs",
+          "title": "AI mockups and professional presentation of designs",
+          "detail": "Weekly quiz today",
+          "kind": "LESSON",
+          "group": "Week 23 · Advanced AI Workflow & Freelancing"
+        },
+        {
+          "key": "weekly-task-ai-assisted-mockup",
+          "title": "Weekly task: AI-assisted mockup",
+          "detail": "Create an AI-assisted mockup",
+          "kind": "PROJECT",
+          "group": "Week 23 · Advanced AI Workflow & Freelancing"
+        },
+        {
+          "key": "ai-branding-and-integrated-brand-development",
+          "title": "AI branding and integrated brand development",
+          "detail": "Home task: develop an AI-assisted branding concept",
+          "kind": "LESSON",
+          "group": "Week 24 · Advanced AI Workflow & Freelancing"
+        },
+        {
+          "key": "portfolio-development-and-behance",
+          "title": "Portfolio development and Behance",
+          "detail": "Home task: arrange your selected professional work into a portfolio (hand it in below)",
+          "kind": "LESSON",
+          "group": "Week 24 · Advanced AI Workflow & Freelancing"
+        },
+        {
+          "key": "linkedin-fiverr-upwork-and-client-communication",
+          "title": "LinkedIn, Fiverr, Upwork and client communication",
+          "detail": "Home task: prepare a freelancing profile and a client brief (hand it in below)",
+          "kind": "LESSON",
+          "group": "Week 24 · Advanced AI Workflow & Freelancing"
+        },
+        {
+          "key": "final-capstone-project-presentation-and-course-review",
+          "title": "Final capstone project, presentation and course review",
+          "detail": "Weekly quiz, Monthly Test 6 and the final practical assessment today",
+          "kind": "LESSON",
+          "group": "Week 24 · Advanced AI Workflow & Freelancing"
+        },
+        {
+          "key": "professional-portfolio",
+          "title": "Professional portfolio",
+          "detail": "Your selected professional work arranged into a portfolio on Behance",
+          "kind": "DELIVERABLE",
+          "group": "Week 24 · Advanced AI Workflow & Freelancing"
+        },
+        {
+          "key": "freelancing-profile-and-client-brief",
+          "title": "Freelancing profile and client brief",
+          "detail": "A professional freelancing profile (e.g. Fiverr, Upwork or LinkedIn) and a sample client brief",
+          "kind": "DELIVERABLE",
+          "group": "Week 24 · Advanced AI Workflow & Freelancing"
+        },
+        {
+          "key": "final-capstone-project",
+          "title": "Final capstone project",
+          "detail": "An integrated final project showing your advanced graphic designing skills, presented in class",
+          "kind": "MILESTONE",
+          "group": "Week 24 · Advanced AI Workflow & Freelancing"
+        }
+      ]
+    }
+  ]
+}

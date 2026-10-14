@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { absentListMessage, hostelListMessage, certificateMessage, inviteMessage, resetMessage, welcomeMessage, whatsappUrl } from "./whatsapp";
+import { absentListMessage, hostelListMessage, certificateMessage, inviteMessage, resetMessage, welcomeMessage, whatsappUrl, addedToClassMessage } from "./whatsapp";
 
 describe("whatsapp", () => {
   it("puts the whole message, safely encoded, into a wa.me link", () => {
@@ -37,5 +37,12 @@ describe("hostelListMessage", () => {
     expect(hostelListMessage({ school: "Aisha Cahn College", day: "Wed 14 Oct 2026", absent: [{ name: "Ali", cohort: "Web A" }], leave: [{ name: "Sara", cohort: "Web B" }], notTaken: ["AI Evening"] }))
       .toBe("Hostel students, Aisha Cahn College, Wed 14 Oct 2026.\nAbsent (1):\n- Ali (Web A)\nOn leave (1):\n- Sara (Web B)\nAttendance not taken yet: AI Evening.");
     expect(hostelListMessage({ school: "S", day: "D", absent: [], leave: [], notTaken: [] })).toBe("Hostel students, S, D. No hostel student was absent or on leave.");
+  });
+});
+
+describe("addedToClassMessage", () => {
+  it("tells students which class they were added to and where to sign in", () => {
+    expect(addedToClassMessage({ cohort: "Graphic Design – Morning Boys", school: "Aisha Cahn College", link: "https://tracks.example/dashboard" }))
+      .toBe("Assalam-o-Alaikum! You have been added to Graphic Design – Morning Boys at Aisha Cahn College on NoorAI Tracks. Sign in to see it: https://tracks.example/dashboard");
   });
 });

@@ -1,6 +1,7 @@
 // Editing a cohort after it was created, pure and tested in cohort-core.test.ts.
 
 import { classDaysLabel } from "./attendance-core";
+import { fmtDate } from "./utils";
 
 export type CohortFields = { name: string; startDate: string; trackId: string; classDays?: number[] | null; groupName?: string | null };
 
@@ -57,6 +58,30 @@ export function canApply(op: ClassListOp, status: EnrollmentStatus) {
 }
 
 export const OP_STATUS: Record<ClassListOp, EnrollmentStatus> = { accept: "ACTIVE", decline: "DECLINED", withdraw: "WITHDRAWN" };
+
+// ---------- Adding students who are already in the school ----------
+
+/** Whether "Add students from the school" may put this person in the class: anyone without a place, or
+ *  whose place is Withdrawn, waiting or turned away (adding makes it Active again, old work kept). */
+export function canAddToClass(here: EnrollmentStatus | null) {
+  return here === null || here === "WITHDRAWN" || here === "PENDING" || here === "DECLINED";
+}
+
+/** The note beside a name for someone who had a place in this class before. */
+export function addNote(here: EnrollmentStatus | null, leftOn: string | null) {
+  if (here === "WITHDRAWN") return leftOn ? `Left this class on ${fmtDate(leftOn)}` : "Left this class";
+  if (here === "PENDING") return "Waiting to join this class";
+  if (here === "DECLINED") return "Turned away from this class earlier";
+  return null;
+}
+
+/**
+ * Which students a teacher may pick from: the students of the classes they teach (only those in the
+ * class, not waiting or turned away), plus anyone with a place in this class. Admins pick from everyone.
+ */
+export function teacherCanSee(places: { cohortId: string; status: EnrollmentStatus }[], taught: ReadonlySet<string>, cohortId: string) {
+  return places.some((p) => p.cohortId === cohortId || (taught.has(p.cohortId) && inClass(p.status)));
+}
 
 // ---------- When a student leaves (kept with their place) ----------
 
